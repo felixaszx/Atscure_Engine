@@ -17,16 +17,11 @@ int main(int argc, char** argv)
     ats::Device device(instance, instance);
     device.create(instance, instance.VALIDATION_LAYERS);
 
-    ats::Swapchain swapchain;
-    swapchain.create(window, instance, device);
-    swapchain.create_image_view(device);
-
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
     }
 
-    swapchain.destroy(device);
     device.destroy();
     window.destroy(instance);
     return EXIT_SUCCESS;
