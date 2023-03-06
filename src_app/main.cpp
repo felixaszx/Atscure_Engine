@@ -7,6 +7,7 @@
 #include "at_window.hpp"
 #include "at_device.hpp"
 #include "at_swapchain.hpp"
+#include "at_shader.hpp"
 
 int main(int argc, char** argv)
 {
