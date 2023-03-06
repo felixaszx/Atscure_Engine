@@ -30,6 +30,6 @@ namespace ats
         static void warrning(std::string warrnings);
     };
 
-} // namespace ats
+}; // namespace ats
 
 #endif // AT_LOG_HPP

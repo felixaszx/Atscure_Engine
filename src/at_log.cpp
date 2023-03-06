@@ -31,4 +31,4 @@ namespace ats
         std::time_t end_time = std::chrono::system_clock::to_time_t(end);
         std::cout << fmt::format("[WARNINGS] System time: {} {}\n", std::ctime(&end_time), warrnings);
     }
-} // namespace ats
+}; // namespace ats

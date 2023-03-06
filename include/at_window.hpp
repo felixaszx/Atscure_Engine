@@ -53,6 +53,6 @@ namespace ats
         void destroy(Instance& instance);
     };
 
-} // namespace ats
+}; // namespace ats
 
 #endif // AT_WINDOW_HPP

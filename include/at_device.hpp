@@ -26,6 +26,6 @@ namespace ats
         Result create(VkInstance instance, const std::vector<const char*>& enabled_layers);
         void destroy();
     };
-} // namespace ats
+}; // namespace ats
 
 #endif // AT_DEVICE_HPP

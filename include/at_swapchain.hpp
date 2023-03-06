@@ -24,6 +24,6 @@ namespace ats
 
         void create_image_view(VkDevice device);
     };
-} // namespace ats
+}; // namespace ats
 
 #endif // AT_SWAPCHAIN_HPP

@@ -161,4 +161,4 @@ namespace ats
         glfwDestroyWindow(*this);
     }
 
-} // namespace ats
+}; // namespace ats

@@ -138,4 +138,4 @@ namespace ats
         }
     }
 
-} // namespace ats
+}; // namespace ats
