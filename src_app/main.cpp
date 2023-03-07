@@ -37,12 +37,17 @@ int main(int argc, char** argv)
     std::vector<VkImageAspectFlags> aspects = {VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_ASPECT_COLOR_BIT, //
                                                VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_ASPECT_COLOR_BIT, //
                                                VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT};
+    std::vector<ats::ImageAttachment> attachments = ats::create_image_attachments(device,           //
+                                                                                  formats, extends, //
+                                                                                  samples, usages,  //
+                                                                                  aspects);
 
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
     }
 
+    ats::destroy_image_attachments(device, attachments);
     swapchain.destroy();
     device.destroy();
     window.destroy(instance);

@@ -139,4 +139,20 @@ namespace ats
         }
     }
 
+    VkAttachmentDescription Swapchain::get_present_attachment()
+    {
+        VkAttachmentDescription present_attachment = //
+            {0,
+             format_,
+             VK_SAMPLE_COUNT_1_BIT,
+             VK_ATTACHMENT_LOAD_OP_CLEAR,
+             VK_ATTACHMENT_STORE_OP_STORE,
+             VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+             VK_ATTACHMENT_STORE_OP_DONT_CARE,
+             VK_IMAGE_LAYOUT_UNDEFINED,
+             VK_IMAGE_LAYOUT_PRESENT_SRC_KHR};
+
+        return present_attachment;
+    }
+
 }; // namespace ats
