@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
     ats::Swapchain swapchain;
     swapchain.create(window, instance, device);
-    swapchain.create_image_view(device);
+    swapchain.create_image_view();
 
     std::vector<VkExtent2D> extends(5, swapchain.extend_);
     std::vector<VkSampleCountFlagBits> samples(5, VK_SAMPLE_COUNT_1_BIT);
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         glfwPollEvents();
     }
 
-    swapchain.destroy(device);
+    swapchain.destroy();
     device.destroy();
     window.destroy(instance);
     return EXIT_SUCCESS;

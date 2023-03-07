@@ -9,6 +9,7 @@ namespace ats
     {
       private:
         VkSwapchainKHR swapchain_ = VK_NULL_HANDLE;
+        VkDevice device_ = VK_NULL_HANDLE;
 
       public:
         operator VkSwapchainKHR();
@@ -20,9 +21,9 @@ namespace ats
         std::vector<VkImageView> image_views_{};
 
         void create(GLFWwindow* window, VkSurfaceKHR surface, Device device);
-        void destroy(VkDevice device);
+        void destroy();
 
-        void create_image_view(VkDevice device);
+        void create_image_view();
     };
 }; // namespace ats
 

@@ -12,20 +12,20 @@ namespace ats
         return &swapchain_;
     }
 
-    void Swapchain::create(GLFWwindow* window, VkSurfaceKHR surface, Device ve_device)
+    void Swapchain::create(GLFWwindow* window, VkSurfaceKHR surface, Device device)
     {
         uint32_t surface_formats_count = 0;
-        vkGetPhysicalDeviceSurfaceFormatsKHR(ve_device, surface, &surface_formats_count, nullptr);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &surface_formats_count, nullptr);
         std::vector<VkSurfaceFormatKHR> surface_formats(surface_formats_count);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(ve_device, surface, &surface_formats_count, surface_formats.data());
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &surface_formats_count, surface_formats.data());
 
         uint32_t present_modes_count = 0;
-        vkGetPhysicalDeviceSurfacePresentModesKHR(ve_device, surface, &present_modes_count, nullptr);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &present_modes_count, nullptr);
         std::vector<VkPresentModeKHR> present_modes(present_modes_count);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(ve_device, surface, &present_modes_count, present_modes.data());
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &present_modes_count, present_modes.data());
 
         VkSurfaceCapabilitiesKHR capabilities{};
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(ve_device, surface, &capabilities);
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &capabilities);
 
         VkSurfaceFormatKHR selected_format = surface_formats[0];
         VkPresentModeKHR selected_present_mode = VK_PRESENT_MODE_FIFO_KHR;
@@ -78,11 +78,11 @@ namespace ats
         swapchain_create_info.imageArrayLayers = 1;
         swapchain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        if (ve_device.queue_family_indices_.graphics != ve_device.queue_family_indices_.present)
+        if (device.queue_family_indices_.graphics != device.queue_family_indices_.present)
         {
             swapchain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             swapchain_create_info.queueFamilyIndexCount = 2;
-            swapchain_create_info.pQueueFamilyIndices = &ve_device.queue_family_indices_.graphics;
+            swapchain_create_info.pQueueFamilyIndices = &device.queue_family_indices_.graphics;
         }
         else
         {
@@ -95,28 +95,29 @@ namespace ats
         swapchain_create_info.clipped = VK_TRUE;
         swapchain_create_info.oldSwapchain = VK_NULL_HANDLE;
 
-        vkCreateSwapchainKHR(ve_device, &swapchain_create_info, nullptr, &swapchain_);
+        vkCreateSwapchainKHR(device, &swapchain_create_info, nullptr, &swapchain_);
         format_ = selected_format.format;
         images_.resize(image_count);
-        vkGetSwapchainImagesKHR(ve_device, swapchain_, &image_count, images_.data());
+        vkGetSwapchainImagesKHR(device, swapchain_, &image_count, images_.data());
+        device_ = device;
     }
 
-    void Swapchain::destroy(VkDevice device)
+    void Swapchain::destroy()
     {
-        vkDeviceWaitIdle(device);
+        vkDeviceWaitIdle(device_);
 
         if (!image_views_.empty())
         {
             for (VkImageView& image_view : image_views_)
             {
-                vkDestroyImageView(device, image_view, nullptr);
+                vkDestroyImageView(device_, image_view, nullptr);
             }
         }
 
-        vkDestroySwapchainKHR(device, swapchain_, nullptr);
+        vkDestroySwapchainKHR(device_, swapchain_, nullptr);
     }
 
-    void Swapchain::create_image_view(VkDevice device)
+    void Swapchain::create_image_view()
     {
         image_views_.resize(images_.size());
 
@@ -134,7 +135,7 @@ namespace ats
             imageview_create_info.subresourceRange.baseArrayLayer = 0;
             imageview_create_info.subresourceRange.layerCount = 1;
 
-            vkCreateImageView(device, &imageview_create_info, nullptr, &image_views_[i]);
+            vkCreateImageView(device_, &imageview_create_info, nullptr, &image_views_[i]);
         }
     }
 

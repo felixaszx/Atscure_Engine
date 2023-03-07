@@ -11,12 +11,13 @@ namespace ats
     {
       private:
         std::string entry_point_{};
+        VkDevice device_ = VK_NULL_HANDLE;
 
       public:
         VkPipelineShaderStageCreateInfo stage_info_{};
         void create(VkDevice device, const std::vector<char>& shader_code, const std::string& entry_name,
                     VkShaderStageFlagBits stage);
-        void destroy(VkDevice device);
+        void destroy();
 
         static std::vector<char> read_file(const std::string& file_name);
     };

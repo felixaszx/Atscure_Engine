@@ -17,11 +17,12 @@ namespace ats
         stage_info_.stage = stage;
         stage_info_.module = *this;
         stage_info_.pName = entry_point_.data();
+        device_ = device;
     }
 
-    void ShaderModule::destroy(VkDevice device)
+    void ShaderModule::destroy()
     {
-        vkDestroyShaderModule(device, *this, nullptr);
+        vkDestroyShaderModule(device_, *this, nullptr);
         stage_info_ = {};
     }
 
