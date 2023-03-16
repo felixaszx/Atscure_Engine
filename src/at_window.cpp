@@ -30,6 +30,7 @@ namespace ats
         {
             exts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         }
+        exts.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 
         VkInstanceCreateInfo instance_create_info{};
         instance_create_info.pApplicationInfo = &app_info;
@@ -81,9 +82,8 @@ namespace ats
     }
 
     VkBool32 VKAPI_CALL Instance::debug_cb(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
-                                                 VkDebugUtilsMessageTypeFlagsEXT message_type,
-                                                 const VkDebugUtilsMessengerCallbackDataEXT* callback_data,
-                                                 void* user_data)
+                                           VkDebugUtilsMessageTypeFlagsEXT message_type,
+                                           const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data)
     {
         auto type = [message_severity]()
         {

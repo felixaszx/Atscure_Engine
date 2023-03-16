@@ -94,13 +94,16 @@ namespace ats
         device_features.samplerAnisotropy = VK_TRUE;
         device_features.fillModeNonSolid = VK_TRUE;
 
+        std::vector<const char*> final_device_exts(REQUIRED_DEVICE_EXTS.begin(), REQUIRED_DEVICE_EXTS.end());
+        final_device_exts.push_back(VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME);
+
         VkDeviceCreateInfo device_create_info{};
         device_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         device_create_info.pEnabledFeatures = &device_features;
         device_create_info.queueCreateInfoCount = casts(uint32_t, queue_create_infos.size());
         device_create_info.pQueueCreateInfos = queue_create_infos.data();
-        device_create_info.enabledExtensionCount = casts(uint32_t, REQUIRED_DEVICE_EXTS.size());
-        device_create_info.ppEnabledExtensionNames = REQUIRED_DEVICE_EXTS.data();
+        device_create_info.enabledExtensionCount = casts(uint32_t, final_device_exts.size());
+        device_create_info.ppEnabledExtensionNames = final_device_exts.data();
 
         if (enabled_layers.size() > 0)
         {
