@@ -31,7 +31,9 @@ namespace ats
             create_info.samples = samples[i];
             VmaAllocationCreateInfo alloc_info{};
             alloc_info.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
-            vmaCreateImage(device, &create_info, &alloc_info, &attachments[i], &attachments[i], nullptr);
+            VmaAllocationInfo finish_info{};
+            vmaCreateImage(device, &create_info, &alloc_info, &attachments[i], &attachments[i], &finish_info);
+            attachments[i] = finish_info.deviceMemory;
 
             VkImageViewCreateInfo view_info{};
             view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
