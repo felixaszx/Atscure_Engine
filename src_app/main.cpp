@@ -9,6 +9,8 @@
 #include "at_swapchain.hpp"
 #include "at_shader.hpp"
 #include "at_image.hpp"
+#include "at_pipeline.hpp"
+#include "at_mesh.hpp"
 
 int main(int argc, char** argv)
 {
@@ -133,11 +135,27 @@ int main(int argc, char** argv)
     VkRenderPass render_pass;
     vkCreateRenderPass(device, &render_pass_info, nullptr, &render_pass);
 
+    ats::GraphicPipeline pipeline(2);
+    pipeline.set_vertex_states(ats::Mesh::get_bindings(), ats::Mesh::get_attributes());
+    pipeline.set_view_port_state(1, 1);
+    pipeline.set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_BACK_BIT);
+    VkPipelineColorBlendAttachmentState blend_attachment{};
+    blend_attachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | //
+                                      VK_COLOR_COMPONENT_G_BIT | //
+                                      VK_COLOR_COMPONENT_B_BIT | //
+                                      VK_COLOR_COMPONENT_A_BIT;
+    pipeline.add_color_blending(blend_attachment);
+    pipeline.add_color_blending(blend_attachment);
+    pipeline.add_color_blending(blend_attachment);
+    pipeline.set_depth_stencil(true, true);
+    pipeline.create(device, nullptr, render_pass, 0);
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
     }
 
+    pipeline.destroy(device);
     vkDestroyRenderPass(device, render_pass, nullptr);
     ats::destroy_image_attachments(device, attachments);
     swapchain.destroy();

@@ -16,6 +16,10 @@ namespace ats
 
     class Mesh
     {
+      private:
+      public:
+        static std::vector<VkVertexInputBindingDescription> get_bindings();
+        static std::vector<VkVertexInputAttributeDescription> get_attributes();
     };
 }; // namespace ats
 
