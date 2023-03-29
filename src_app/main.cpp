@@ -11,6 +11,8 @@
 #include "at_image.hpp"
 #include "at_pipeline.hpp"
 #include "at_mesh.hpp"
+#include "at_cmd.hpp"
+#include "at_buffer.hpp"
 
 int main(int argc, char** argv)
 {
@@ -211,11 +213,55 @@ int main(int argc, char** argv)
     pipelines[2].set_depth_stencil(false, false);
     pipelines[2].create(device, pipeline_layouts[2], render_pass, 2);
 
+    ats::CommandPool cmd_pool;
+    cmd_pool.create(device, device.queue_family_indices_.graphics, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+    VkCommandBuffer cmd = cmd_pool.allocate_buffer(device, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+
+    ats::GpuSemaphore image_semaphore;
+    ats::GpuSemaphore submit_semaphore;
+    ats::GpuFence frame_fence;
+    image_semaphore.create(device);
+    submit_semaphore.create(device);
+    frame_fence.create(device, true);
+
+    std::vector<VkFramebuffer> framebuffers(swapchain.image_views_.size());
+    for (int i = 0; i < swapchain.image_views_.size(); i++)
+    {
+        VkImageView fattachments[] = {attachments[0],           attachments[1], attachments[2],
+                                      attachments[3],           attachments[4], attachments[5], //
+                                      swapchain.image_views_[i]};
+        VkFramebufferCreateInfo fcreate_info{};
+        fcreate_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        fcreate_info.renderPass = render_pass;
+        fcreate_info.attachmentCount = 7;
+        fcreate_info.pAttachments = fattachments;
+        fcreate_info.width = swapchain.extend_.width;
+        fcreate_info.height = swapchain.extend_.height;
+        fcreate_info.layers = 1;
+        vkCreateFramebuffer(device, &fcreate_info, nullptr, &framebuffers[i]);
+    }
+
+    VkViewport viewport{};
+    viewport.width = casts(uint32_t, swapchain.extend_.width);
+    viewport.height = casts(uint32_t, swapchain.extend_.height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    VkRect2D scissor{};
+    scissor.extent = swapchain.extend_;
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
     }
 
+    for (int i = 0; i < framebuffers.size(); i++)
+    {
+        vkDestroyFramebuffer(device, framebuffers[i], nullptr);
+    }
+    image_semaphore.destroy(device);
+    submit_semaphore.destroy(device);
+    frame_fence.destroy(device);
+    cmd_pool.destroy(device);
     for (int i = 0; i < 3; i++)
     {
         pipelines[i].destroy(device);
