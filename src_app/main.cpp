@@ -56,13 +56,13 @@ int main(int argc, char** argv)
         attachment_descriptions[i].samples = VK_SAMPLE_COUNT_1_BIT;
         attachment_descriptions[i].format = VK_FORMAT_R32G32B32A32_SFLOAT;
         attachment_descriptions[i].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        attachment_descriptions[i].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        attachment_descriptions[i].finalLayout = VK_IMAGE_LAYOUT_GENERAL;
         attachment_descriptions[i].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         attachment_descriptions[i].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         attachment_descriptions[i].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         attachment_descriptions[i].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     }
-    attachment_descriptions[5].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    attachment_descriptions[5].finalLayout = VK_IMAGE_LAYOUT_GENERAL;
     attachment_descriptions[5].format = VK_FORMAT_D32_SFLOAT_S8_UINT;
     attachment_descriptions[6].format = swapchain.format_;
     attachment_descriptions[6].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
