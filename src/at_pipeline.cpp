@@ -20,12 +20,13 @@ namespace ats
         bindings_.push_back({binding, type, count, stage, nullptr});
     }
 
-    void DescriptorLayout::create(VkDevice device)
+    void DescriptorLayout::create(VkDevice device, VkDescriptorSetLayoutCreateFlags flags)
     {
         VkDescriptorSetLayoutCreateInfo create_info{};
         create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         create_info.bindingCount = bindings_.size();
         create_info.pBindings = bindings_.data();
+        create_info.flags = flags;
 
         vkCreateDescriptorSetLayout(device, &create_info, nullptr, this->ptr());
     }

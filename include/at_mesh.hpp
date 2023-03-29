@@ -38,7 +38,7 @@ namespace ats
         uint32_t instance_count_ = 1;
         std::vector<glm::mat4> models_{};
 
-        Mesh(const std::string& file_path, uint32_t max_instance);
+        Mesh(const std::string& file_path, uint32_t max_instance = 1);
 
         void create(Device& device);
         void draw(VkCommandBuffer cmd);

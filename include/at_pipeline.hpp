@@ -24,7 +24,7 @@ namespace ats
       public:
         void add_binding(uint32_t binding, uint32_t count, VkDescriptorType type, VkShaderStageFlags stage);
 
-        void create(VkDevice device);
+        void create(VkDevice device, VkDescriptorSetLayoutCreateFlags flags);
         void destroy(VkDevice device);
     };
 

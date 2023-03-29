@@ -139,6 +139,8 @@ namespace ats
             return Result::FAILURE;
         }
 
+        push_descriptor_set = (PFN_vkCmdPushDescriptorSetKHR) //
+            vkGetDeviceProcAddr(*this, "vkCmdPushDescriptorSetKHR");
         return Result::SUCCESS;
     }
 

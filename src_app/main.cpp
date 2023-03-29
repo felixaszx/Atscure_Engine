@@ -13,6 +13,7 @@
 #include "at_mesh.hpp"
 #include "at_cmd.hpp"
 #include "at_buffer.hpp"
+#include "at_camera.hpp"
 
 int main(int argc, char** argv)
 {
@@ -150,7 +151,7 @@ int main(int argc, char** argv)
     layouts[2].add_binding(0, 1, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, VK_SHADER_STAGE_FRAGMENT_BIT);
     for (int i = 0; i < 3; i++)
     {
-        layouts[i].create(device);
+        layouts[i].create(device, VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
     }
     ats::PipelineLayout pipeline_layouts[3]{};
     for (int i = 0; i < 3; i++)
@@ -252,9 +253,13 @@ int main(int argc, char** argv)
     ats::Mesh aa("res/model/cube/cube.obj", 1);
     aa.create(device);
 
+    ats::Camera camera;
+    camera.create(device);
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
+        camera.update(swapchain.extend_);
 
         auto result = vkWaitForFences(device, 1, &frame_fence, VK_TRUE, UINT64_MAX);
         if (result != VK_SUCCESS)
@@ -286,8 +291,27 @@ int main(int argc, char** argv)
         render_pass_info.pClearValues = clear_value;
 
         vkCmdBeginRenderPass(cmd, &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+        VkWriteDescriptorSet write{};
+        write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        write.dstBinding = 0;
+        write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        write.descriptorCount = 1;
+        write.pBufferInfo = &camera.buffer_info_;
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
+        ats::push_descriptor_set(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layouts[0], 0, 1, &write);
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
+        aa.draw(cmd);
+
         vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
+
         vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[2]);
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
 
         vkCmdEndRenderPass(cmd);
         vkEndCommandBuffer(cmd);
@@ -318,6 +342,7 @@ int main(int argc, char** argv)
     }
 
     aa.destroy(device);
+    camera.destroy(device);
 
     for (int i = 0; i < framebuffers.size(); i++)
     {

@@ -26,6 +26,9 @@ namespace ats
         Result create(VkInstance instance, const std::vector<const char*>& enabled_layers);
         void destroy();
     };
+
+    inline PFN_vkCmdPushDescriptorSetKHR push_descriptor_set = nullptr;
+
 }; // namespace ats
 
 #endif // AT_DEVICE_HPP
