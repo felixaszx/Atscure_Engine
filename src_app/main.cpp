@@ -257,6 +257,8 @@ int main(int argc, char** argv)
         glfwPollEvents();
     }
 
+    aa.destroy(device);
+
     for (int i = 0; i < framebuffers.size(); i++)
     {
         vkDestroyFramebuffer(device, framebuffers[i], nullptr);

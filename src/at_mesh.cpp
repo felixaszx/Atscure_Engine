@@ -77,7 +77,7 @@ namespace ats
     {
         vertex_buffer_.create(device, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                               VK_SHARING_MODE_EXCLUSIVE, vertices_.size() * sizeof(vertices_[0]));
-        index_buffer_.create(device, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        index_buffer_.create(device, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                              VK_SHARING_MODE_EXCLUSIVE, indices_.size() * sizeof(indices_[0]));
         model_mapping_ = model_buffer_.create_mapped(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                                                      VK_SHARING_MODE_EXCLUSIVE, models_.size() * sizeof(models_[0]));
