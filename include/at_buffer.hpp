@@ -5,7 +5,7 @@
 
 namespace ats
 {
-    using BufferBase = MultiType<VkBuffer, VkDeviceMemory, VmaAllocation>;
+    using Buffer = MultiType<VkBuffer, VkDeviceMemory, VmaAllocation>;
     
 };
 

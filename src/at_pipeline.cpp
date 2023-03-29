@@ -2,6 +2,18 @@
 
 namespace ats
 {
+    VkColorComponentFlagBits ColorWrite::R = VK_COLOR_COMPONENT_R_BIT;
+    VkColorComponentFlagBits ColorWrite::G = VK_COLOR_COMPONENT_G_BIT;
+    VkColorComponentFlagBits ColorWrite::B = VK_COLOR_COMPONENT_B_BIT;
+    VkColorComponentFlagBits ColorWrite::A = VK_COLOR_COMPONENT_A_BIT;
+    VkColorComponentFlagBits ColorWrite::RGB = (VkColorComponentFlagBits)(ColorWrite::R | //
+                                                                          ColorWrite::G | //
+                                                                          ColorWrite::B);
+    VkColorComponentFlagBits ColorWrite::RGBA = (VkColorComponentFlagBits)(ColorWrite::R | //
+                                                                           ColorWrite::G | //
+                                                                           ColorWrite::B | //
+                                                                           ColorWrite::A);
+
     void DescriptorLayout::add_binding(uint32_t binding, uint32_t count, //
                                        VkDescriptorType type, VkShaderStageFlags stage)
     {

@@ -6,6 +6,16 @@
 
 namespace ats
 {
+    struct ColorWrite
+    {
+        static VkColorComponentFlagBits R;
+        static VkColorComponentFlagBits G;
+        static VkColorComponentFlagBits B;
+        static VkColorComponentFlagBits A;
+        static VkColorComponentFlagBits RGB;
+        static VkColorComponentFlagBits RGBA;
+    };
+
     class DescriptorLayout : iMultiType(VkDescriptorSetLayout)
     {
       private:

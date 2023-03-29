@@ -180,14 +180,11 @@ int main(int argc, char** argv)
         pipelines[i].stages_.set_frag_shader(frags[i].stage_info_);
     }
 
+    VkPipelineColorBlendAttachmentState color_blend_attachment0{};
+    color_blend_attachment0.colorWriteMask = ats::ColorWrite::RGBA;
     pipelines[0].set_vertex_states(binding_description, attribute_description);
     pipelines[0].set_view_port_state(1, 1);
     pipelines[0].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_BACK_BIT);
-    VkPipelineColorBlendAttachmentState color_blend_attachment0{};
-    color_blend_attachment0.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | //
-                                             VK_COLOR_COMPONENT_G_BIT | //
-                                             VK_COLOR_COMPONENT_B_BIT | //
-                                             VK_COLOR_COMPONENT_A_BIT;
     pipelines[0].add_color_blending(color_blend_attachment0);
     pipelines[0].add_color_blending(color_blend_attachment0);
     pipelines[0].add_color_blending(color_blend_attachment0);
@@ -195,19 +192,24 @@ int main(int argc, char** argv)
     pipelines[0].set_depth_stencil(true, false);
     pipelines[0].create(device, pipeline_layouts[0], render_pass, 0);
 
-    pipelines[1].set_view_port_state(1, 1);
-    pipelines[1].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_NONE);
     VkPipelineColorBlendAttachmentState color_blend_attachment1{};
     color_blend_attachment1.blendEnable = VK_TRUE;
     color_blend_attachment1.colorBlendOp = VK_BLEND_OP_ADD;
     color_blend_attachment1.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-    color_blend_attachment1.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | //
-                                             VK_COLOR_COMPONENT_G_BIT | //
-                                             VK_COLOR_COMPONENT_B_BIT | //
-                                             VK_COLOR_COMPONENT_A_BIT;
+    color_blend_attachment1.colorWriteMask = ats::ColorWrite::RGBA;
+    pipelines[1].set_view_port_state(1, 1);
+    pipelines[1].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_NONE);
     pipelines[1].add_color_blending(color_blend_attachment1);
     pipelines[1].set_depth_stencil(false, false);
     pipelines[1].create(device, pipeline_layouts[1], render_pass, 1);
+
+    VkPipelineColorBlendAttachmentState color_blend_attachment2{};
+    color_blend_attachment2.colorWriteMask = ats::ColorWrite::RGBA;
+    pipelines[2].set_view_port_state(1, 1);
+    pipelines[2].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_NONE);
+    pipelines[2].add_color_blending(color_blend_attachment2);
+    pipelines[2].set_depth_stencil(false, false);
+    pipelines[2].create(device, pipeline_layouts[2], render_pass, 2);
 
     while (!glfwWindowShouldClose(window))
     {
