@@ -255,6 +255,66 @@ int main(int argc, char** argv)
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
+
+        auto result = vkWaitForFences(device, 1, &frame_fence, VK_TRUE, UINT64_MAX);
+        if (result != VK_SUCCESS)
+        {
+            throw std::runtime_error("Fence error\n");
+        }
+        uint32_t image_index = 0;
+        vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, image_semaphore, VK_NULL_HANDLE, &image_index);
+        vkResetFences(device, 1, &frame_fence);
+
+        vkResetCommandBuffer(cmd, 0);
+        VkCommandBufferBeginInfo begin_info{};
+        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        vkBeginCommandBuffer(cmd, &begin_info);
+        VkClearValue clear_value[7];
+        clear_value[0] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clear_value[1] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clear_value[2] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clear_value[3] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clear_value[4] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clear_value[5] = {{1.0f, 0.0f}};
+        clear_value[6] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        VkRenderPassBeginInfo render_pass_info{};
+        render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        render_pass_info.renderPass = render_pass;
+        render_pass_info.framebuffer = framebuffers[image_index];
+        render_pass_info.renderArea.extent = swapchain.extend_;
+        render_pass_info.clearValueCount = 7;
+        render_pass_info.pClearValues = clear_value;
+
+        vkCmdBeginRenderPass(cmd, &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_INLINE);
+
+        vkCmdEndRenderPass(cmd);
+        vkEndCommandBuffer(cmd);
+
+        VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+        VkSubmitInfo submit_info{};
+        submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit_info.waitSemaphoreCount = 1;
+        submit_info.pWaitSemaphores = &image_semaphore;
+        submit_info.pWaitDstStageMask = wait_stages;
+        submit_info.commandBufferCount = 1;
+        submit_info.pCommandBuffers = &cmd;
+        submit_info.signalSemaphoreCount = 1;
+        submit_info.pSignalSemaphores = &submit_semaphore;
+        vkQueueSubmit(device.graphics_queue_, 1, &submit_info, frame_fence);
+
+        VkPresentInfoKHR present_info{};
+        present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+        present_info.waitSemaphoreCount = 1;
+        present_info.pWaitSemaphores = &submit_semaphore;
+        present_info.swapchainCount = 1;
+        present_info.pSwapchains = &swapchain;
+        present_info.pImageIndices = &image_index;
+
+        vkQueuePresentKHR(device.present_queue_, &present_info);
+
+        vkDeviceWaitIdle(device);
     }
 
     aa.destroy(device);
