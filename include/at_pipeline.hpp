@@ -56,8 +56,8 @@ namespace ats
 
         GraphicPipeline(uint32_t stages = 2);
 
-        void set_vertex_states(std::vector<VkVertexInputBindingDescription> binding,
-                               std::vector<VkVertexInputAttributeDescription> attribute);
+        void set_vertex_states(const std::vector<VkVertexInputBindingDescription>& binding,
+                               const std::vector<VkVertexInputAttributeDescription>& attribute);
         void add_dynamic_state(VkDynamicState dynamic_state);
         void add_dynamic_states(std::vector<VkDynamicState> dynamic_states);
         void set_view_port_state(uint32_t view_count, uint32_t scissor_count);

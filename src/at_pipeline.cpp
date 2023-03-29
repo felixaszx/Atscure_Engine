@@ -54,10 +54,9 @@ namespace ats
     {
     }
 
-    void GraphicPipeline::set_vertex_states(std::vector<VkVertexInputBindingDescription> binding,
-                                            std::vector<VkVertexInputAttributeDescription> attribute)
+    void GraphicPipeline::set_vertex_states(const std::vector<VkVertexInputBindingDescription>& binding,
+                                            const std::vector<VkVertexInputAttributeDescription>& attribute)
     {
-        input_assembly_.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
         vertex_input_.vertexBindingDescriptionCount = binding.size();
         vertex_input_.pVertexBindingDescriptions = binding.data();
@@ -105,6 +104,9 @@ namespace ats
 
     void GraphicPipeline::create(VkDevice device, VkPipelineLayout layout, VkRenderPass render_pass, uint32_t subpass)
     {
+        input_assembly_.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        multisample_.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
         VkPipelineColorBlendStateCreateInfo color_blending{};
         color_blending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         color_blending.attachmentCount = color_blends_.size();
@@ -114,8 +116,6 @@ namespace ats
         dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
         dynamic_state.dynamicStateCount = casts(uint32_t, dynamic_states_.size());
         dynamic_state.pDynamicStates = dynamic_states_.data();
-
-        multisample_.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
         VkGraphicsPipelineCreateInfo create_info{};
         create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
