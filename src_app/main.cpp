@@ -249,6 +249,9 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
+    ats::Mesh aa("res/model/cube/cube.obj", 1);
+    aa.create(device);
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();

@@ -2,6 +2,12 @@
 
 namespace ats
 {
+    Buffer::Buffer(VmaMemoryUsage memory_usage, VmaAllocationCreateFlagBits allocation_flags)
+        : memory_(memory_usage),
+          allocation_flags_(allocation_flags)
+    {
+    }
+
     void Buffer::create(Device& device, VkBufferUsageFlags usage, VkSharingMode sharing, VkDeviceSize size)
     {
         VkBufferCreateInfo buffer_info{};
@@ -16,11 +22,18 @@ namespace ats
         VmaAllocationInfo alloc_result{};
         vmaCreateBuffer(device, &buffer_info, &alloc_info, this->ptr(), this->ptr(), &alloc_result);
         this->set(alloc_result.deviceMemory);
+        size_ = size;
     }
 
     void* Buffer::create_mapped(Device& device, VkBufferUsageFlags usage, VkSharingMode sharing, VkDeviceSize size)
     {
         create(device, usage, sharing, size);
+
+        return map_memory(device);
+    }
+
+    void* Buffer::map_memory(Device& device)
+    {
         void* mapping = nullptr;
         vmaMapMemory(device, *this, &mapping);
         mapped = true;
@@ -28,17 +41,22 @@ namespace ats
         return mapping;
     }
 
-    void Buffer::destroy(Device& device)
+    void Buffer::unmap_memory(Device& device)
     {
         if (mapped)
         {
             vmaUnmapMemory(device, *this);
+            mapped = false;
         }
+    }
 
+    void Buffer::destroy(Device& device)
+    {
+        unmap_memory(device);
         vmaDestroyBuffer(device, *this, *this);
     }
 
-    void buffer_cpy(Device& device, VkBuffer src, VkBuffer dst, VkBufferCopy region)
+    void copy_buffer(Device& device, VkBuffer src, VkBuffer dst, VkBufferCopy region)
     {
         SingleTimeCmd cmd;
         cmd.begin(device);
@@ -46,7 +64,7 @@ namespace ats
         cmd.end(device);
     }
 
-    void buffer_cpy(Device& device, VkCommandPool pool, VkBuffer src, VkBuffer dst, VkBufferCopy region)
+    void copy_buffer(Device& device, VkCommandPool pool, VkBuffer src, VkBuffer dst, VkBufferCopy region)
     {
         SingleTimeCmd cmd;
         cmd.begin(device, pool);
