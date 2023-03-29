@@ -107,19 +107,27 @@ namespace ats
         memcpy(staging_mapping, indices_.data(), index_buffer_.size_);
         copy_buffer(device, stage_buffer, index_buffer_, copy_region);
 
-        copy_region.size = model_buffer_.size_;
-        memcpy(staging_mapping, models_.data(), model_buffer_.size_);
-        copy_buffer(device, stage_buffer, model_buffer_, copy_region);
-
         stage_buffer.destroy(device);
     }
 
     void Mesh::draw(VkCommandBuffer cmd)
     {
+        for (size_t i = 0; i < vert_buffer_offsets_.size(); i++)
+        {
+            VkBuffer vertex_buffers[2] = {vertex_buffer_, model_buffer_};
+            VkDeviceSize vert_offsets[2] = {vert_buffer_offsets_[i] * sizeof(vertices_[0]), 0};
+            vkCmdBindVertexBuffers(cmd, 0, 2, vertex_buffers, vert_offsets);
+            vkCmdBindIndexBuffer(cmd, index_buffer_, indices_buffer_offsets_[i] * sizeof(indices_[0]),
+                                 VK_INDEX_TYPE_UINT32);
+
+            vkCmdDrawIndexed(cmd, mesh_indices_count_[i], update_size_, 0, 0, 0);
+        }
     }
 
     void Mesh::update()
     {
+        update_size_ = std::clamp(instance_count_, 0u, MAX_INSTANCE);
+        memcpy(model_mapping_, models_.data(), update_size_ * sizeof(models_[0]));
     }
 
     void Mesh::destroy(Device& device)
