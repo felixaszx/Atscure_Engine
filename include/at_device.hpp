@@ -26,21 +26,8 @@ namespace ats
         Device(VkInstance instance, VkSurfaceKHR surface);
         Result create(VkInstance instance, const std::vector<const char*>& enabled_layers);
         void destroy();
-    };
 
-    class ExtFunc
-    {
-        friend Device;
-
-      private:
-        static PFN_vkCmdPushDescriptorSetKHR push_descriptor_set;
-
-      public:
-        static VKAPI_ATTR void VKAPI_CALL CmdPushDescriptorSet(VkCommandBuffer commandBuffer,         //
-                                                               VkPipelineBindPoint pipelineBindPoint, //
-                                                               VkPipelineLayout layout, uint32_t set, //
-                                                               uint32_t descriptorWriteCount,         //
-                                                               const VkWriteDescriptorSet* pDescriptorWrites);
+        static PFN_vkCmdPushDescriptorSetKHR CmdPushDescriptorSet;
     };
 
 }; // namespace ats

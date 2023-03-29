@@ -263,11 +263,12 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Mesh aa("res/model/cube/cube.obj", 1);
+    ats::Mesh aa("res/model/sponza/sponza.obj", 1);
     aa.create(device);
 
     ats::Camera camera;
     camera.create(device);
+    camera.position_ = {0, 20, 0};
 
     LightPushConstants light_data{};
     light_data.color = glm::vec4(1, 1, 1, 1);
@@ -321,7 +322,7 @@ int main(int argc, char** argv)
         write.descriptorCount = 1;
         write.pBufferInfo = &camera.buffer_info_;
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
-        ats::ExtFunc::CmdPushDescriptorSet(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layouts[0], 0, 1, &write);
+        ats::Device::CmdPushDescriptorSet(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layouts[0], 0, 1, &write);
         vkCmdSetViewport(cmd, 0, 1, &viewport);
         vkCmdSetScissor(cmd, 0, 1, &scissor);
         aa.update();
