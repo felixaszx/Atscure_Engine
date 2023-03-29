@@ -3,6 +3,7 @@
 
 #include <set>
 #include <algorithm>
+#include <functional>
 
 #include "at_window.hpp"
 
@@ -27,7 +28,20 @@ namespace ats
         void destroy();
     };
 
-    inline PFN_vkCmdPushDescriptorSetKHR push_descriptor_set = nullptr;
+    class ExtFunc
+    {
+        friend Device;
+
+      private:
+        static PFN_vkCmdPushDescriptorSetKHR push_descriptor_set;
+
+      public:
+        static VKAPI_ATTR void VKAPI_CALL CmdPushDescriptorSet(VkCommandBuffer commandBuffer,         //
+                                                               VkPipelineBindPoint pipelineBindPoint, //
+                                                               VkPipelineLayout layout, uint32_t set, //
+                                                               uint32_t descriptorWriteCount,         //
+                                                               const VkWriteDescriptorSet* pDescriptorWrites);
+    };
 
 }; // namespace ats
 

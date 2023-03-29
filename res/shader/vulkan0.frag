@@ -16,9 +16,8 @@ layout(location = 0) in struct
 
 void main()
 {
-    albedo = vec4(frag_data.color, 1.0);
+    albedo = vec4(1,1,1, 1.0);
     specular = vec4(frag_data.specular, 1.0);
     position = vec4(frag_data.position, 1.0);
     normal = vec4(frag_data.normal, 1.0);
-    
 }

@@ -15,6 +15,19 @@
 #include "at_buffer.hpp"
 #include "at_camera.hpp"
 
+struct LightPushConstants
+{
+    glm::vec4 position;
+    glm::vec4 direction;
+    glm::vec4 color;
+    glm::vec4 camera_pos;
+    float strength;
+
+    float constant;
+    float linear;
+    float quadratic;
+};
+
 int main(int argc, char** argv)
 {
     ats::Instance instance{};
@@ -159,7 +172,7 @@ int main(int argc, char** argv)
         pipeline_layouts[i].add_layout(layouts[i]);
         if (i == 1)
         {
-            pipeline_layouts[i].add_constant(0, 80, VK_SHADER_STAGE_FRAGMENT_BIT);
+            pipeline_layouts[i].add_constant(0, sizeof(LightPushConstants), VK_SHADER_STAGE_FRAGMENT_BIT);
         }
         pipeline_layouts[i].create(device);
     }
@@ -256,10 +269,20 @@ int main(int argc, char** argv)
     ats::Camera camera;
     camera.create(device);
 
+    LightPushConstants light_data{};
+    light_data.color = glm::vec4(1, 1, 1, 1);
+    light_data.position = glm::vec4(0, 0, 0, 1);
+    light_data.direction = glm::vec4(-1, -1, 0, 1);
+    light_data.strength = 1.0f;
+    light_data.constant = 1;
+    light_data.linear = 0.09;
+    light_data.quadratic = 0.032;
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
         camera.update(swapchain.extend_);
+        light_data.camera_pos = glm::vec4(camera.position_, 1.0f);
 
         auto result = vkWaitForFences(device, 1, &frame_fence, VK_TRUE, UINT64_MAX);
         if (result != VK_SUCCESS)
@@ -298,13 +321,15 @@ int main(int argc, char** argv)
         write.descriptorCount = 1;
         write.pBufferInfo = &camera.buffer_info_;
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
-        ats::push_descriptor_set(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layouts[0], 0, 1, &write);
+        ats::ExtFunc::CmdPushDescriptorSet(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layouts[0], 0, 1, &write);
         vkCmdSetViewport(cmd, 0, 1, &viewport);
         vkCmdSetScissor(cmd, 0, 1, &scissor);
+        aa.update();
         aa.draw(cmd);
 
         vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_INLINE);
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
+        vkCmdPushConstants(cmd, pipeline_layouts[1], VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(light_data), &light_data);
         vkCmdSetViewport(cmd, 0, 1, &viewport);
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 

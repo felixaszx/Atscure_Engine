@@ -108,6 +108,7 @@ namespace ats
         copy_buffer(device, stage_buffer, index_buffer_, copy_region);
 
         stage_buffer.destroy(device);
+        update();
     }
 
     void Mesh::draw(VkCommandBuffer cmd)

@@ -139,7 +139,7 @@ namespace ats
             return Result::FAILURE;
         }
 
-        push_descriptor_set = (PFN_vkCmdPushDescriptorSetKHR) //
+        ExtFunc::push_descriptor_set = (PFN_vkCmdPushDescriptorSetKHR) //
             vkGetDeviceProcAddr(*this, "vkCmdPushDescriptorSetKHR");
         return Result::SUCCESS;
     }
@@ -148,6 +148,17 @@ namespace ats
     {
         vmaDestroyAllocator(*this);
         vkDestroyDevice(*this, nullptr);
+    }
+
+    PFN_vkCmdPushDescriptorSetKHR ExtFunc::push_descriptor_set = nullptr;
+    VKAPI_ATTR void VKAPI_CALL ExtFunc::CmdPushDescriptorSet(VkCommandBuffer commandBuffer,         //
+                                                             VkPipelineBindPoint pipelineBindPoint, //
+                                                             VkPipelineLayout layout, uint32_t set, //
+                                                             uint32_t descriptorWriteCount,         //
+                                                             const VkWriteDescriptorSet* pDescriptorWrites)
+    {
+        ExtFunc::push_descriptor_set(commandBuffer, pipelineBindPoint, layout, //
+                                     set, descriptorWriteCount, pDescriptorWrites);
     }
 
 }; // namespace ats
