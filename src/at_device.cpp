@@ -139,7 +139,7 @@ namespace ats
             return Result::FAILURE;
         }
 
-        Device::CmdPushDescriptorSet = (PFN_vkCmdPushDescriptorSetKHR) //
+        Device::CmdPushDescriptorSetKHR = (PFN_vkCmdPushDescriptorSetKHR) //
             vkGetDeviceProcAddr(*this, "vkCmdPushDescriptorSetKHR");
         return Result::SUCCESS;
     }
@@ -150,6 +150,6 @@ namespace ats
         vkDestroyDevice(*this, nullptr);
     }
 
-    PFN_vkCmdPushDescriptorSetKHR Device::CmdPushDescriptorSet = nullptr;
+    PFN_vkCmdPushDescriptorSetKHR Device::CmdPushDescriptorSetKHR = nullptr;
 
 }; // namespace ats

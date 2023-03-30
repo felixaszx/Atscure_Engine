@@ -27,7 +27,7 @@ namespace ats
         Result create(VkInstance instance, const std::vector<const char*>& enabled_layers);
         void destroy();
 
-        static PFN_vkCmdPushDescriptorSetKHR CmdPushDescriptorSet;
+        static PFN_vkCmdPushDescriptorSetKHR CmdPushDescriptorSetKHR;
     };
 
 }; // namespace ats
