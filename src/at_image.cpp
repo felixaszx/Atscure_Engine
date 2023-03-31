@@ -60,4 +60,33 @@ namespace ats
         }
     }
 
+    void create_image_texture(Device device, const std::string& file_name, VkImageUsageFlagBits usage)
+    {
+    }
+
+    void create_image_texture(VkDevice device, VkCommandPool cmd_pool, //
+                              const std::string& file_name, VkImageUsageFlagBits usage)
+    {
+    }
+
+    Texture::Texture(VkExtent3D format, stbi_uc* pixels)
+        : pixels_(pixels),
+          format_(format),
+          size_(format.width * format.height * format.depth)
+    {
+    }
+
+    Texture::operator stbi_uc*()
+    {
+        return pixels_;
+    }
+
+    void Texture::create(Device device)
+    {
+    }
+
+    void Texture::destroy(Device device)
+    {
+    }
+
 }; // namespace ats

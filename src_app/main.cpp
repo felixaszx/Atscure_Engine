@@ -364,7 +364,7 @@ int main(int argc, char** argv)
         render_pass_info.renderArea.extent = swapchain.extend_;
         render_pass_info.clearValueCount = 7;
         render_pass_info.pClearValues = clear_value;
-
+ 
         vkCmdBeginRenderPass(cmd, &render_pass_info, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
         recorder[0].wait_than_excute(cmd);
 
