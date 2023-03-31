@@ -85,6 +85,10 @@ namespace ats
                                            VkDebugUtilsMessageTypeFlagsEXT message_type,
                                            const VkDebugUtilsMessengerCallbackDataEXT* callback_data, void* user_data)
     {
+        static std::string prev;
+        static uint64_t repeat = 0;
+        static uint64_t char_count = 0;
+
         auto type = [message_severity]()
         {
             switch (message_severity)
@@ -111,8 +115,8 @@ namespace ats
                 }
             }
         };
-        std::cerr << fmt::format("[Vulkan Validation Layer: {}] {}\n\n", type(), callback_data->pMessage);
 
+        std::cerr << fmt::format("[Vulkan Validation Layer: {}] {}\n\n", type(), callback_data->pMessage);
         return VK_FALSE;
     }
 

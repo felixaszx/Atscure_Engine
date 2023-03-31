@@ -18,7 +18,7 @@ namespace ats
 
         if (scene == nullptr)
         {
-            std::cout << "Do not load file " << file_path << std::endl;
+            Log::error("Do not load file ");
             return;
         }
 

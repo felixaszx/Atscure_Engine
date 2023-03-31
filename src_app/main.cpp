@@ -143,6 +143,7 @@ int main(int argc, char** argv)
     vkCreateRenderPass(device, &render_pass_info, nullptr, &render_pass);
 
     ats::DescriptorLayout layouts[3]{};
+    ats::PipelineLayout pipeline_layouts[3]{};
     layouts[0].add_binding(0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
     for (int i = 0; i < 4; i++)
     {
@@ -153,7 +154,6 @@ int main(int argc, char** argv)
     {
         layouts[i].create(device, VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
     }
-    ats::PipelineLayout pipeline_layouts[3]{};
     for (int i = 0; i < 3; i++)
     {
         pipeline_layouts[i].add_layout(layouts[i]);
@@ -195,6 +195,7 @@ int main(int argc, char** argv)
     color_blend_attachment1.blendEnable = VK_TRUE;
     color_blend_attachment1.colorBlendOp = VK_BLEND_OP_ADD;
     color_blend_attachment1.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    color_blend_attachment1.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
     color_blend_attachment1.colorWriteMask = ats::ColorWrite::RGBA;
     pipelines[1].set_view_port_state(1, 1);
     pipelines[1].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_NONE);
@@ -253,6 +254,72 @@ int main(int argc, char** argv)
     camera.create(device);
     camera.position_ = {0, 20, 0};
 
+    VkDescriptorImageInfo descriptor_image_infos[5]{};
+    for (int i = 0; i < 5; i++)
+    {
+        descriptor_image_infos[i].sampler = VK_NULL_HANDLE;
+        descriptor_image_infos[i].imageView = attachments[i];
+        descriptor_image_infos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    }
+    VkWriteDescriptorSet image_write{};
+    image_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    image_write.dstBinding = 0;
+    image_write.descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+    image_write.descriptorCount = 4;
+    image_write.pImageInfo = descriptor_image_infos;
+    VkWriteDescriptorSet image_write2{};
+    image_write2.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    image_write2.dstBinding = 0;
+    image_write2.descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+    image_write2.descriptorCount = 1;
+    image_write2.pImageInfo = descriptor_image_infos + 4;
+
+    ats::MultiThreadCmdRecorder recorder[3]{};
+    for (int i = 0; i < 3; i++)
+    {
+        recorder[i].create(device);
+    }
+
+    std::thread record_th0(std::ref(recorder[0]),
+                           [&](VkCommandBuffer scmd)
+                           {
+                               VkWriteDescriptorSet write{};
+                               write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                               write.dstBinding = 0;
+                               write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+                               write.descriptorCount = 1;
+                               write.pBufferInfo = &camera.buffer_info_;
+                               vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
+                               ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
+                                                                    pipeline_layouts[0], 0, 1, &write);
+                               vkCmdSetViewport(scmd, 0, 1, &viewport);
+                               vkCmdSetScissor(scmd, 0, 1, &scissor);
+                               aa.update();
+                               aa.draw(scmd);
+                           });
+
+    std::thread record_th1(std::ref(recorder[1]),
+                           [&](VkCommandBuffer scmd)
+                           {
+                               vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
+                               ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
+                                                                    pipeline_layouts[1], 0, 1, &image_write);
+                               vkCmdSetViewport(scmd, 0, 1, &viewport);
+                               vkCmdSetScissor(scmd, 0, 1, &scissor);
+                               vkCmdDraw(scmd, 6, 1, 0, 0);
+                           });
+
+    std::thread record_th2(std::ref(recorder[2]),
+                           [&](VkCommandBuffer scmd)
+                           {
+                               vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[2]);
+                               ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
+                                                                    pipeline_layouts[2], 0, 1, &image_write2);
+                               vkCmdSetViewport(scmd, 0, 1, &viewport);
+                               vkCmdSetScissor(scmd, 0, 1, &scissor);
+                               vkCmdDraw(scmd, 6, 1, 0, 0);
+                           });
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -266,6 +333,17 @@ int main(int argc, char** argv)
         uint32_t image_index = 0;
         vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, image_semaphore, VK_NULL_HANDLE, &image_index);
         vkResetFences(device, 1, &frame_fence);
+
+        VkCommandBufferInheritanceInfo iifo{};
+        iifo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+        iifo.renderPass = render_pass;
+        iifo.subpass = 0;
+        iifo.framebuffer = framebuffers[image_index];
+        for (int i = 0; i < 3; i++)
+        {
+            iifo.subpass = i;
+            recorder[i].begin(iifo);
+        }
 
         vkResetCommandBuffer(cmd, 0);
         VkCommandBufferBeginInfo begin_info{};
@@ -287,29 +365,14 @@ int main(int argc, char** argv)
         render_pass_info.clearValueCount = 7;
         render_pass_info.pClearValues = clear_value;
 
-        vkCmdBeginRenderPass(cmd, &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
-        VkWriteDescriptorSet write{};
-        write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        write.dstBinding = 0;
-        write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        write.descriptorCount = 1;
-        write.pBufferInfo = &camera.buffer_info_;
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
-        ats::Device::CmdPushDescriptorSetKHR(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layouts[0], 0, 1, &write);
-        vkCmdSetViewport(cmd, 0, 1, &viewport);
-        vkCmdSetScissor(cmd, 0, 1, &scissor);
-        aa.update();
-        aa.draw(cmd);
+        vkCmdBeginRenderPass(cmd, &render_pass_info, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+        recorder[0].wait_than_excute(cmd);
 
-        vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
-        vkCmdSetViewport(cmd, 0, 1, &viewport);
-        vkCmdSetScissor(cmd, 0, 1, &scissor);
+        vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+        recorder[1].wait_than_excute(cmd);
 
-        vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[2]);
-        vkCmdSetViewport(cmd, 0, 1, &viewport);
-        vkCmdSetScissor(cmd, 0, 1, &scissor);
+        vkCmdNextSubpass(cmd, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+        recorder[2].wait_than_excute(cmd);
 
         vkCmdEndRenderPass(cmd);
         vkEndCommandBuffer(cmd);
@@ -338,6 +401,16 @@ int main(int argc, char** argv)
 
         vkDeviceWaitIdle(device);
     }
+
+    for (int i = 0; i < 3; i++)
+    {
+        recorder[i].terminate();
+        recorder[i].destroy(device);
+    }
+
+    record_th0.join();
+    record_th1.join();
+    record_th2.join();
 
     aa.destroy(device);
     camera.destroy(device);

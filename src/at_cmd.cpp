@@ -167,14 +167,14 @@ namespace ats
 
                 if (vkBeginCommandBuffer(cmds_[curr_cmd], &begin_info) != VK_SUCCESS)
                 {
-                    std::cout << "This secondary commandbuffer do not start" << std::endl;
+                    Log::error("This secondary commandbuffer do not start");
                 }
 
                 recording_func(cmds_[curr_cmd]);
 
                 if (vkEndCommandBuffer(cmds_[curr_cmd]) != VK_SUCCESS)
                 {
-                    std::cout << "This secondary commandbuffer do not end" << std::endl;
+                    Log::error("This secondary commandbuffer do not end");
                 }
             }
 

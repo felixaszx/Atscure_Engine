@@ -12,5 +12,7 @@ void main()
     vec3 frag_color = subpassLoad(albedo).rgb;
     vec3 frag_spec = subpassLoad(specular).rgb;
     vec3 frag_pos = subpassLoad(position).rgb;
-    vec3 normal = normalize(subpassLoad(normal).rgb);
+    vec3 frag_normal = normalize(subpassLoad(normal).rgb);
+
+    light_result = vec4(frag_normal, 1.0);
 }
