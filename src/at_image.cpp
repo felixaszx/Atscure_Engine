@@ -149,7 +149,7 @@ namespace ats
 
         SingleTimeCmd cmd;
         cmd.begin(device, pool);
-        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, //
+        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, //
                              0, 0, nullptr, 0, nullptr, 1, &barrier);
         vkCmdCopyBufferToImage(cmd, stage_buffer_, *this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 

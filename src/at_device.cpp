@@ -93,6 +93,7 @@ namespace ats
         VkPhysicalDeviceFeatures device_features{};
         device_features.samplerAnisotropy = VK_TRUE;
         device_features.fillModeNonSolid = VK_TRUE;
+        device_features.geometryShader = VK_TRUE;
 
         std::vector<const char*> final_device_exts(REQUIRED_DEVICE_EXTS.begin(), REQUIRED_DEVICE_EXTS.end());
         final_device_exts.push_back(VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME);
