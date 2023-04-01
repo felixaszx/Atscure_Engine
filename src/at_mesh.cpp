@@ -115,11 +115,11 @@ namespace ats
     {
         for (size_t i = 0; i < vert_buffer_offsets_.size(); i++)
         {
-            draw_mesh(cmd, i);
+            draw(cmd, i);
         }
     }
 
-    void Mesh::draw_mesh(VkCommandBuffer cmd, uint32_t index)
+    void Mesh::draw(VkCommandBuffer cmd, uint32_t index)
     {
         VkBuffer vertex_buffers[2] = {vertex_buffer_, model_buffer_};
         VkDeviceSize vert_offsets[2] = {vert_buffer_offsets_[index] * sizeof(vertices_[0]), 0};

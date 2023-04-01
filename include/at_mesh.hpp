@@ -42,7 +42,7 @@ namespace ats
 
         void create(Device& device);
         void draw(VkCommandBuffer cmd);
-        void draw_mesh(VkCommandBuffer cmd, uint32_t index);
+        void draw(VkCommandBuffer cmd, uint32_t mesh_index);
         void update();
         void destroy(Device& device);
 
