@@ -215,6 +215,18 @@ int main(int argc, char** argv)
     cmd_pool.create(device, device.queue_family_indices_.graphics, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
     VkCommandBuffer cmd = cmd_pool.allocate_buffer(device, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 
+    ats::Texture tt = ats::create_image_texture(device, cmd_pool, "res/textures/ayaka.png");
+    tt.load(device, cmd_pool);
+    tt.create_image_view(device);
+
+    ats::Sampler sampler;
+    sampler.set_adress_mode(VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK);
+    sampler.set_anisotropy(4);
+    sampler.set_compare(VK_FALSE);
+    sampler.set_filter(VK_FILTER_LINEAR, VK_FILTER_LINEAR);
+    sampler.set_mipmap(VK_SAMPLER_MIPMAP_MODE_LINEAR, 0, 0, 0);
+    sampler.create(device);
+
     ats::GpuSemaphore image_semaphore;
     ats::GpuSemaphore submit_semaphore;
     ats::GpuFence frame_fence;
@@ -364,7 +376,7 @@ int main(int argc, char** argv)
         render_pass_info.renderArea.extent = swapchain.extend_;
         render_pass_info.clearValueCount = 7;
         render_pass_info.pClearValues = clear_value;
- 
+
         vkCmdBeginRenderPass(cmd, &render_pass_info, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
         recorder[0].wait_than_excute(cmd);
 
@@ -401,6 +413,9 @@ int main(int argc, char** argv)
 
         vkDeviceWaitIdle(device);
     }
+
+    tt.destroy(device);
+    sampler.destroy(device);
 
     for (int i = 0; i < 3; i++)
     {

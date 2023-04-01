@@ -4,16 +4,18 @@
 #include <stb/stb_image.h>
 
 #include "at_device.hpp"
+#include "at_buffer.hpp"
 
 namespace ats
 {
     using ImageBase = MultiType<VkImage, VkDeviceMemory, VmaAllocation, VkImageView>;
     using ImageAttachment = ImageBase;
 
-    class Texture : iMultiType(ImageBase)
+    class Texture : iMultiType(VkImage, VkDeviceMemory, VmaAllocation, VkImageView)
     {
       private:
         stbi_uc* pixels_ = nullptr;
+        Buffer stage_buffer_;
 
       public:
         const VkExtent3D format_{};
@@ -23,9 +25,29 @@ namespace ats
         operator stbi_uc*();
 
         void create(Device device);
-        void create(Device device, VkCommandPool pool);
+        void load(Device device, VkCommandPool pool);
+        void create_image_view(VkDevice device);
 
         void destroy(Device device);
+    };
+
+    class Sampler : iMultiType(VkSampler)
+    {
+      private:
+        VkSamplerCreateInfo create_info_{VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
+
+      public:
+        void set_filter(VkFilter min, VkFilter mag);
+        void set_anisotropy(uint32_t max);
+        void set_compare(VkBool32 enable, VkCompareOp op = VK_COMPARE_OP_ALWAYS);
+        void set_mipmap(VkSamplerMipmapMode mode, float lod_bias, float min_lod, float max_lod);
+        void set_adress_mode(VkBorderColor border,                                    //
+                             VkSamplerAddressMode u = VK_SAMPLER_ADDRESS_MODE_REPEAT, //
+                             VkSamplerAddressMode v = VK_SAMPLER_ADDRESS_MODE_REPEAT, //
+                             VkSamplerAddressMode w = VK_SAMPLER_ADDRESS_MODE_REPEAT);
+
+        void create(VkDevice device);
+        void destroy(VkDevice device);
     };
 
     std::vector<ImageAttachment> create_image_attachments(Device device,                                     //
@@ -36,9 +58,7 @@ namespace ats
                                                           const std::vector<VkImageAspectFlags>& aspects);
     void destroy_image_attachments(Device device, std::vector<ImageAttachment> attachments);
 
-    void create_image_texture(Device device, const std::string& file_name, VkImageUsageFlagBits usage);
-    void create_image_texture(VkDevice device, VkCommandPool cmd_pool, //
-                              const std::string& file_name, VkImageUsageFlagBits usage);
+    Texture create_image_texture(Device device, VkCommandPool cmd_pool, const std::string& file_name);
 
 }; // namespace ats
 

@@ -15,7 +15,7 @@ namespace ats
 
       public:
         size_t size_ = 0;
-        
+
         Buffer(VmaMemoryUsage memory_usage, VmaAllocationCreateFlagBits allocation_flags);
         void create(Device& device, VkBufferUsageFlags usage, VkSharingMode sharing, VkDeviceSize size);
         void* create_mapped(Device& device, VkBufferUsageFlags usage, VkSharingMode sharing, VkDeviceSize size);
