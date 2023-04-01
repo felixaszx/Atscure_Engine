@@ -145,6 +145,7 @@ int main(int argc, char** argv)
     ats::DescriptorLayout layouts[3]{};
     ats::PipelineLayout pipeline_layouts[3]{};
     layouts[0].add_binding(0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+    layouts[0].add_binding(1, 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
     for (int i = 0; i < 4; i++)
     {
         layouts[1].add_binding(i, 1, VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, VK_SHADER_STAGE_FRAGMENT_BIT);
@@ -266,13 +267,17 @@ int main(int argc, char** argv)
     camera.create(device);
     camera.position_ = {0, 20, 0};
 
-    VkDescriptorImageInfo descriptor_image_infos[5]{};
+    VkDescriptorImageInfo descriptor_image_infos[6]{};
     for (int i = 0; i < 5; i++)
     {
         descriptor_image_infos[i].sampler = VK_NULL_HANDLE;
         descriptor_image_infos[i].imageView = attachments[i];
         descriptor_image_infos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
+    descriptor_image_infos[5].sampler = sampler;
+    descriptor_image_infos[5].imageView = tt;
+    descriptor_image_infos[5].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
     VkWriteDescriptorSet image_write{};
     image_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     image_write.dstBinding = 0;
@@ -285,6 +290,12 @@ int main(int argc, char** argv)
     image_write2.descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
     image_write2.descriptorCount = 1;
     image_write2.pImageInfo = descriptor_image_infos + 4;
+    VkWriteDescriptorSet image_write3{};
+    image_write3.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    image_write3.dstBinding = 1;
+    image_write3.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    image_write3.descriptorCount = 1;
+    image_write3.pImageInfo = descriptor_image_infos + 5;
 
     ats::MultiThreadCmdRecorder recorder[3]{};
     for (int i = 0; i < 3; i++)
@@ -301,9 +312,10 @@ int main(int argc, char** argv)
                                write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
                                write.descriptorCount = 1;
                                write.pBufferInfo = &camera.buffer_info_;
+                               VkWriteDescriptorSet writes[2]{write, image_write3};
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
                                ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
-                                                                    pipeline_layouts[0], 0, 1, &write);
+                                                                    pipeline_layouts[0], 0, 2, writes);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
                                aa.update();

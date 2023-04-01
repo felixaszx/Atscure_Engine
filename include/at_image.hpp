@@ -11,7 +11,7 @@ namespace ats
     using ImageBase = MultiType<VkImage, VkDeviceMemory, VmaAllocation, VkImageView>;
     using ImageAttachment = ImageBase;
 
-    class Texture : iMultiType(VkImage, VkDeviceMemory, VmaAllocation, VkImageView)
+    class Texture : public ImageBase
     {
       private:
         stbi_uc* pixels_ = nullptr;
