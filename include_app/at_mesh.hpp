@@ -23,6 +23,11 @@ namespace ats
         Buffer index_buffer_;
         Buffer model_buffer_;
 
+        void* model_mapping_ = nullptr;
+        uint32_t update_size_ = 1;
+
+      protected:
+        std::vector<glm::mat4> models_{};
         std::vector<Vertex> vertices_{};
         std::vector<uint32_t> indices_{};
 
@@ -30,13 +35,7 @@ namespace ats
         std::vector<size_t> indices_buffer_offsets_{};
         std::vector<uint32_t> mesh_indices_count_{};
 
-        void* model_mapping_ = nullptr;
-        uint32_t update_size_ = 1;
-
-      protected:
-        std::vector<glm::mat4> models_{};
-
-        Mesh(const std::string& file_path, uint32_t max_instance = 1);
+        Mesh(uint32_t max_instance = 1);
 
         void create(Device& device);
         void draw(VkCommandBuffer cmd);

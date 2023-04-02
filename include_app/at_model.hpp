@@ -8,12 +8,10 @@
 
 namespace ats
 {
-    class Model : public Mesh, public Transform
+    struct Model : public Mesh, public Transform
     {
-      private:
         std::vector<Material> materials_{};
 
-      public:
         Model(const std::string& file_path);
 
         void update();
@@ -21,6 +19,23 @@ namespace ats
 
         void create(Device device);
         void destroy(Device device);
+    };
+
+    class ModelLoader
+    {
+      private:
+        Assimp::Importer importer_;
+
+      public:
+        uint32_t mesh_count_ = 0;
+        std::vector<Vertex> vertices_{};
+        std::vector<uint32_t> indices_{};
+
+        std::vector<size_t> vert_buffer_offsets_{};
+        std::vector<size_t> indices_buffer_offsets_{};
+        std::vector<uint32_t> mesh_indices_count_{};
+
+        ModelLoader(const std::string& file_path);
     };
 
 }; // namespace ats
