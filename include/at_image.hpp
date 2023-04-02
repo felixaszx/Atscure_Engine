@@ -1,35 +1,13 @@
 #ifndef AT_IMAGE_HPP
 #define AT_IMAGE_HPP
 
-#include <stb/stb_image.h>
-
 #include "at_device.hpp"
-#include "at_buffer.hpp"
 
 namespace ats
 {
     using ImageBase = MultiType<VkImage, VkDeviceMemory, VmaAllocation, VkImageView>;
     using ImageAttachment = ImageBase;
 
-    class Texture : public ImageBase
-    {
-      private:
-        stbi_uc* pixels_ = nullptr;
-        Buffer stage_buffer_;
-
-      public:
-        const VkExtent3D format_{};
-        const VkDeviceSize size_ = 0;
-
-        Texture(VkExtent3D format, stbi_uc* pixels);
-        operator stbi_uc*();
-
-        void create(Device device);
-        void load(Device device, VkCommandPool pool);
-        void create_image_view(VkDevice device);
-
-        void destroy(Device device);
-    };
 
     class Sampler : iMultiType(VkSampler)
     {
@@ -57,8 +35,6 @@ namespace ats
                                                           const std::vector<VkImageUsageFlags>& usages,      //
                                                           const std::vector<VkImageAspectFlags>& aspects);
     void destroy_image_attachments(Device device, std::vector<ImageAttachment> attachments);
-
-    Texture create_image_texture(Device device, VkCommandPool cmd_pool, const std::string& file_name);
 
 }; // namespace ats
 

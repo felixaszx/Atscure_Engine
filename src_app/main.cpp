@@ -1,9 +1,6 @@
 #include <iostream>
 #include <string>
 
-#define VMA_IMPLEMENTATION
-#define VMA_STATIC_VULKAN_FUNCTIONS  0
-#define VMA_DYNAMIC_VULKAN_FUNCTIONS 1
 #include "at_window.hpp"
 #include "at_device.hpp"
 #include "at_swapchain.hpp"
@@ -14,6 +11,9 @@
 #include "at_cmd.hpp"
 #include "at_buffer.hpp"
 #include "at_camera.hpp"
+
+#include "at_texture.hpp"
+#include "at_mesh.hpp"
 
 int main(int argc, char** argv)
 {
