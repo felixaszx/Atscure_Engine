@@ -4,6 +4,7 @@
 #include "at_mesh.hpp"
 #include "at_texture.hpp"
 #include "at_transform.hpp"
+#include "at_material.hpp"
 
 namespace ats
 {
@@ -12,6 +13,8 @@ namespace ats
       private:
         using Mesh::update;
         using Transform::update;
+
+        std::vector<Material> materials_{};
 
       public:
         Model(Device device, const std::string& file_path);

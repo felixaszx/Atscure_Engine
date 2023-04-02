@@ -8,6 +8,7 @@ namespace ats
           Transform()
     {
         Mesh::create(device);
+        materials_.reserve(mesh_count_);
     }
 
     void Model::update()

@@ -71,7 +71,7 @@ namespace ats
             mesh_indices_count_.push_back(3 * mesh->mNumFaces);
             indices_buffer_offset += 3 * mesh->mNumFaces;
         }
-        mesh_count = vert_buffer_offsets_.size();
+        mesh_count_ = vert_buffer_offsets_.size();
     }
 
     void Mesh::create(Device& device)
