@@ -266,7 +266,7 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Model aa("res/model/cube/cube.obj");
+    ats::Model aa("res/model/sponza/sponza.obj");
     aa.create(device);
     aa.position_ = {0, 0, 5};
     aa.rotation_ = {0, 45, 45};

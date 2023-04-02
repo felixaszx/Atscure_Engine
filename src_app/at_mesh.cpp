@@ -2,7 +2,6 @@
 
 namespace ats
 {
-
     Mesh::Mesh(uint32_t max_instance)
         : MAX_INSTANCE(max_instance),
           vertex_buffer_(VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE, {}),

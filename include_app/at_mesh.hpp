@@ -38,8 +38,6 @@ namespace ats
         Mesh(uint32_t max_instance = 1);
 
         void create(Device& device);
-        void draw(VkCommandBuffer cmd);
-        void draw(VkCommandBuffer cmd, uint32_t mesh_index);
         void update();
         void destroy(Device& device);
 
@@ -47,6 +45,9 @@ namespace ats
         const uint32_t MAX_INSTANCE;
         uint32_t mesh_count_ = 0;
         uint32_t instance_count_ = 1;
+
+        void draw(VkCommandBuffer cmd);
+        void draw(VkCommandBuffer cmd, uint32_t mesh_index);
 
         static std::vector<VkVertexInputBindingDescription> get_bindings();
         static std::vector<VkVertexInputAttributeDescription> get_attributes();
