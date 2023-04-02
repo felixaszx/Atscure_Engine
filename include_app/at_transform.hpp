@@ -6,14 +6,17 @@
 
 namespace ats
 {
-    struct Transform : protected MultiType<glm::mat4>
+    class Transform : protected MultiType<glm::mat4>
     {
+      protected:
+        void update();
+
+      public:
         glm::vec3 position_{};
         glm::vec3 rotation_{}; // in degree
         glm::vec3 scale_{1.0f, 1.0f, 1.0f};
 
         Transform();
-        void update();
     };
 
 }; // namespace ats

@@ -11,7 +11,6 @@ namespace ats
     class Model : public Mesh, public Transform
     {
       private:
-        using Transform::update;
         std::vector<Material> materials_{};
 
       public:
