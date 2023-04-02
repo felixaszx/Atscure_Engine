@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 {
     ats::Instance instance{};
     ats::WindowManager window(1920, 1080);
-    window.create("test app", instance, false);
+    window.create("test app", instance, true);
 
     ats::Device device(instance, instance);
     device.create(instance, instance.VALIDATION_LAYERS);
