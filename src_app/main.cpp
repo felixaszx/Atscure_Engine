@@ -262,13 +262,14 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Model aa("res/model/sponza/sponza.obj");
+    ats::Model aa("res/model/cube/cube.obj");
     aa.create(device);
-    aa.scale_ = {0.1, 0.1, 0.1};
+    aa.position_ = {0, 0, 5};
+    aa.rotation_ = {0, 45, 45};
 
     ats::Camera camera;
     camera.create(device);
-    camera.position_ = {0, 20, 0};
+    camera.position_ = {0, 0, 0};
 
     VkDescriptorImageInfo descriptor_image_infos[6]{};
     for (int i = 0; i < 5; i++)

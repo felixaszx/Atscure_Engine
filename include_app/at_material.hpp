@@ -5,8 +5,9 @@
 
 namespace ats
 {
-    class Material
+    struct Material
     {
+        Texture texture;
     };
 
 }; // namespace ats
