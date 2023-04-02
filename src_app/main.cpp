@@ -15,6 +15,7 @@
 #include "at_texture.hpp"
 #include "at_mesh.hpp"
 #include "at_light.hpp"
+#include "at_model.hpp"
 
 int main(int argc, char** argv)
 {
@@ -261,8 +262,8 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Mesh aa("res/model/sponza/sponza.obj", 1);
-    aa.create(device);
+    ats::Model aa(device, "res/model/sponza/sponza.obj");
+    aa.scale_ = {0.1, 0.1, 0.1};
 
     ats::Camera camera;
     camera.create(device);
@@ -319,10 +320,8 @@ int main(int argc, char** argv)
                                                                     pipeline_layouts[0], 0, 2, writes);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
-
-                               aa.models_[0] = glm::scale(glm::mat4(1.0f), {0.1, 0.1, 0.1});
                                aa.update();
-                               aa.draw(scmd);
+                               aa.render(scmd);
                            });
 
     std::thread record_th1(std::ref(recorder[1]),
@@ -442,7 +441,7 @@ int main(int argc, char** argv)
     record_th1.join();
     record_th2.join();
 
-    aa.destroy(device);
+    aa.release(device);
     camera.destroy(device);
 
     for (int i = 0; i < framebuffers.size(); i++)

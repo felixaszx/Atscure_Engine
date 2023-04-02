@@ -2,15 +2,9 @@
 
 namespace ats
 {
-
     Transform::Transform()
     {
         this->set(glm::mat4(1.0f));
-    }
-
-    void Transform::move(glm::vec3 direction, float distance)
-    {
-        position_ += distance * direction;
     }
 
     void Transform::update()
@@ -23,4 +17,5 @@ namespace ats
 
         this->set(trans * rotate * scale);
     }
+
 }; // namespace ats

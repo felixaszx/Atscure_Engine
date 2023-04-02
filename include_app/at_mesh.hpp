@@ -35,6 +35,8 @@ namespace ats
 
       public:
         const uint32_t MAX_INSTANCE;
+        
+        uint32_t mesh_count = 0;
         uint32_t instance_count_ = 1;
         std::vector<glm::mat4> models_{};
 

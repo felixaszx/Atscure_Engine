@@ -13,7 +13,6 @@ namespace ats
         glm::vec3 scale_{1.0f, 1.0f, 1.0f};
 
         Transform();
-        void move(glm::vec3 direction, float distance);
         void update();
     };
 
