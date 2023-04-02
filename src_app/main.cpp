@@ -14,6 +14,7 @@
 
 #include "at_texture.hpp"
 #include "at_mesh.hpp"
+#include "at_light.hpp"
 
 int main(int argc, char** argv)
 {
