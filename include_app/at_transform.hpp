@@ -6,7 +6,7 @@
 
 namespace ats
 {
-    struct Transform : iMultiType(glm::mat4)
+    struct Transform : protected MultiType<glm::mat4>
     {
         glm::vec3 position_{};
         glm::vec3 rotation_{};

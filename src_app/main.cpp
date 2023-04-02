@@ -262,7 +262,8 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Model aa(device, "res/model/sponza/sponza.obj");
+    ats::Model aa("res/model/sponza/sponza.obj");
+    aa.create(device);
     aa.scale_ = {0.1, 0.1, 0.1};
 
     ats::Camera camera;
@@ -441,7 +442,7 @@ int main(int argc, char** argv)
     record_th1.join();
     record_th2.join();
 
-    aa.release(device);
+    aa.destroy(device);
     camera.destroy(device);
 
     for (int i = 0; i < framebuffers.size(); i++)

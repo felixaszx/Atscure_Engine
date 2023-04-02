@@ -2,13 +2,10 @@
 
 namespace ats
 {
-
-    Model::Model(Device device, const std::string& file_path)
+    Model::Model(const std::string& file_path)
         : Mesh(file_path, 1),
           Transform()
     {
-        Mesh::create(device);
-        materials_.reserve(mesh_count_);
     }
 
     void Model::update()
@@ -23,8 +20,15 @@ namespace ats
         draw(cmd);
     }
 
-    void Model::release(Device device)
+    void Model::create(Device device)
     {
+        Mesh::create(device);
+        materials_.reserve(mesh_count_);
+    }
+
+    void Model::destroy(Device device)
+    {
+
         Mesh::destroy(device);
     }
 

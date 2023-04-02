@@ -11,17 +11,17 @@ namespace ats
     class Model : public Mesh, public Transform
     {
       private:
-        using Mesh::update;
         using Transform::update;
-
         std::vector<Material> materials_{};
 
       public:
-        Model(Device device, const std::string& file_path);
+        Model(const std::string& file_path);
 
         void update();
         void render(VkCommandBuffer cmd);
-        void release(Device device);
+
+        void create(Device device);
+        void destroy(Device device);
     };
 
 }; // namespace ats

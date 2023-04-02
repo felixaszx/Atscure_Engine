@@ -33,11 +33,7 @@ namespace ats
         void* model_mapping_ = nullptr;
         uint32_t update_size_ = 1;
 
-      public:
-        const uint32_t MAX_INSTANCE;
-        
-        uint32_t mesh_count_ = 0;
-        uint32_t instance_count_ = 1;
+      protected:
         std::vector<glm::mat4> models_{};
 
         Mesh(const std::string& file_path, uint32_t max_instance = 1);
@@ -47,6 +43,11 @@ namespace ats
         void draw(VkCommandBuffer cmd, uint32_t mesh_index);
         void update();
         void destroy(Device& device);
+
+      public:
+        const uint32_t MAX_INSTANCE;
+        uint32_t mesh_count_ = 0;
+        uint32_t instance_count_ = 1;
 
         static std::vector<VkVertexInputBindingDescription> get_bindings();
         static std::vector<VkVertexInputAttributeDescription> get_attributes();
