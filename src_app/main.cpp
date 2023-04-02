@@ -160,6 +160,10 @@ int main(int argc, char** argv)
     for (int i = 0; i < 3; i++)
     {
         pipeline_layouts[i].add_layout(layouts[i]);
+        if (i == 2)
+        {
+            pipeline_layouts[2].add_constant(0, sizeof(float), VK_SHADER_STAGE_FRAGMENT_BIT);
+        }
         pipeline_layouts[i].create(device);
     }
 
@@ -340,9 +344,12 @@ int main(int argc, char** argv)
     std::thread record_th2(std::ref(recorder[2]),
                            [&](VkCommandBuffer scmd)
                            {
+                               float gama = 2.2f;
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[2]);
                                ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
                                                                     pipeline_layouts[2], 0, 1, &image_write2);
+                               vkCmdPushConstants(scmd, pipeline_layouts[2], VK_SHADER_STAGE_FRAGMENT_BIT, 0,
+                                                  sizeof(float), &gama);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
                                vkCmdDraw(scmd, 6, 1, 0, 0);
