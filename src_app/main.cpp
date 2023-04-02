@@ -319,6 +319,8 @@ int main(int argc, char** argv)
                                                                     pipeline_layouts[0], 0, 2, writes);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
+
+                               aa.models_[0] = glm::scale(glm::mat4(1.0f), {0.1, 0.1, 0.1});
                                aa.update();
                                aa.draw(scmd);
                            });

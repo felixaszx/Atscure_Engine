@@ -88,7 +88,7 @@ namespace ats
 
         VkBufferCopy copy_region{};
         void* staging_mapping = nullptr;
-        Buffer stage_buffer(VMA_MEMORY_USAGE_AUTO_PREFER_HOST, VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT);
+        Buffer stage_buffer(VMA_MEMORY_USAGE_CPU_ONLY, VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT);
         staging_mapping =
             stage_buffer.create_mapped(device, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_SHARING_MODE_EXCLUSIVE,
                                        max_of_all<size_t>({vertex_buffer_.size_, //
