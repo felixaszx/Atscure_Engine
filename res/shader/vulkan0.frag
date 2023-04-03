@@ -13,11 +13,11 @@ layout(location = 0) in struct
     vec3 color;
     vec3 specular;
 } frag_data;
-layout(binding = 1) uniform sampler2D tex;
+layout(binding = 1) uniform sampler2D albedo_texture;
 
 void main()
 {
-    albedo = vec4(frag_data.color, 1.0) * texture(tex, frag_data.uv.xy);
+    albedo = vec4(frag_data.color, 1.0) * texture(albedo_texture, frag_data.uv.xy);
     specular = vec4(frag_data.specular, 1.0);
     position = vec4(frag_data.position, 1.0);
     normal = vec4(frag_data.normal, 1.0);

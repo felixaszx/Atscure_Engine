@@ -10,7 +10,7 @@ namespace ats
 {
     struct CommandPool : iMultiType(VkCommandPool)
     {
-        void create(VkDevice device, uint32_t family_index, VkCommandPoolCreateFlags flags);
+        void create(VkDevice device, uint32_t family_index, VkCommandPoolCreateFlags flags = 0);
         void destroy(VkDevice device);
 
         VkCommandBuffer allocate_buffer(VkDevice device, VkCommandBufferLevel level);

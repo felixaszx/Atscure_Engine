@@ -219,7 +219,7 @@ int main(int argc, char** argv)
     pipelines[2].create(device, pipeline_layouts[2], render_pass, 2);
 
     ats::CommandPool cmd_pool;
-    cmd_pool.create(device, device.queue_family_indices_.graphics, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+    cmd_pool.create(device, device.queue_family_indices_.graphics);
     VkCommandBuffer cmd = cmd_pool.allocate_buffer(device, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 
     ats::Texture tt = ats::create_image_texture(device, cmd_pool, "res/textures/ayaka.png");
@@ -266,10 +266,11 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Model aa("res/model/sponza/sponza.obj");
-    aa.create(device);
+    ats::Model aa;
+    aa.create(device, "res/model/sponza/sponza.obj");
     aa.position_ = {0, 0, 5};
-    aa.rotation_ = {0, 45, 45};
+    aa.scale_ = {0.1, 0.1, 0.1};
+    // aa.rotation_ = {0, 45, 45};
 
     ats::Camera camera;
     camera.create(device);
@@ -298,12 +299,6 @@ int main(int argc, char** argv)
     image_write2.descriptorType = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
     image_write2.descriptorCount = 1;
     image_write2.pImageInfo = descriptor_image_infos + 4;
-    VkWriteDescriptorSet image_write3{};
-    image_write3.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    image_write3.dstBinding = 1;
-    image_write3.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    image_write3.descriptorCount = 1;
-    image_write3.pImageInfo = descriptor_image_infos + 5;
 
     ats::MultiThreadCmdRecorder recorder[3]{};
     for (int i = 0; i < 3; i++)
@@ -320,14 +315,13 @@ int main(int argc, char** argv)
                                write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
                                write.descriptorCount = 1;
                                write.pBufferInfo = &camera.buffer_info_;
-                               VkWriteDescriptorSet writes[2]{write, image_write3};
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
                                ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
-                                                                    pipeline_layouts[0], 0, 2, writes);
+                                                                    pipeline_layouts[0], 0, 1, &write);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
                                aa.update();
-                               aa.render(scmd);
+                               aa.render(scmd, sampler, pipeline_layouts[0]);
                            });
 
     std::thread record_th1(std::ref(recorder[1]),

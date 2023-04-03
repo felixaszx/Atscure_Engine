@@ -7,7 +7,11 @@ namespace ats
 {
     struct Material
     {
-        Texture texture;
+        std::string name_;
+        Texture albedo;
+        Texture specular;
+        Texture ambient;
+        Texture transparency;
     };
 
 }; // namespace ats

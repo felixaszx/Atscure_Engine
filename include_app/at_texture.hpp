@@ -15,9 +15,11 @@ namespace ats
         Buffer stage_buffer_;
 
       public:
-        const VkExtent3D format_{};
-        const VkDeviceSize size_ = 0;
+        bool usable = false;
+        VkExtent3D format_{};
+        VkDeviceSize size_ = 0;
 
+        Texture();
         Texture(VkExtent3D format, stbi_uc* pixels);
         operator stbi_uc*();
 
