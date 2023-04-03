@@ -1,8 +1,6 @@
 #ifndef AT_MODEL_HPP
 #define AT_MODEL_HPP
 
-#include <filesystem>
-
 #include "at_mesh.hpp"
 #include "at_texture.hpp"
 #include "at_transform.hpp"
@@ -10,22 +8,16 @@
 
 namespace ats
 {
-    class Model : public Mesh, public Transform
+    struct Model : public Mesh, public Transform
     {
-      private:
-        VkDescriptorImageInfo image_info{};
-        VkWriteDescriptorSet image_write{};
-
-      public:
-        std::vector<uint32_t> material_index_{};
         std::vector<Material> materials_{};
 
-        Model();
+        Model(const std::string& file_path);
 
         void update();
-        void render(VkCommandBuffer cmd, VkSampler sampler, VkPipelineLayout layout);
+        void render(VkCommandBuffer cmd);
 
-        void create(Device device, const std::string& file_path);
+        void create(Device device);
         void destroy(Device device);
     };
 
@@ -35,7 +27,6 @@ namespace ats
         Assimp::Importer importer_;
 
       public:
-        const aiScene* scene_ = nullptr;
         uint32_t mesh_count_ = 0;
         std::vector<Vertex> vertices_{};
         std::vector<uint32_t> indices_{};
@@ -45,7 +36,6 @@ namespace ats
         std::vector<uint32_t> mesh_indices_count_{};
 
         ModelLoader(const std::string& file_path);
-        ~ModelLoader();
     };
 
 }; // namespace ats

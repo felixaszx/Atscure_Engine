@@ -14,16 +14,10 @@ namespace ats
             return Texture({}, nullptr);
         }
 
-        Texture tmp_tex({casts(uint32_t, w), casts(uint32_t, h), casts(uint32_t, STBI_rgb_alpha)}, pixels);
+        Texture tmp_tex({casts(uint32_t, w), casts(uint32_t, h), casts(uint32_t, chan)}, pixels);
         tmp_tex.create(device);
 
         return tmp_tex;
-    }
-
-    Texture::Texture()
-        : stage_buffer_(VMA_MEMORY_USAGE_AUTO_PREFER_HOST, //
-                        VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT)
-    {
     }
 
     Texture::Texture(VkExtent3D format, stbi_uc* pixels)
@@ -124,16 +118,12 @@ namespace ats
         view_info.subresourceRange.baseArrayLayer = 0;
         view_info.subresourceRange.layerCount = 1;
         vkCreateImageView(device, &view_info, nullptr, this->ptr());
-        usable = true;
     }
 
     void Texture::destroy(Device device)
     {
         stage_buffer_.destroy(device);
-        if (this->data<VkImageView>() != VK_NULL_HANDLE)
-        {
-            vkDestroyImageView(device, *this, nullptr);
-        }
+        vkDestroyImageView(device, *this, nullptr);
         vmaDestroyImage(device, *this, *this);
     }
 }; // namespace ats
