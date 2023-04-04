@@ -16,6 +16,14 @@ namespace as
         uint32_t present;
     };
 
+    struct Device;
+    struct DeviceNode
+    {
+        static Device* master_device_;
+
+        virtual ~DeviceNode(){};
+    };
+
     struct Device : public vk::Device
     {
       private:
@@ -23,6 +31,7 @@ namespace as
 
       public:
         const std::vector<const char*> REQUIRED_DEVICE_EXTS = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+        std::list<std::unique_ptr<DeviceNode>> nodes_{};
         QueueFamilyIndex queue_family_indices_{};
         vk::PhysicalDevice physical_{};
         vk::PhysicalDeviceProperties properties_{};
@@ -32,6 +41,13 @@ namespace as
 
         Device(Context& context, const std::vector<const char*>& enabled_layers);
         ~Device();
+
+        template <typename T>
+        T* link(T* device_node)
+        {
+            nodes_.push_back(std::unique_ptr<T>(device_node));
+            return device_node;
+        }
     };
 
 }; // namespace as

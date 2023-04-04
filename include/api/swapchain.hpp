@@ -2,17 +2,21 @@
 #define SWAPCHAIN_HPP
 
 #include "context.hpp"
+#include "device.hpp"
 
 namespace as
 {
-    struct Swapchain : public vk::SwapchainKHR
+    struct Swapchain : public vk::SwapchainKHR, public DeviceNode
     {
         vk::Extent2D extend_{};
-        vk::Format format{};
+        vk::Format format_{};
         std::vector<vk::Image> images_{};
+        std::vector<vk::ImageView> image_views_{};
 
-        Swapchain(GLFWwindow* window, vk::SurfaceKHR surface, vk::Device device);
+        Swapchain(Window& window, Context& context, Device& device);
         ~Swapchain();
+
+        void create_image_view(Device& device);
     };
 
 }; // namespace as

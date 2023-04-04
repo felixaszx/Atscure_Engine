@@ -1,5 +1,7 @@
 #include "api/device.hpp"
 
+as::Device* as::DeviceNode::master_device_ = nullptr;
+
 void as::Device::create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers)
 {
     std::vector<vk::DeviceQueueCreateInfo> queue_create_infos{};
@@ -57,6 +59,8 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     try_log();
     allocator_ = vma::createAllocator(vma_create_info);
     catch_error();
+
+    DeviceNode::master_device_ = this;
 }
 
 as::Device::Device(Context& context, const std::vector<const char*>& enabled_layers)
@@ -116,6 +120,10 @@ as::Device::Device(Context& context, const std::vector<const char*>& enabled_lay
 as::Device::~Device()
 {
     try_log();
+    while (!nodes_.empty())
+    {
+        nodes_.pop_front();
+    }
     allocator_.destroy();
     this->destroy();
     catch_warnning();
