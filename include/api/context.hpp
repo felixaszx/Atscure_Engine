@@ -2,22 +2,15 @@
 #define CONTEXT_HPP
 
 #include <string>
-#include "vulkan/vulkan.h"
+#include "vulkan/vulkan.hpp"
 
 namespace as
 {
     struct Context
     {
-        VkInstance instance_{};
-        VkSurfaceKHR surface_{};
-        VkDevice device_{};
-
-        operator VkInstance();
-        operator VkInstance*();
-        operator VkSurfaceKHR();
-        operator VkSurfaceKHR*();
-        operator VkDevice();
-        operator VkDevice*();
+        vk::Instance instance_{};
+        vk::SurfaceKHR surface_{};
+        vk::Device device_{};
 
         Context(bool validation);
         ~Context();
