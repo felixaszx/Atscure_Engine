@@ -7,6 +7,12 @@ VkQueue as::Handle::graphics_queue_{};
 VkQueue as::Handle::present_queue_{};
 as::QueueFamilyIndex as::Handle::queue_family_indices_{};
 
+as::Handle::~Handle()
+{
+}
+
+PFN_vkCmdPushDescriptorSetKHR as::Device::CmdPushDescriptorSetKHR = nullptr;
+
 as::Device::Device(VkInstance instance, VkSurfaceKHR surface)
 {
     uint32_t physical_deviec_count = 0;
@@ -147,6 +153,14 @@ as::Result as::Device::create(VkInstance instance, const std::vector<const char*
 
     as::Device::CmdPushDescriptorSetKHR = (PFN_vkCmdPushDescriptorSetKHR) //
         vkGetDeviceProcAddr(*this, "vkCmdPushDescriptorSetKHR");
+
+    Handle::device_ = *this;
+    Handle::physical_device_ = *this;
+    Handle::allocator_ = *this;
+    Handle::graphics_queue_ = graphics_queue_;
+    Handle::present_queue_ = present_queue_;
+    Handle::queue_family_indices_ = queue_family_indices_;
+
     return Result::SUCCESS;
 }
 
@@ -160,5 +174,3 @@ void as::Device::destroy()
     vmaDestroyAllocator(*this);
     vkDestroyDevice(*this, nullptr);
 }
-
-PFN_vkCmdPushDescriptorSetKHR as::Device::CmdPushDescriptorSetKHR = nullptr;

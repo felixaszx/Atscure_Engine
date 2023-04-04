@@ -2,6 +2,26 @@
 
 namespace as
 {
+    Image::Image(VkImageCreateInfo image_info, VmaAllocationCreateInfo alloc_info)
+    {
+        VmaAllocationInfo finish_info{};
+        vmaCreateImage(allocator_, &image_info, &alloc_info, this->ptr(), this->ptr(), &finish_info);
+        this->set(finish_info.deviceMemory);
+    }
+
+    Image::~Image()
+    {
+        if (this->data<VkImageView>() != VK_NULL_HANDLE)
+        {
+            vkDestroyImageView(device_, *this, nullptr);
+        }
+        vmaDestroyImage(allocator_, *this, *this);
+    }
+
+    void Image::create_image_view(VkImageViewCreateInfo view_info)
+    {
+        vkCreateImageView(device_, &view_info, nullptr, this->ptr());
+    }
 
     std::vector<ImageAttachment> create_image_attachments(Device device,                                     //
                                                           const std::vector<VkFormat>& formats,              //

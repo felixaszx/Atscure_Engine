@@ -8,6 +8,13 @@ namespace as
     using ImageBase = MultiType<VkImage, VkDeviceMemory, VmaAllocation, VkImageView>;
     using ImageAttachment = ImageBase;
 
+    struct Image : public MultiType<VkImage, VkDeviceMemory, VmaAllocation, VkImageView>, public Handle
+    {
+        Image(VkImageCreateInfo image_info, VmaAllocationCreateInfo alloc_info);
+        ~Image() override;
+
+        void create_image_view(VkImageViewCreateInfo view_info);
+    };
 
     class Sampler : iMultiType(VkSampler)
     {

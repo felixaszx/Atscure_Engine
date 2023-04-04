@@ -25,10 +25,10 @@ namespace as
         static VkQueue present_queue_;
         static QueueFamilyIndex queue_family_indices_;
 
-        virtual ~Handle() = 0;
+        virtual ~Handle();
     };
 
-    struct Device : iMultiType(VkPhysicalDevice, VkDevice, VmaAllocator)
+    struct Device : public MultiType<VkPhysicalDevice, VkDevice, VmaAllocator>
     {
         static PFN_vkCmdPushDescriptorSetKHR CmdPushDescriptorSetKHR;
         const std::vector<const char*> REQUIRED_DEVICE_EXTS = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
