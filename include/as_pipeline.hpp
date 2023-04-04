@@ -1,8 +1,8 @@
 #ifndef AT_PIPELINE_HPP
 #define AT_PIPELINE_HPP
 
-#include "at_device.hpp"
-#include "at_shader.hpp"
+#include "as_device.hpp"
+#include "as_shader.hpp"
 
 namespace ats
 {

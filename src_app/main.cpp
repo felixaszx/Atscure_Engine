@@ -1,27 +1,26 @@
 #include <iostream>
 #include <string>
 
-#include "at_window.hpp"
-#include "at_device.hpp"
-#include "at_swapchain.hpp"
-#include "at_shader.hpp"
-#include "at_image.hpp"
-#include "at_pipeline.hpp"
-#include "at_mesh.hpp"
-#include "at_cmd.hpp"
-#include "at_buffer.hpp"
-#include "at_camera.hpp"
+#include "as_window.hpp"
+#include "as_device.hpp"
+#include "as_swapchain.hpp"
+#include "as_shader.hpp"
+#include "as_image.hpp"
+#include "as_pipeline.hpp"
+#include "as_mesh.hpp"
+#include "as_cmd.hpp"
+#include "as_buffer.hpp"
+#include "as_camera.hpp"
 
-#include "at_texture.hpp"
-#include "at_mesh.hpp"
-#include "at_light.hpp"
-#include "at_model.hpp"
+#include "as_texture.hpp"
+#include "as_mesh.hpp"
+#include "as_light.hpp"
 
 int main(int argc, char** argv)
 {
     ats::Instance instance{};
     ats::WindowManager window(1920, 1080);
-    window.create("test app", instance, true);
+    window.create("test app", instance, false);
 
     ats::Device device(instance, instance);
     device.create(instance, instance.VALIDATION_LAYERS);
@@ -160,10 +159,6 @@ int main(int argc, char** argv)
     for (int i = 0; i < 3; i++)
     {
         pipeline_layouts[i].add_layout(layouts[i]);
-        if (i == 2)
-        {
-            pipeline_layouts[2].add_constant(0, sizeof(float), VK_SHADER_STAGE_FRAGMENT_BIT);
-        }
         pipeline_layouts[i].create(device);
     }
 
@@ -266,14 +261,12 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Model aa("res/model/sponza/sponza.obj");
+    ats::Mesh aa("res/model/sponza/sponza.obj", 1);
     aa.create(device);
-    aa.position_ = {0, 0, 5};
-    aa.rotation_ = {0, 45, 45};
 
     ats::Camera camera;
     camera.create(device);
-    camera.position_ = {0, 0, 0};
+    camera.position_ = {0, 20, 0};
 
     VkDescriptorImageInfo descriptor_image_infos[6]{};
     for (int i = 0; i < 5; i++)
@@ -326,8 +319,10 @@ int main(int argc, char** argv)
                                                                     pipeline_layouts[0], 0, 2, writes);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
+
+                               aa.models_[0] = glm::scale(glm::mat4(1.0f), {0.1, 0.1, 0.1});
                                aa.update();
-                               aa.render(scmd);
+                               aa.draw(scmd);
                            });
 
     std::thread record_th1(std::ref(recorder[1]),
@@ -344,12 +339,9 @@ int main(int argc, char** argv)
     std::thread record_th2(std::ref(recorder[2]),
                            [&](VkCommandBuffer scmd)
                            {
-                               float gama = 2.2f;
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[2]);
                                ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
                                                                     pipeline_layouts[2], 0, 1, &image_write2);
-                               vkCmdPushConstants(scmd, pipeline_layouts[2], VK_SHADER_STAGE_FRAGMENT_BIT, 0,
-                                                  sizeof(float), &gama);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
                                vkCmdDraw(scmd, 6, 1, 0, 0);

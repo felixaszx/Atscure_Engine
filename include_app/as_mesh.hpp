@@ -1,8 +1,8 @@
 #ifndef AT_MESH_HPP
 #define AT_MESH_HPP
 
-#include "at_device.hpp"
-#include "at_buffer.hpp"
+#include "as_device.hpp"
+#include "as_buffer.hpp"
 #include "glms.hpp"
 #include "ass.hpp"
 
@@ -23,11 +23,6 @@ namespace ats
         Buffer index_buffer_;
         Buffer model_buffer_;
 
-        void* model_mapping_ = nullptr;
-        uint32_t update_size_ = 1;
-
-      protected:
-        std::vector<glm::mat4> models_{};
         std::vector<Vertex> vertices_{};
         std::vector<uint32_t> indices_{};
 
@@ -35,19 +30,21 @@ namespace ats
         std::vector<size_t> indices_buffer_offsets_{};
         std::vector<uint32_t> mesh_indices_count_{};
 
-        Mesh(uint32_t max_instance = 1);
-
-        void create(Device& device);
-        void update();
-        void destroy(Device& device);
+        void* model_mapping_ = nullptr;
+        uint32_t update_size_ = 1;
 
       public:
         const uint32_t MAX_INSTANCE;
-        uint32_t mesh_count_ = 0;
         uint32_t instance_count_ = 1;
+        std::vector<glm::mat4> models_{};
 
+        Mesh(const std::string& file_path, uint32_t max_instance = 1);
+
+        void create(Device& device);
         void draw(VkCommandBuffer cmd);
         void draw(VkCommandBuffer cmd, uint32_t mesh_index);
+        void update();
+        void destroy(Device& device);
 
         static std::vector<VkVertexInputBindingDescription> get_bindings();
         static std::vector<VkVertexInputAttributeDescription> get_attributes();

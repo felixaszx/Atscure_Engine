@@ -1,8 +1,8 @@
 #ifndef AT_CAMERA_HPP
 #define AT_CAMERA_HPP
 
-#include "at_device.hpp"
-#include "at_buffer.hpp"
+#include "as_device.hpp"
+#include "as_buffer.hpp"
 #include "glms.hpp"
 
 namespace ats

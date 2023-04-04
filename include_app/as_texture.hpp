@@ -3,8 +3,8 @@
 
 #include <stb/stb_image.h>
 
-#include "at_image.hpp"
-#include "at_buffer.hpp"
+#include "as_image.hpp"
+#include "as_buffer.hpp"
 
 namespace ats
 {

@@ -1,8 +1,8 @@
 #ifndef AT_BUFFER_HPP
 #define AT_BUFFER_HPP
 
-#include "at_device.hpp"
-#include "at_cmd.hpp"
+#include "as_device.hpp"
+#include "as_cmd.hpp"
 
 namespace ats
 {

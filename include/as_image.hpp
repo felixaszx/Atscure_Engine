@@ -1,7 +1,7 @@
 #ifndef AT_IMAGE_HPP
 #define AT_IMAGE_HPP
 
-#include "at_device.hpp"
+#include "as_device.hpp"
 
 namespace ats
 {
