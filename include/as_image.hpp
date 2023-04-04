@@ -10,10 +10,9 @@ namespace as
 
     struct Image : public MultiType<VkImage, VkDeviceMemory, VmaAllocation, VkImageView>, public Handle
     {
-        Image(VkImageCreateInfo image_info, VmaAllocationCreateInfo alloc_info);
+        Image(const VkImageCreateInfo& image_info, const VmaAllocationCreateInfo& alloc_info);
         ~Image() override;
-
-        void create_image_view(VkImageViewCreateInfo view_info);
+        void create_image_view(const VkImageViewCreateInfo& view_info);
     };
 
     class Sampler : iMultiType(VkSampler)
@@ -34,6 +33,13 @@ namespace as
         void create(VkDevice device);
         void destroy(VkDevice device);
     };
+
+    std::vector<Image*> create_image_attachments(int a, Device& device,                             //
+                                                 const std::vector<VkFormat>& formats,              //
+                                                 const std::vector<VkExtent2D>& extends,            //
+                                                 const std::vector<VkSampleCountFlagBits>& samples, //
+                                                 const std::vector<VkImageUsageFlags>& usages,      //
+                                                 const std::vector<VkImageAspectFlags>& aspects);
 
     std::vector<ImageAttachment> create_image_attachments(Device device,                                     //
                                                           const std::vector<VkFormat>& formats,              //
