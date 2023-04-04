@@ -46,9 +46,9 @@ namespace as
         template <typename T>
         T& link(T* handle)
         {
-            return *link(handle);
+            handles_.push_back(handle);
+            return *handle;
         }
-
     };
 
 }; // namespace as

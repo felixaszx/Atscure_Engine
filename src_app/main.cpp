@@ -47,10 +47,10 @@ int main(int argc, char** argv)
                                                VK_IMAGE_ASPECT_COLOR_BIT, //
                                                VK_IMAGE_ASPECT_COLOR_BIT, //
                                                VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT};
-    std::vector<as::ImageAttachment> attachments = as::create_image_attachments(device,           //
-                                                                                  formats, extends, //
-                                                                                  samples, usages,  //
-                                                                                  aspects);
+    std::vector<as::Image*> attachments = as::create_image_attachments(device,           //
+                                                                       formats, extends, //
+                                                                       samples, usages,  //
+                                                                       aspects);
 
     VkAttachmentDescription attachment_descriptions[7]{};
     for (uint32_t i = 0; i < 7; i++)
@@ -239,8 +239,8 @@ int main(int argc, char** argv)
     std::vector<VkFramebuffer> framebuffers(swapchain.image_views_.size());
     for (int i = 0; i < swapchain.image_views_.size(); i++)
     {
-        VkImageView fattachments[] = {attachments[0],           attachments[1], attachments[2],
-                                      attachments[3],           attachments[4], attachments[5], //
+        VkImageView fattachments[] = {*attachments[0],           *attachments[1], *attachments[2],
+                                      *attachments[3],           *attachments[4], *attachments[5], //
                                       swapchain.image_views_[i]};
         VkFramebufferCreateInfo fcreate_info{};
         fcreate_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -272,7 +272,7 @@ int main(int argc, char** argv)
     for (int i = 0; i < 5; i++)
     {
         descriptor_image_infos[i].sampler = VK_NULL_HANDLE;
-        descriptor_image_infos[i].imageView = attachments[i];
+        descriptor_image_infos[i].imageView = *attachments[i];
         descriptor_image_infos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
     descriptor_image_infos[5].sampler = sampler;
@@ -316,7 +316,7 @@ int main(int argc, char** argv)
                                VkWriteDescriptorSet writes[2]{write, image_write3};
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
                                as::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
-                                                                    pipeline_layouts[0], 0, 2, writes);
+                                                                   pipeline_layouts[0], 0, 2, writes);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
 
@@ -330,7 +330,7 @@ int main(int argc, char** argv)
                            {
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
                                as::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
-                                                                    pipeline_layouts[1], 0, 1, &image_write);
+                                                                   pipeline_layouts[1], 0, 1, &image_write);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
                                vkCmdDraw(scmd, 6, 1, 0, 0);
@@ -341,7 +341,7 @@ int main(int argc, char** argv)
                            {
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[2]);
                                as::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
-                                                                    pipeline_layouts[2], 0, 1, &image_write2);
+                                                                   pipeline_layouts[2], 0, 1, &image_write2);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
                                vkCmdDraw(scmd, 6, 1, 0, 0);
@@ -462,7 +462,6 @@ int main(int argc, char** argv)
         layouts[i].destroy(device);
     }
     vkDestroyRenderPass(device, render_pass, nullptr);
-    as::destroy_image_attachments(device, attachments);
     swapchain.destroy();
     device.destroy();
     window.destroy(instance);

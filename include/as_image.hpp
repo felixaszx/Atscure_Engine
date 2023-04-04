@@ -34,20 +34,12 @@ namespace as
         void destroy(VkDevice device);
     };
 
-    std::vector<Image*> create_image_attachments(int a, Device& device,                             //
+    std::vector<Image*> create_image_attachments(Device& device,                                    //
                                                  const std::vector<VkFormat>& formats,              //
                                                  const std::vector<VkExtent2D>& extends,            //
                                                  const std::vector<VkSampleCountFlagBits>& samples, //
                                                  const std::vector<VkImageUsageFlags>& usages,      //
                                                  const std::vector<VkImageAspectFlags>& aspects);
-
-    std::vector<ImageAttachment> create_image_attachments(Device device,                                     //
-                                                          const std::vector<VkFormat>& formats,              //
-                                                          const std::vector<VkExtent2D>& extends,            //
-                                                          const std::vector<VkSampleCountFlagBits>& samples, //
-                                                          const std::vector<VkImageUsageFlags>& usages,      //
-                                                          const std::vector<VkImageAspectFlags>& aspects);
-    void destroy_image_attachments(Device device, std::vector<ImageAttachment> attachments);
 
 }; // namespace as
 
