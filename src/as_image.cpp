@@ -50,7 +50,8 @@ namespace as
             VmaAllocationCreateInfo alloc_info{};
             alloc_info.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
             VmaAllocationInfo finish_info{};
-            attachments[i] = std::addressof(device.link(new Image(create_info, alloc_info)));
+            attachments[i] = new Image(create_info, alloc_info);
+            device.link(attachments[i]);
 
             VkImageViewCreateInfo view_info{};
             view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
