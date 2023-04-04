@@ -1,4 +1,2 @@
 #define VMA_IMPLEMENTATION
-#define VMA_STATIC_VULKAN_FUNCTIONS  0
-#define VMA_DYNAMIC_VULKAN_FUNCTIONS 1
-#include "third_party/vma.hpp"
+#include "third_party/vma_hpp/vk_mem_alloc.hpp"

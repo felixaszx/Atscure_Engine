@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.hpp>
 #include "logging.hpp"
+#include "third_party/vma_hpp/vk_mem_alloc.hpp"
 
 #define casts(type, value) static_cast<type>(value)
 #define castr(type, value) reinterpret_cast<type>(value)
