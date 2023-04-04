@@ -44,10 +44,10 @@ namespace as
         void destroy();
 
         template <typename T>
-        T& link(T* handle)
+        T* link(T* handle)
         {
             handles_.push_back(handle);
-            return *handle;
+            return handle;
         }
     };
 
