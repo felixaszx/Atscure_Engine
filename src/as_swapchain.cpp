@@ -1,6 +1,6 @@
 #include "as_swapchain.hpp"
 
-namespace ats
+namespace as
 {
     Swapchain::operator VkSwapchainKHR()
     {
@@ -155,4 +155,4 @@ namespace ats
         return present_attachment;
     }
 
-}; // namespace ats
+}; // namespace as

@@ -8,7 +8,7 @@
 
 #include <fmt/core.h>
 
-namespace ats
+namespace as
 {
     enum class Result
     {
@@ -30,6 +30,6 @@ namespace ats
         static void warrning(std::string warrnings);
     };
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_LOG_HPP

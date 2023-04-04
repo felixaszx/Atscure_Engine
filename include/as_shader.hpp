@@ -5,7 +5,7 @@
 
 #include "as_device.hpp"
 
-namespace ats
+namespace as
 {
     class ShaderModule : iMultiType(VkShaderModule)
     {
@@ -38,6 +38,6 @@ namespace ats
         void set_frag_shader(VkPipelineShaderStageCreateInfo stage_info);
         void set_geog_shader(VkPipelineShaderStageCreateInfo stage_info);
     };
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_SHADER_HPP

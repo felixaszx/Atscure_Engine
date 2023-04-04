@@ -3,7 +3,7 @@
 
 #include "as_device.hpp"
 
-namespace ats
+namespace as
 {
     using ImageBase = MultiType<VkImage, VkDeviceMemory, VmaAllocation, VkImageView>;
     using ImageAttachment = ImageBase;
@@ -36,6 +36,6 @@ namespace ats
                                                           const std::vector<VkImageAspectFlags>& aspects);
     void destroy_image_attachments(Device device, std::vector<ImageAttachment> attachments);
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_IMAGE_HPP

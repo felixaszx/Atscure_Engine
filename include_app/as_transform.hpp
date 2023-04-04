@@ -4,7 +4,7 @@
 #include "as_buffer.hpp"
 #include "glms.hpp"
 
-namespace ats
+namespace as
 {
     struct Transform : iMultiType(glm::mat4)
     {
@@ -17,6 +17,6 @@ namespace ats
         void update();
     };
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_TRANSFORM_HPP

@@ -1,6 +1,6 @@
 #include "as_pipeline.hpp"
 
-namespace ats
+namespace as
 {
     VkColorComponentFlagBits ColorWrite::R = VK_COLOR_COMPONENT_R_BIT;
     VkColorComponentFlagBits ColorWrite::G = VK_COLOR_COMPONENT_G_BIT;
@@ -153,4 +153,4 @@ namespace ats
         vkDestroyPipeline(device, *this, nullptr);
     }
 
-}; // namespace ats
+}; // namespace as

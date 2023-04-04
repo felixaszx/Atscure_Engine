@@ -17,7 +17,7 @@
 
 #define vbool(bool) bool ? VK_TRUE : VK_FALSE
 
-namespace ats
+namespace as
 {
     struct WindowManager;
 
@@ -56,6 +56,6 @@ namespace ats
         void destroy(Instance& instance);
     };
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_WINDOW_HPP

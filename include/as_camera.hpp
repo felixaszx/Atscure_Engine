@@ -5,7 +5,7 @@
 #include "as_buffer.hpp"
 #include "glms.hpp"
 
-namespace ats
+namespace as
 {
     class Camera
     {
@@ -42,6 +42,6 @@ namespace ats
         void update(VkExtent2D viewport_extent);
         glm::vec3 right() const;
     };
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_CAMERA_HPP

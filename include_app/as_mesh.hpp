@@ -6,7 +6,7 @@
 #include "glms.hpp"
 #include "ass.hpp"
 
-namespace ats
+namespace as
 {
     struct Vertex
     {
@@ -65,6 +65,6 @@ namespace ats
         return max;
     }
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_MESH_HPP

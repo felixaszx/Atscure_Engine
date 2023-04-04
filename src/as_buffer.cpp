@@ -1,6 +1,6 @@
 #include "as_buffer.hpp"
 
-namespace ats
+namespace as
 {
     Buffer::Buffer(VmaMemoryUsage memory_usage, VmaAllocationCreateFlagBits allocation_flags)
         : memory_(memory_usage),
@@ -72,4 +72,4 @@ namespace ats
         cmd.end(device, pool);
     }
 
-}; // namespace ats
+}; // namespace as

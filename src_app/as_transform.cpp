@@ -1,6 +1,6 @@
 #include "as_transform.hpp"
 
-namespace ats
+namespace as
 {
 
     Transform::Transform()
@@ -23,4 +23,4 @@ namespace ats
 
         this->set(trans * rotate * scale);
     }
-}; // namespace ats
+}; // namespace as

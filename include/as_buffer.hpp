@@ -4,7 +4,7 @@
 #include "as_device.hpp"
 #include "as_cmd.hpp"
 
-namespace ats
+namespace as
 {
     class Buffer : iMultiType(VkBuffer, VkDeviceMemory, VmaAllocation)
     {
@@ -27,6 +27,6 @@ namespace ats
     void copy_buffer(Device& device, VkBuffer src, VkBuffer dst, VkBufferCopy region);
     void copy_buffer(Device& device, VkCommandPool pool, VkBuffer src, VkBuffer dst, VkBufferCopy region);
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_BUFFER_HPP

@@ -6,7 +6,7 @@
 #include "as_device.hpp"
 #include "as_multithread.hpp"
 
-namespace ats
+namespace as
 {
     struct CommandPool : iMultiType(VkCommandPool)
     {
@@ -52,6 +52,6 @@ namespace ats
         void operator()(const std::function<void(VkCommandBuffer)>& recording_func);
     };
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_CMD_HPP

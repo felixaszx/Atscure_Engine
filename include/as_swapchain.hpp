@@ -3,7 +3,7 @@
 
 #include "as_device.hpp"
 
-namespace ats
+namespace as
 {
     class Swapchain
     {
@@ -26,6 +26,6 @@ namespace ats
         void create_image_view();
         VkAttachmentDescription get_present_attachment();
     };
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_SWAPCHAIN_HPP

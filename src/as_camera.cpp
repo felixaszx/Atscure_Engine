@@ -1,6 +1,6 @@
 #include "as_camera.hpp"
 
-namespace ats
+namespace as
 {
 
     Camera::Camera()
@@ -48,4 +48,4 @@ namespace ats
         return glm::normalize(glm::cross(front_, up_));
     }
 
-}; // namespace ats
+}; // namespace as

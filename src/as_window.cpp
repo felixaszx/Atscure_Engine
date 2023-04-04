@@ -3,7 +3,7 @@
 #define VMA_DYNAMIC_VULKAN_FUNCTIONS 1
 #include "as_window.hpp"
 
-namespace ats
+namespace as
 {
     Result Instance::create(const char* name, bool debug_layer)
     {
@@ -168,4 +168,4 @@ namespace ats
         glfwDestroyWindow(*this);
     }
 
-}; // namespace ats
+}; // namespace as

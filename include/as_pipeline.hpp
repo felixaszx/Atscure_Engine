@@ -4,7 +4,7 @@
 #include "as_device.hpp"
 #include "as_shader.hpp"
 
-namespace ats
+namespace as
 {
     struct ColorWrite
     {
@@ -79,6 +79,6 @@ namespace ats
         void create(VkDevice device, VkPipelineLayout layout, VkRenderPass render_pass, uint32_t subpass);
         void destroy(VkDevice device);
     };
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_PIPELINE_HPP

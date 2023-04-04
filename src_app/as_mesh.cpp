@@ -1,6 +1,6 @@
 #include "as_mesh.hpp"
 
-namespace ats
+namespace as
 {
 
     Mesh::Mesh(const std::string& file_path, uint32_t max_instance)
@@ -185,4 +185,4 @@ namespace ats
         return attributes;
     }
 
-}; // namespace ats
+}; // namespace as

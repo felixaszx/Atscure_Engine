@@ -1,6 +1,6 @@
 #include "as_log.hpp"
 
-namespace ats
+namespace as
 {
     Result Log::init()
     {
@@ -31,4 +31,4 @@ namespace ats
         std::time_t end_time = std::chrono::system_clock::to_time_t(end);
         std::cout << fmt::format("\n[WARNINGS] System time: {} {}\n\n", std::ctime(&end_time), warrnings);
     }
-}; // namespace ats
+}; // namespace as

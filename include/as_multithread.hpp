@@ -9,7 +9,7 @@
 
 #include "as_device.hpp"
 
-namespace ats
+namespace as
 {
     class CpuSemaphore
     {
@@ -38,6 +38,6 @@ namespace ats
         void destroy(VkDevice device);
     };
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_MULTITHREAD_HPP

@@ -6,7 +6,7 @@
 #include "as_image.hpp"
 #include "as_buffer.hpp"
 
-namespace ats
+namespace as
 {
     class Texture : public ImageBase
     {
@@ -30,6 +30,6 @@ namespace ats
 
     Texture create_image_texture(Device device, VkCommandPool cmd_pool, const std::string& file_name);
 
-}; // namespace ats
+}; // namespace as
 
 #endif // AT_TEXTURE_HPP

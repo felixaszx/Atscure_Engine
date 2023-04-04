@@ -1,6 +1,6 @@
 #include "as_device.hpp"
 
-namespace ats
+namespace as
 {
     Device::Device(VkInstance instance, VkSurfaceKHR surface)
     {
@@ -153,4 +153,4 @@ namespace ats
 
     PFN_vkCmdPushDescriptorSetKHR Device::CmdPushDescriptorSetKHR = nullptr;
 
-}; // namespace ats
+}; // namespace as

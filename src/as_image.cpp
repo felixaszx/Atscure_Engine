@@ -1,6 +1,6 @@
 #include "as_image.hpp"
 
-namespace ats
+namespace as
 {
 
     std::vector<ImageAttachment> create_image_attachments(Device device,                                     //
@@ -113,4 +113,4 @@ namespace ats
         vkDestroySampler(device, *this, nullptr);
     }
 
-}; // namespace ats
+}; // namespace as

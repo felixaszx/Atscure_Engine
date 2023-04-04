@@ -18,14 +18,14 @@
 
 int main(int argc, char** argv)
 {
-    ats::Instance instance{};
-    ats::WindowManager window(1920, 1080);
+    as::Instance instance{};
+    as::WindowManager window(1920, 1080);
     window.create("test app", instance, false);
 
-    ats::Device device(instance, instance);
+    as::Device device(instance, instance);
     device.create(instance, instance.VALIDATION_LAYERS);
 
-    ats::Swapchain swapchain;
+    as::Swapchain swapchain;
     swapchain.create(window, instance, device);
     swapchain.create_image_view();
 
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
                                                VK_IMAGE_ASPECT_COLOR_BIT, //
                                                VK_IMAGE_ASPECT_COLOR_BIT, //
                                                VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT};
-    std::vector<ats::ImageAttachment> attachments = ats::create_image_attachments(device,           //
+    std::vector<as::ImageAttachment> attachments = as::create_image_attachments(device,           //
                                                                                   formats, extends, //
                                                                                   samples, usages,  //
                                                                                   aspects);
@@ -143,8 +143,8 @@ int main(int argc, char** argv)
     VkRenderPass render_pass;
     vkCreateRenderPass(device, &render_pass_info, nullptr, &render_pass);
 
-    ats::DescriptorLayout layouts[3]{};
-    ats::PipelineLayout pipeline_layouts[3]{};
+    as::DescriptorLayout layouts[3]{};
+    as::PipelineLayout pipeline_layouts[3]{};
     layouts[0].add_binding(0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
     layouts[0].add_binding(1, 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
     for (int i = 0; i < 4; i++)
@@ -162,19 +162,19 @@ int main(int argc, char** argv)
         pipeline_layouts[i].create(device);
     }
 
-    auto binding_description = ats::Mesh::get_bindings();
-    auto attribute_description = ats::Mesh::get_attributes();
-    ats::ShaderModule verts[3]{};
-    ats::ShaderModule frags[3]{};
+    auto binding_description = as::Mesh::get_bindings();
+    auto attribute_description = as::Mesh::get_attributes();
+    as::ShaderModule verts[3]{};
+    as::ShaderModule frags[3]{};
     for (int i = 0; i < 3; i++)
     {
-        verts[i].create(device, ats::ShaderModule::read_file("res/shader/vert" + std::to_string(i) + ".spv"), "main",
+        verts[i].create(device, as::ShaderModule::read_file("res/shader/vert" + std::to_string(i) + ".spv"), "main",
                         VK_SHADER_STAGE_VERTEX_BIT);
-        frags[i].create(device, ats::ShaderModule::read_file("res/shader/frag" + std::to_string(i) + ".spv"), "main",
+        frags[i].create(device, as::ShaderModule::read_file("res/shader/frag" + std::to_string(i) + ".spv"), "main",
                         VK_SHADER_STAGE_FRAGMENT_BIT);
     }
 
-    ats::GraphicPipeline pipelines[3]{};
+    as::GraphicPipeline pipelines[3]{};
     for (int i = 0; i < 3; i++)
     {
         pipelines[i].stages_.set_vert_shader(verts[i].stage_info_);
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
     }
 
     VkPipelineColorBlendAttachmentState color_blend_attachment0{};
-    color_blend_attachment0.colorWriteMask = ats::ColorWrite::RGBA;
+    color_blend_attachment0.colorWriteMask = as::ColorWrite::RGBA;
     pipelines[0].set_vertex_states(binding_description, attribute_description);
     pipelines[0].set_view_port_state(1, 1);
     pipelines[0].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_BACK_BIT);
@@ -198,7 +198,7 @@ int main(int argc, char** argv)
     color_blend_attachment1.colorBlendOp = VK_BLEND_OP_ADD;
     color_blend_attachment1.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
     color_blend_attachment1.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
-    color_blend_attachment1.colorWriteMask = ats::ColorWrite::RGBA;
+    color_blend_attachment1.colorWriteMask = as::ColorWrite::RGBA;
     pipelines[1].set_view_port_state(1, 1);
     pipelines[1].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_NONE);
     pipelines[1].add_color_blending(color_blend_attachment1);
@@ -206,22 +206,22 @@ int main(int argc, char** argv)
     pipelines[1].create(device, pipeline_layouts[1], render_pass, 1);
 
     VkPipelineColorBlendAttachmentState color_blend_attachment2{};
-    color_blend_attachment2.colorWriteMask = ats::ColorWrite::RGBA;
+    color_blend_attachment2.colorWriteMask = as::ColorWrite::RGBA;
     pipelines[2].set_view_port_state(1, 1);
     pipelines[2].set_rasterizer(VK_POLYGON_MODE_FILL, VK_CULL_MODE_NONE);
     pipelines[2].add_color_blending(color_blend_attachment2);
     pipelines[2].set_depth_stencil(false, false);
     pipelines[2].create(device, pipeline_layouts[2], render_pass, 2);
 
-    ats::CommandPool cmd_pool;
+    as::CommandPool cmd_pool;
     cmd_pool.create(device, device.queue_family_indices_.graphics, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
     VkCommandBuffer cmd = cmd_pool.allocate_buffer(device, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 
-    ats::Texture tt = ats::create_image_texture(device, cmd_pool, "res/textures/ayaka.png");
+    as::Texture tt = as::create_image_texture(device, cmd_pool, "res/textures/ayaka.png");
     tt.load(device, cmd_pool);
     tt.create_image_view(device);
 
-    ats::Sampler sampler;
+    as::Sampler sampler;
     sampler.set_adress_mode(VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK);
     sampler.set_anisotropy(4);
     sampler.set_compare(VK_FALSE);
@@ -229,9 +229,9 @@ int main(int argc, char** argv)
     sampler.set_mipmap(VK_SAMPLER_MIPMAP_MODE_LINEAR, 0, 0, 0);
     sampler.create(device);
 
-    ats::GpuSemaphore image_semaphore;
-    ats::GpuSemaphore submit_semaphore;
-    ats::GpuFence frame_fence;
+    as::GpuSemaphore image_semaphore;
+    as::GpuSemaphore submit_semaphore;
+    as::GpuFence frame_fence;
     image_semaphore.create(device);
     submit_semaphore.create(device);
     frame_fence.create(device, true);
@@ -261,10 +261,10 @@ int main(int argc, char** argv)
     VkRect2D scissor{};
     scissor.extent = swapchain.extend_;
 
-    ats::Mesh aa("res/model/sponza/sponza.obj", 1);
+    as::Mesh aa("res/model/sponza/sponza.obj", 1);
     aa.create(device);
 
-    ats::Camera camera;
+    as::Camera camera;
     camera.create(device);
     camera.position_ = {0, 20, 0};
 
@@ -298,7 +298,7 @@ int main(int argc, char** argv)
     image_write3.descriptorCount = 1;
     image_write3.pImageInfo = descriptor_image_infos + 5;
 
-    ats::MultiThreadCmdRecorder recorder[3]{};
+    as::MultiThreadCmdRecorder recorder[3]{};
     for (int i = 0; i < 3; i++)
     {
         recorder[i].create(device);
@@ -315,7 +315,7 @@ int main(int argc, char** argv)
                                write.pBufferInfo = &camera.buffer_info_;
                                VkWriteDescriptorSet writes[2]{write, image_write3};
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[0]);
-                               ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
+                               as::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
                                                                     pipeline_layouts[0], 0, 2, writes);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
@@ -329,7 +329,7 @@ int main(int argc, char** argv)
                            [&](VkCommandBuffer scmd)
                            {
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[1]);
-                               ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
+                               as::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
                                                                     pipeline_layouts[1], 0, 1, &image_write);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
@@ -340,7 +340,7 @@ int main(int argc, char** argv)
                            [&](VkCommandBuffer scmd)
                            {
                                vkCmdBindPipeline(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines[2]);
-                               ats::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
+                               as::Device::CmdPushDescriptorSetKHR(scmd, VK_PIPELINE_BIND_POINT_GRAPHICS, //
                                                                     pipeline_layouts[2], 0, 1, &image_write2);
                                vkCmdSetViewport(scmd, 0, 1, &viewport);
                                vkCmdSetScissor(scmd, 0, 1, &scissor);
@@ -462,7 +462,7 @@ int main(int argc, char** argv)
         layouts[i].destroy(device);
     }
     vkDestroyRenderPass(device, render_pass, nullptr);
-    ats::destroy_image_attachments(device, attachments);
+    as::destroy_image_attachments(device, attachments);
     swapchain.destroy();
     device.destroy();
     window.destroy(instance);

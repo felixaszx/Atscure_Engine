@@ -1,6 +1,6 @@
 #include "as_shader.hpp"
 
-namespace ats
+namespace as
 {
 
     void ShaderModule::create(VkDevice device, const std::vector<char>& shader_code, const std::string& entry_name,
@@ -77,4 +77,4 @@ namespace ats
         stages[2] = stage_info;
     }
 
-}; // namespace ats
+}; // namespace as

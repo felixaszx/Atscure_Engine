@@ -1,6 +1,6 @@
 #include "as_cmd.hpp"
 
-namespace ats
+namespace as
 {
 
     void CommandPool::create(VkDevice device, uint32_t family_index, VkCommandPoolCreateFlags flags)
@@ -187,4 +187,4 @@ namespace ats
         record(recording_func);
     }
 
-}; // namespace ats
+}; // namespace as

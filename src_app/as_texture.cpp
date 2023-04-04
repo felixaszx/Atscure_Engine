@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "as_texture.hpp"
 
-namespace ats
+namespace as
 {
     Texture create_image_texture(Device device, VkCommandPool cmd_pool, const std::string& file_name)
     {
@@ -126,4 +126,4 @@ namespace ats
         vkDestroyImageView(device, *this, nullptr);
         vmaDestroyImage(device, *this, *this);
     }
-}; // namespace ats
+}; // namespace as

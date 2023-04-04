@@ -1,6 +1,6 @@
 #include "as_multithread.hpp"
 
-namespace ats
+namespace as
 {
     void CpuSemaphore::create(int initial_value)
     {
@@ -66,4 +66,4 @@ namespace ats
         vkDestroyFence(device, *this, nullptr);
     }
 
-}; // namespace ats
+}; // namespace as
