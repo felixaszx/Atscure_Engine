@@ -16,19 +16,39 @@ namespace as
         uint32_t present;
     };
 
+    struct Handle
+    {
+        static VkPhysicalDevice physical_device_;
+        static VkDevice device_;
+        static VmaAllocator allocator_;
+        static VkQueue graphics_queue_;
+        static VkQueue present_queue_;
+        static QueueFamilyIndex queue_family_indices_;
+
+        virtual ~Handle() = 0;
+    };
+
     struct Device : iMultiType(VkPhysicalDevice, VkDevice, VmaAllocator)
     {
+        static PFN_vkCmdPushDescriptorSetKHR CmdPushDescriptorSetKHR;
         const std::vector<const char*> REQUIRED_DEVICE_EXTS = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+
+        std::list<Handle*> handles_{};
         QueueFamilyIndex queue_family_indices_{};
+        VkPhysicalDeviceProperties properties_{};
         VkQueue graphics_queue_ = VK_NULL_HANDLE;
         VkQueue present_queue_ = VK_NULL_HANDLE;
-        VkPhysicalDeviceProperties properties_{};
 
         Device(VkInstance instance, VkSurfaceKHR surface);
         Result create(VkInstance instance, const std::vector<const char*>& enabled_layers);
         void destroy();
 
-        static PFN_vkCmdPushDescriptorSetKHR CmdPushDescriptorSetKHR;
+        template <typename T>
+        T& link(T* handle)
+        {
+            handles_.push_back(handle);
+            return *handle;
+        }
     };
 
 }; // namespace as
