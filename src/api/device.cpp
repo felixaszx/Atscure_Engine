@@ -57,6 +57,7 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     allocator_ = vma::createAllocator(vma_create_info);
 
     DeviceRAII::device_ = this;
+    Log::info(fmt::format("Can create at most {} objects that use DeviceRAII", nodes_.max_size()));
 }
 
 as::Device::Device(Context& context, const std::vector<const char*>& enabled_layers)
