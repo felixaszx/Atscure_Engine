@@ -21,12 +21,15 @@ namespace as
     struct DeviceRAII;
     struct Device : public vk::Device
     {
+        friend DeviceRAII;
+
       private:
         void create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers);
+        void link(DeviceRAII* device_node);
 
       public:
         const std::vector<const char*> REQUIRED_DEVICE_EXTS = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-        std::list<DeviceRAII*> nodes_{};
+        std::list<std::unique_ptr<DeviceRAII>> nodes_{};
         QueueFamilyIndex queue_family_indices_{};
         vk::PhysicalDevice physical_{};
         vk::PhysicalDeviceProperties properties_{};
@@ -36,13 +39,6 @@ namespace as
 
         Device(Context& context, const std::vector<const char*>& enabled_layers);
         ~Device();
-
-        template <typename T>
-        T* link(T* device_node)
-        {
-            nodes_.push_back(device_node);
-            return device_node;
-        }
     };
 
     struct DeviceRAII
