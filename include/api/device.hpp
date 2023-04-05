@@ -14,8 +14,8 @@ namespace as
 {
     struct QueueFamilyIndex
     {
-        uint32_t graphics;
-        uint32_t present;
+        uint32_t graphics_;
+        uint32_t present_;
     };
 
     struct DeviceRAII;

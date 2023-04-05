@@ -56,11 +56,11 @@ as::Swapchain::Swapchain(Window& window, Context& context, Device& device)
     swapchain_create_info.imageArrayLayers = 1;
     swapchain_create_info.imageUsage = vk::ImageUsageFlagBits::eColorAttachment;
 
-    if (device.queue_family_indices_.graphics != device.queue_family_indices_.present)
+    if (device.queue_family_indices_.graphics_ != device.queue_family_indices_.present_)
     {
         swapchain_create_info.imageSharingMode = vk::SharingMode::eConcurrent;
         swapchain_create_info.queueFamilyIndexCount = 2;
-        swapchain_create_info.pQueueFamilyIndices = &device.queue_family_indices_.graphics;
+        swapchain_create_info.pQueueFamilyIndices = &device.queue_family_indices_.graphics_;
     }
     else
     {

@@ -5,7 +5,7 @@ as::Device* as::DeviceRAII::device_ = nullptr;
 void as::Device::create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers)
 {
     std::vector<vk::DeviceQueueCreateInfo> queue_create_infos{};
-    std::set<uint32_t> unique_queue_families = {queue_family_indices_.graphics, queue_family_indices_.present};
+    std::set<uint32_t> unique_queue_families = {queue_family_indices_.graphics_, queue_family_indices_.present_};
 
     float queue_priority = 1.0f;
     for (uint32_t queue_family : unique_queue_families)
@@ -38,8 +38,8 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     auto_set(*this, physical_.createDevice(device_create_info));
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this);
 
-    graphics_queue_ = this->getQueue(queue_family_indices_.graphics, 0);
-    present_queue_ = this->getQueue(queue_family_indices_.present, 0);
+    graphics_queue_ = this->getQueue(queue_family_indices_.graphics_, 0);
+    present_queue_ = this->getQueue(queue_family_indices_.present_, 0);
 
     vma::VulkanFunctions vma_function{};
     vma_function.vkGetInstanceProcAddr = &vkGetInstanceProcAddr;
@@ -96,8 +96,8 @@ as::Device::Device(Context& context, const std::vector<const char*>& enabled_lay
                 && present_support && swapchain_adaquate && exts_supported        //
                 && supported_feature.samplerAnisotropy)
             {
-                queue_family_indices_.graphics = index;
-                queue_family_indices_.present = index;
+                queue_family_indices_.graphics_ = index;
+                queue_family_indices_.present_ = index;
                 devie_found = true;
                 physical_ = device;
                 break;

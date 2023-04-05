@@ -36,8 +36,8 @@ namespace as
         CmdPool(vk::CommandPoolCreateFlagBits flags);
         ~CmdPool();
 
-        CmdBuffer* alloc_buffer(vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
-        CmdBuffers* alloc_buffers(uint32_t count, vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
+        CmdBuffer& alloc_buffer(vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
+        CmdBuffers& alloc_buffers(uint32_t count, vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
     };
 
 }; // namespace as
