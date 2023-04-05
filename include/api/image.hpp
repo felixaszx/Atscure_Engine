@@ -17,6 +17,7 @@ namespace as
         ~Image() override;
 
         void create_image_view(vk::ImageViewCreateInfo view_info);
+        void destroy_image_view();
     };
 
     struct SwapchainImage : public vk::Image, //

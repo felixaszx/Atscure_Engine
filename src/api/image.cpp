@@ -29,6 +29,12 @@ void as::Image::create_image_view(vk::ImageViewCreateInfo view_info)
     auto_set(*this, device_->createImageView(view_info));
 }
 
+void as::Image::destroy_image_view()
+{
+    device_->destroyImageView(*this);
+    casts(vk::ImageView&, *this) = VK_NULL_HANDLE;
+}
+
 as::SwapchainImage::SwapchainImage(vk::Image& vk_image, vk::Format format)
     : vk::Image(vk_image)
 {

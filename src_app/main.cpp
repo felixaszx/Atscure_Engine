@@ -1,7 +1,10 @@
+#include <iostream>
+#include <string>
 #include "api/context.hpp"
 #include "api/device.hpp"
 #include "api/swapchain.hpp"
 #include "api/cmd.hpp"
+#include "api/syncs.hpp"
 
 int main(int argc, char** argv)
 {
@@ -35,6 +38,7 @@ int main(int argc, char** argv)
     as::CmdPool& cmd_pool = *new as::CmdPool(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
     as::CmdBuffer& main_cmd = *cmd_pool.alloc_buffer();
 
+    attachemnts[0]->destroy_image_view();
 
     delete &device;
     delete &context;

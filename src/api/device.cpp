@@ -142,4 +142,5 @@ as::DeviceRAII::DeviceRAII()
 void as::DeviceRAII::release_res()
 {
     delete this_in_list->release();
+    this_in_list = nullptr;
 }
