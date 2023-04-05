@@ -7,7 +7,8 @@
 
 namespace as
 {
-    struct Swapchain : public vk::SwapchainKHR, public DeviceRAII
+    struct Swapchain : public vk::SwapchainKHR, //
+                       public DeviceRAII
     {
         vk::Extent2D extend_{};
         vk::Format format_{};

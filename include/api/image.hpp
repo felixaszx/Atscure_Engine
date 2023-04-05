@@ -6,9 +6,9 @@
 namespace as
 {
     struct Image : public vk::Image, //
-                   public vk::ImageView,
-                   public vma::Allocation,
-                   public vk::DeviceMemory,
+                   vk::ImageView,
+                   vma::Allocation,
+                   vk::DeviceMemory,
                    public DeviceRAII
     {
         Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info);

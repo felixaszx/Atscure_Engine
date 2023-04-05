@@ -39,6 +39,7 @@ int main(int argc, char** argv)
     as::CmdBuffer& main_cmd = *cmd_pool.alloc_buffer();
     as::CmdBuffer& cmd = *cmd_pool.alloc_buffer();
 
+
     delete &device;
     delete &context;
     delete &window;
