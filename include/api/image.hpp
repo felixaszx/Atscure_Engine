@@ -5,7 +5,7 @@
 
 namespace as
 {
-    struct Image : public vk::Image, //
+    struct Image : vk::Image, //
                    vk::ImageView,
                    vma::Allocation,
                    vk::DeviceMemory,

@@ -6,7 +6,7 @@
 
 namespace as
 {
-    struct Buffer : public vk::Buffer, //
+    struct Buffer : vk::Buffer, //
                     vk::DeviceMemory,
                     vma::Allocation,
                     public DeviceRAII
