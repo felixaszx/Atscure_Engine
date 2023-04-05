@@ -10,12 +10,12 @@
 
 int main(int argc, char** argv)
 {
-    as::Window& window = *new as::Window(1920, 1080);
-    as::Context& context = *new as::Context(true);
+    as::Window window(1920, 1080);
+    as::Context context(true);
     window.create_surface(context);
 
-    as::Device& device = *new as::Device(context, context.VALIDATION_LAYERS);
-    as::Swapchain& swapchain = *new as::Swapchain(window, context, device);
+    as::Device device(context, context.VALIDATION_LAYERS);
+    as::Swapchain swapchain(window, context, device);
 
     std::vector<vk::Extent2D> extends(6, swapchain.extend_);
     std::vector<vk::SampleCountFlagBits> samples(6, vk::SampleCountFlagBits::e1);
@@ -37,16 +37,12 @@ int main(int argc, char** argv)
                                                  vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil};
     auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
-    as::CmdPool& cmd_pool = *new as::CmdPool();
-    {
-        as::DescriptorLayout layout(
-            {{0, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
-             {1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex}});
-    }
+    as::CmdPool cmd_pool;
+    as::DescriptorLayout layout({{0, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
+                                 {1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
+                                 {2, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex}});
 
-    delete &device;
-    delete &context;
-    delete &window;
+    as::DescriptorPool aaaa({&layout}, {});
 
     return EXIT_SUCCESS;
 }

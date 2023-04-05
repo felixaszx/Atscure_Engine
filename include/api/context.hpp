@@ -15,6 +15,8 @@
 #define castr(type, value) reinterpret_cast<type>(value)
 #define castc(type, value) const_cast<type>(value)
 #define castf(type, value) (type)(value)
+#define rnew *new
+#define rdelete delete &
 
 #define try_log() \
     try           \
