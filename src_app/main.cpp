@@ -6,6 +6,7 @@
 #include "api/cmd.hpp"
 #include "api/syncs.hpp"
 #include "api/buffer.hpp"
+#include "api/descriptor.hpp"
 
 int main(int argc, char** argv)
 {
@@ -34,11 +35,13 @@ int main(int argc, char** argv)
                                                  vk::ImageAspectFlagBits::eColor, //
                                                  vk::ImageAspectFlagBits::eColor, //
                                                  vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil};
-    auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);\
+    auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
     as::CmdPool& cmd_pool = *new as::CmdPool();
     {
-        auto cmd = *cmd_pool.alloc_buffer();
+        as::DescriptorLayout layout(
+            {{0, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
+             {1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex}});
     }
 
     delete &device;
