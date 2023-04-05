@@ -69,6 +69,19 @@ namespace as
         void create_surface(Context& context);
     };
 
+    template <typename T, typename Q>
+    void auto_set(T& dst, const Q& src)
+    {
+        casts(Q&, dst) = src;
+    }
+
+    template <typename T, typename V, typename... Q>
+    void auto_set(T& dst, const V& src_f, const Q&... src_b)
+    {
+        auto_set(dst, src_f);
+        auto_set(dst, src_b...);
+    }
+
 }; // namespace as
 
 #endif // CONTEXT_HPP

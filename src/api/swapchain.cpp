@@ -73,26 +73,19 @@ as::Swapchain::Swapchain(Window& window, Context& context, Device& device)
     swapchain_create_info.clipped = VK_TRUE;
     swapchain_create_info.oldSwapchain = VK_NULL_HANDLE;
 
-    casts(vk::SwapchainKHR&, *this) = device.createSwapchainKHR(swapchain_create_info);
+    std::vector<vk::Image> vk_images(image_count);
+    auto_set(*this, device.createSwapchainKHR(swapchain_create_info));
+    vk_images = device.getSwapchainImagesKHR(*this);
     format_ = selected_format.format;
-    images_.resize(image_count);
-    images_ = device.getSwapchainImagesKHR(*this);
+    images_.reserve(image_count);
+    for (vk::Image& image : vk_images)
+    {
+        images_.push_back(new SwapchainImage(image, format_));
+    }
 }
 
 as::Swapchain::~Swapchain()
 {
-    master_device_->waitIdle();
-
-    if (!image_views_.empty())
-    {
-        for (vk::ImageView& image_view : image_views_)
-        {
-            master_device_->destroyImageView(image_view);
-        }
-    }
-    master_device_->destroySwapchainKHR(*this);
-}
-
-void as::Swapchain::create_image_view(Device& device)
-{
+    device_->waitIdle();
+    device_->destroySwapchainKHR(*this);
 }

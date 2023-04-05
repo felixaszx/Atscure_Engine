@@ -3,6 +3,7 @@
 
 #include "context.hpp"
 #include "device.hpp"
+#include "image.hpp"
 
 namespace as
 {
@@ -10,13 +11,10 @@ namespace as
     {
         vk::Extent2D extend_{};
         vk::Format format_{};
-        std::vector<vk::Image> images_{};
-        std::vector<vk::ImageView> image_views_{};
+        std::vector<SwapchainImage*> images_{};
 
         Swapchain(Window& window, Context& context, Device& device);
-        ~Swapchain();
-
-        void create_image_view(Device& device);
+        ~Swapchain() override;
     };
 
 }; // namespace as

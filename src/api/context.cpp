@@ -46,7 +46,7 @@ as::Context::Context(bool validation)
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
     try_log();
-    casts(vk::Instance&, *this) = vk::createInstance(instance_create_info);
+    auto_set(*this, vk::createInstance(instance_create_info));
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this);
     catch_error();
 
