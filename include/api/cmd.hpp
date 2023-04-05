@@ -33,7 +33,7 @@ namespace as
     struct CmdPool : public vk::CommandPool, //
                      public DeviceRAII
     {
-        CmdPool(vk::CommandPoolCreateFlagBits flags);
+        CmdPool(vk::CommandPoolCreateFlagBits flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
         ~CmdPool();
 
         CmdBuffer* alloc_buffer(vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
