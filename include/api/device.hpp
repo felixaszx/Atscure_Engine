@@ -43,10 +43,17 @@ namespace as
 
     struct DeviceRAII
     {
-        static Device* device_;
+        friend Device;
 
+      protected:
+        static Device* device_;
+        std::unique_ptr<DeviceRAII>* this_in_list{};
+
+      public:
         DeviceRAII();
         virtual ~DeviceRAII() {}
+
+        void release_res();
     };
 
 }; // namespace as

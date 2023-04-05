@@ -126,6 +126,7 @@ as::Device::~Device()
 void as::Device::link(DeviceRAII* device_node)
 {
     nodes_.push_back(std::unique_ptr<DeviceRAII>(device_node));
+    device_node->this_in_list = &nodes_.back();
 }
 
 std::mutex list_lock;
@@ -134,3 +135,8 @@ as::DeviceRAII::DeviceRAII()
     std::lock_guard guard(list_lock);
     device_->link(this);
 };
+
+void as::DeviceRAII::release_res()
+{
+    delete this_in_list->release();
+}
