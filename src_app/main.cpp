@@ -36,8 +36,8 @@ int main(int argc, char** argv)
     auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
     as::CmdPool& cmd_pool = *new as::CmdPool(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
-    as::CmdBuffer& main_cmd = cmd_pool.alloc_buffer();
-    as::CmdBuffer& cmd = cmd_pool.alloc_buffer();
+    as::CmdBuffer& main_cmd = *cmd_pool.alloc_buffer();
+    as::CmdBuffer& cmd = *cmd_pool.alloc_buffer();
 
     delete &device;
     delete &context;
