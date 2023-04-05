@@ -36,7 +36,7 @@
     catch (const std::exception& e) \
     {                               \
         as::Log::error(e.what());   \
-    }
+    };
 
 namespace as
 {
@@ -76,7 +76,7 @@ namespace as
     }
 
     template <typename T, typename V, typename... Q>
-    void auto_set(T& dst, const V& src_f, const Q&... src_b)
+    void sset(T& dst, const V& src_f, const Q&... src_b)
     {
         sset(dst, src_f);
         sset(dst, src_b...);

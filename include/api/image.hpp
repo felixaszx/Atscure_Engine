@@ -21,7 +21,7 @@ namespace as
     };
 
     struct SwapchainImage : public vk::Image, //
-                            public vk::ImageView,
+                            vk::ImageView,
                             public DeviceRAII
     {
         SwapchainImage(vk::Image& vk_image, vk::Format format);

@@ -4,7 +4,7 @@ as::Buffer::Buffer(const vk::BufferCreateInfo& buffer_info, const vma::Allocatio
     : size_(buffer_info.size)
 {
     vma::AllocationInfo finish_info{};
-    sset(*this, device_->allocator_.createBuffer(buffer_info, alloc_info, finish_info));
+    sset(*this, device_->allocator_.createBuffer(buffer_info, alloc_info, finish_info).first);
     sset(*this, finish_info.deviceMemory);
 }
 

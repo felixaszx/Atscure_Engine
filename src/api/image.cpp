@@ -4,7 +4,7 @@ as::Image::Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCre
 {
     vma::AllocationInfo finish_info{};
     auto result = device_->allocator_.createImage(image_info, alloc_info, finish_info);
-    auto_set(*this, result.first, result.second, finish_info.deviceMemory);
+    sset(*this, result.first, result.second, finish_info.deviceMemory);
 }
 
 as::Image::Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info,
