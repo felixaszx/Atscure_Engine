@@ -16,7 +16,7 @@ namespace as
         uint32_t present;
     };
 
-    struct DeviceNode;
+    struct DeviceRAII;
     struct Device : public vk::Device
     {
       private:
@@ -24,7 +24,7 @@ namespace as
 
       public:
         const std::vector<const char*> REQUIRED_DEVICE_EXTS = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-        std::list<DeviceNode*> nodes_{};
+        std::list<DeviceRAII*> nodes_{};
         QueueFamilyIndex queue_family_indices_{};
         vk::PhysicalDevice physical_{};
         vk::PhysicalDeviceProperties properties_{};
@@ -43,13 +43,13 @@ namespace as
         }
     };
 
-    struct DeviceNode
+    struct DeviceRAII
     {
         static Device* device_;
         bool deleted_ = false;
 
-        DeviceNode() { device_->link(this); };
-        virtual ~DeviceNode() { deleted_ = true; }
+        DeviceRAII() { device_->link(this); };
+        virtual ~DeviceRAII() { deleted_ = true; }
     };
 
 }; // namespace as

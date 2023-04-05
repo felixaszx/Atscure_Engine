@@ -1,6 +1,6 @@
 #include "api/device.hpp"
 
-as::Device* as::DeviceNode::device_ = nullptr;
+as::Device* as::DeviceRAII::device_ = nullptr;
 
 void as::Device::create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers)
 {
@@ -60,7 +60,7 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     allocator_ = vma::createAllocator(vma_create_info);
     catch_error();
 
-    DeviceNode::device_ = this;
+    DeviceRAII::device_ = this;
 }
 
 as::Device::Device(Context& context, const std::vector<const char*>& enabled_layers)
@@ -122,7 +122,7 @@ as::Device::~Device()
     try_log();
     while (!nodes_.empty())
     {
-        DeviceNode* tmp = nodes_.front();
+        DeviceRAII* tmp = nodes_.front();
         if (!tmp->deleted_)
         {
             delete tmp;

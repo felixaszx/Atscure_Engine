@@ -6,7 +6,7 @@
 namespace as
 {
     struct CmdBuffer : public vk::CommandBuffer, //
-                       public DeviceNode
+                       public DeviceRAII
     {
       private:
         const vk::CommandPool* pool_{};
@@ -18,7 +18,7 @@ namespace as
     };
 
     struct CmdBuffers : std::vector<vk::CommandBuffer>, //
-                        public DeviceNode
+                        public DeviceRAII
     {
       private:
         const vk::CommandPool* pool_{};
@@ -33,7 +33,7 @@ namespace as
     };
 
     struct CmdPool : public vk::CommandPool, //
-                     public DeviceNode
+                     public DeviceRAII
     {
         CmdPool(vk::CommandPoolCreateFlagBits flags);
         ~CmdPool();

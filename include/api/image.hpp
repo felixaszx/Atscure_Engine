@@ -9,7 +9,7 @@ namespace as
                    public vk::ImageView,
                    public vma::Allocation,
                    public vk::DeviceMemory,
-                   public DeviceNode
+                   public DeviceRAII
     {
         Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info);
         Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info,
@@ -21,7 +21,7 @@ namespace as
 
     struct SwapchainImage : public vk::Image, //
                             public vk::ImageView,
-                            public DeviceNode
+                            public DeviceRAII
     {
         SwapchainImage(vk::Image& vk_image, vk::Format format);
         ~SwapchainImage() override;
