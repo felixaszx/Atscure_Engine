@@ -4,6 +4,8 @@
 #include <set>
 #include <algorithm>
 #include <functional>
+#include <mutex>
+#include <thread>
 #include <list>
 
 #include "api/context.hpp"
@@ -46,10 +48,9 @@ namespace as
     struct DeviceRAII
     {
         static Device* device_;
-        bool deleted_ = false;
 
-        DeviceRAII() { device_->link(this); };
-        virtual ~DeviceRAII() { deleted_ = true; }
+        DeviceRAII();
+        virtual ~DeviceRAII() {}
     };
 
 }; // namespace as

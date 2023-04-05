@@ -122,14 +122,17 @@ as::Device::~Device()
     try_log();
     while (!nodes_.empty())
     {
-        DeviceRAII* tmp = nodes_.front();
-        if (!tmp->deleted_)
-        {
-            delete tmp;
-        }
+        delete nodes_.front();
         nodes_.pop_front();
     }
     allocator_.destroy();
     this->destroy();
     catch_warnning();
 }
+
+as::DeviceRAII::DeviceRAII()
+{
+    static std::mutex list_lock{};
+    std::lock_guard guard(list_lock);
+    device_->link(this);
+};
