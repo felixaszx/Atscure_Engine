@@ -13,6 +13,16 @@ as::DescriptorLayout::DescriptorLayout(const std::vector<Binding>& bindings, //
         layout_binding.descriptorType = binding.type_;
         layout_binding.stageFlags = binding.stage_;
         layout_bindings.push_back(layout_binding);
+
+        auto result = this->find(binding.type_);
+        if (result == this->end())
+        {
+            this->insert({binding.type_, 1});
+        }
+        else
+        {
+            result->second++;
+        }
     }
 
     vk::DescriptorSetLayoutCreateInfo create_info{};

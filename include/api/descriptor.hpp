@@ -1,13 +1,17 @@
 #ifndef DESCRIPTOR_HPP
 #define DESCRIPTOR_HPP
 
+#include <unordered_map>
 #include "device.hpp"
 
 namespace as
 {
     struct DescriptorLayout : vk::DescriptorSetLayout, //
+                              std::unordered_map<vk::DescriptorType, uint32_t>,
                               public DeviceRAII
     {
+        using std::unordered_map<vk::DescriptorType, uint32_t>::find;
+
         struct Binding
         {
             uint32_t binding_;
