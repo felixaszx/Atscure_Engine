@@ -38,8 +38,6 @@ int main(int argc, char** argv)
     as::CmdPool& cmd_pool = *new as::CmdPool(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
     as::CmdBuffer& main_cmd = *cmd_pool.alloc_buffer();
 
-    attachemnts[0]->destroy_image_view();
-
     delete &device;
     delete &context;
     delete &window;

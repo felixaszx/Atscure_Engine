@@ -120,7 +120,7 @@ as::Device::~Device()
 {
     while (!nodes_.empty())
     {
-        nodes_.pop_front();
+        nodes_.pop_back();
     }
     allocator_.destroy();
     this->destroy();

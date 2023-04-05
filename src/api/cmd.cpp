@@ -6,7 +6,7 @@ as::CmdBuffer::CmdBuffer(const vk::CommandBuffer& buffer, const vk::CommandPool*
     auto_set(*this, buffer);
 }
 
-void as::CmdBuffer::free()
+as::CmdBuffer::~CmdBuffer()
 {
     device_->freeCommandBuffers(*pool_, *this);
 }
@@ -21,7 +21,7 @@ as::CmdBuffers::CmdBuffers(const std::vector<vk::CommandBuffer>& buffers, const 
     }
 }
 
-void as::CmdBuffers::free()
+as::CmdBuffers::~CmdBuffers()
 {
     device_->freeCommandBuffers(*pool_, *this);
 }
