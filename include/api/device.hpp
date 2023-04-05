@@ -51,9 +51,9 @@ namespace as
 
       public:
         DeviceRAII();
-        virtual ~DeviceRAII() {}
+        virtual ~DeviceRAII();
 
-        void release_res();
+        void release();
     };
 
 }; // namespace as

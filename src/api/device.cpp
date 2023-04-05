@@ -139,8 +139,13 @@ as::DeviceRAII::DeviceRAII()
     device_->link(this);
 };
 
-void as::DeviceRAII::release_res()
+as::DeviceRAII::~DeviceRAII()
 {
-    delete this_in_list->release();
+    release();
+}
+
+void as::DeviceRAII::release()
+{
+    DeviceRAII* tmp = this_in_list->release();
     this_in_list = nullptr;
 }
