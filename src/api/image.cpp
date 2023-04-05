@@ -26,7 +26,7 @@ as::Image::~Image()
 void as::Image::create_image_view(vk::ImageViewCreateInfo view_info)
 {
     view_info.image = *this;
-    auto_set(*this, device_->createImageView(view_info));
+    sset(*this, device_->createImageView(view_info));
 }
 
 void as::Image::destroy_image_view()
@@ -49,7 +49,7 @@ as::SwapchainImage::SwapchainImage(vk::Image& vk_image, vk::Format format)
     create_info.subresourceRange.baseArrayLayer = 0;
     create_info.subresourceRange.layerCount = 1;
 
-    auto_set(*this, device_->createImageView(create_info));
+    sset(*this, device_->createImageView(create_info));
 }
 
 as::SwapchainImage::~SwapchainImage()

@@ -3,7 +3,7 @@
 as::CmdBuffer::CmdBuffer(const vk::CommandBuffer& buffer, const vk::CommandPool* pool)
     : pool_(pool)
 {
-    auto_set(*this, buffer);
+    sset(*this, buffer);
 }
 
 as::CmdBuffer::~CmdBuffer()
@@ -31,7 +31,7 @@ as::CmdPool::CmdPool(vk::CommandPoolCreateFlagBits flags)
     vk::CommandPoolCreateInfo create_info{};
     create_info.flags = flags;
     create_info.queueFamilyIndex = device_->queue_family_indices_.graphics_;
-    auto_set(*this, device_->createCommandPool(create_info));
+    sset(*this, device_->createCommandPool(create_info));
 }
 
 as::CmdPool::~CmdPool()

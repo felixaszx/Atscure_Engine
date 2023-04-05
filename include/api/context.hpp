@@ -70,7 +70,7 @@ namespace as
     };
 
     template <typename T, typename Q>
-    void auto_set(T& dst, const Q& src)
+    void sset(T& dst, const Q& src)
     {
         casts(Q&, dst) = src;
     }
@@ -78,8 +78,8 @@ namespace as
     template <typename T, typename V, typename... Q>
     void auto_set(T& dst, const V& src_f, const Q&... src_b)
     {
-        auto_set(dst, src_f);
-        auto_set(dst, src_b...);
+        sset(dst, src_f);
+        sset(dst, src_b...);
     }
 
 }; // namespace as

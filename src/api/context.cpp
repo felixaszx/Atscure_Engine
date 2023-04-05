@@ -45,7 +45,7 @@ as::Context::Context(bool validation)
         dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
-    auto_set(*this, vk::createInstance(instance_create_info));
+    sset(*this, vk::createInstance(instance_create_info));
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this);
 
     if (validation)

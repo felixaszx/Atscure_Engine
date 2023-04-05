@@ -35,7 +35,7 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
         device_create_info.setPEnabledLayerNames(enabled_layers);
     }
 
-    auto_set(*this, physical_.createDevice(device_create_info));
+    sset(*this, physical_.createDevice(device_create_info));
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this);
 
     graphics_queue_ = this->getQueue(queue_family_indices_.graphics_, 0);

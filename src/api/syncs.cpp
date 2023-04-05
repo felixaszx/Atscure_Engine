@@ -37,7 +37,7 @@ int as::CpuSemaphore::get_value()
 as::GpuSemaphore::GpuSemaphore()
 {
     vk::SemaphoreCreateInfo create_info{};
-    auto_set(*this, device_->createSemaphore(create_info));
+    sset(*this, device_->createSemaphore(create_info));
 }
 
 as::GpuSemaphore::~GpuSemaphore()
@@ -52,7 +52,7 @@ as::GpuFence::GpuFence(bool signal)
     {
         fence_info.flags = vk::FenceCreateFlagBits::eSignaled;
     }
-    auto_set(*this, device_->createFence(fence_info));
+    sset(*this, device_->createFence(fence_info));
 }
 
 as::GpuFence::~GpuFence()
