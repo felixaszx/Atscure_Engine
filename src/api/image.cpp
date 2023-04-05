@@ -57,6 +57,7 @@ as::SwapchainImage::~SwapchainImage()
     device_->destroyImageView(*this);
 }
 
+
 std::vector<as::Image*> as::create_image_attachments(std::vector<vk::Format> formats,              //
                                                      std::vector<vk::Extent2D> extends,            //
                                                      std::vector<vk::SampleCountFlagBits> samples, //
