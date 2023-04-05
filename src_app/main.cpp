@@ -5,12 +5,12 @@
 
 int main(int argc, char** argv)
 {
-    std::unique_ptr<as::Window> window(new as::Window(1920, 1080));
-    auto context = std::make_unique<as::Context>(true);
-    window->create_surface(*context);
+    as::Window& window = *new as::Window(1920, 1080);
+    as::Context& context = *new as::Context(true);
+    window.create_surface(context);
 
-    auto device = std::make_unique<as::Device>(*context, context->VALIDATION_LAYERS);
-    as::Swapchain& swapchain = *new as::Swapchain(*window, *context, *device);
+    as::Device& device = *new as::Device(context, context.VALIDATION_LAYERS);
+    as::Swapchain& swapchain = *new as::Swapchain(window, context, device);
 
     std::vector<vk::Extent2D> extends(6, swapchain.extend_);
     std::vector<vk::SampleCountFlagBits> samples(6, vk::SampleCountFlagBits::e1);
@@ -33,11 +33,11 @@ int main(int argc, char** argv)
     auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
     as::CmdPool& cmd_pool = *new as::CmdPool(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
-    as::CmdBuffers& cmds = *cmd_pool.alloc_buffers(10);
+    as::CmdBuffer& main_cmd = *cmd_pool.alloc_buffer();
 
-    delete device.release();
-    delete context.release();
-    delete window.release();
+    delete &device;
+    delete &context;
+    delete &window;
 
     return EXIT_SUCCESS;
 }

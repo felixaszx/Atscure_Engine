@@ -13,7 +13,8 @@ namespace as
 
       public:
         CmdBuffer(const vk::CommandBuffer& buffer, const vk::CommandPool* pool);
-        ~CmdBuffer();
+
+        void free();
     };
 
     struct CmdBuffers : std::vector<vk::CommandBuffer>, //
@@ -27,7 +28,8 @@ namespace as
         using std::vector<vk::CommandBuffer>::operator[];
 
         CmdBuffers(const std::vector<vk::CommandBuffer>& buffers, const vk::CommandPool* pool);
-        ~CmdBuffers();
+
+        void free();
     };
 
     struct CmdPool : public vk::CommandPool, //

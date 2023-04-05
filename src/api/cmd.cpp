@@ -3,11 +3,10 @@
 as::CmdBuffer::CmdBuffer(const vk::CommandBuffer& buffer, const vk::CommandPool* pool)
     : pool_(pool)
 {
-    this->deleted_ = true;
     auto_set(*this, buffer);
 }
 
-as::CmdBuffer::~CmdBuffer()
+void as::CmdBuffer::free()
 {
     device_->freeCommandBuffers(*pool_, *this);
 }
@@ -15,7 +14,6 @@ as::CmdBuffer::~CmdBuffer()
 as::CmdBuffers::CmdBuffers(const std::vector<vk::CommandBuffer>& buffers, const vk::CommandPool* pool)
     : pool_(pool)
 {
-    this->deleted_ = true;
     this->resize(buffers.size());
     for (int i = 0; i < buffers.size(); i++)
     {
@@ -23,7 +21,7 @@ as::CmdBuffers::CmdBuffers(const std::vector<vk::CommandBuffer>& buffers, const 
     }
 }
 
-as::CmdBuffers::~CmdBuffers()
+void as::CmdBuffers::free()
 {
     device_->freeCommandBuffers(*pool_, *this);
 }
