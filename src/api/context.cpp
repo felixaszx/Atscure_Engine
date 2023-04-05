@@ -45,10 +45,8 @@ as::Context::Context(bool validation)
         dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
-    try_log();
     auto_set(*this, vk::createInstance(instance_create_info));
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this);
-    catch_error();
 
     if (validation)
     {
@@ -60,14 +58,12 @@ as::Context::Context(bool validation)
 
 as::Context::~Context()
 {
-    try_log();
     if (VkSurfaceKHR(surface_) != VK_NULL_HANDLE)
     {
         this->destroySurfaceKHR(surface_);
     }
     this->destroyDebugUtilsMessengerEXT(messenger_);
     this->destroy();
-    catch_warnning();
 }
 
 VkBool32 VKAPI_CALL as::Context::debug_cb(VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,   //
@@ -124,10 +120,8 @@ as::Window::Window(uint32_t width, uint32_t height)
 
 as::Window::~Window()
 {
-    try_log();
     glfwDestroyWindow(window_);
     glfwTerminate();
-    catch_warnning();
 }
 
 void as::Window::create_surface(Context& context)

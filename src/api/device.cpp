@@ -35,10 +35,8 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
         device_create_info.setPEnabledLayerNames(enabled_layers);
     }
 
-    try_log();
     auto_set(*this, physical_.createDevice(device_create_info));
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this);
-    catch_error();
 
     graphics_queue_ = this->getQueue(queue_family_indices_.graphics, 0);
     present_queue_ = this->getQueue(queue_family_indices_.present, 0);
@@ -56,9 +54,7 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     vma_create_info.physicalDevice = physical_;
     vma_create_info.device = *this;
 
-    try_log();
     allocator_ = vma::createAllocator(vma_create_info);
-    catch_error();
 
     DeviceRAII::device_ = this;
 }
@@ -119,14 +115,12 @@ as::Device::Device(Context& context, const std::vector<const char*>& enabled_lay
 
 as::Device::~Device()
 {
-    try_log();
     while (!nodes_.empty())
     {
         nodes_.pop_front();
     }
     allocator_.destroy();
     this->destroy();
-    catch_warnning();
 }
 
 void as::Device::link(DeviceRAII* device_node)
@@ -138,5 +132,5 @@ std::mutex list_lock;
 as::DeviceRAII::DeviceRAII()
 {
     std::lock_guard guard(list_lock);
-   device_->link(this);
+    device_->link(this);
 };
