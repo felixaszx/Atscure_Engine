@@ -51,9 +51,15 @@ int main(int argc, char** argv)
     render_detail.add_image_attachment(*attachemnts[5],                                 //
                                        vk::ImageLayout::eDepthStencilAttachmentOptimal, //
                                        vk::AttachmentLoadOp::eClear);
-    render_detail.add_image_attachment(*attachemnts[6], vk::ImageLayout::ePresentSrcKHR, //
-                                       vk::AttachmentLoadOp::eClear,                     //
-                                       vk::AttachmentStoreOp::eStore);
+    render_detail.attachments_.push_back({});
+    render_detail.attachments_[6].samples = vk::SampleCountFlagBits::e1;
+    render_detail.attachments_[6].format = swapchain.format_;
+    render_detail.attachments_[6].initialLayout = vk::ImageLayout::eUndefined;
+    render_detail.attachments_[6].finalLayout = vk::ImageLayout::ePresentSrcKHR;
+    render_detail.attachments_[6].loadOp = vk::AttachmentLoadOp::eClear;
+    render_detail.attachments_[6].storeOp = vk::AttachmentStoreOp::eStore;
+    render_detail.attachments_[6].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+    render_detail.attachments_[6].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
 
     std::vector<vk::AttachmentReference> reference[3];
     for (uint32_t i = 0; i < 4; i++)

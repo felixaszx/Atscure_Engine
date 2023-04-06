@@ -12,6 +12,7 @@ namespace as
     {
         vk::Extent2D extend_{};
         vk::Format format_{};
+        vk::AttachmentDescription attachment_details_;
         std::vector<SwapchainImage*> images_{};
 
         Swapchain(Window& window, Context& context, Device& device);

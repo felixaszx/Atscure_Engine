@@ -82,6 +82,9 @@ as::Swapchain::Swapchain(Window& window, Context& context, Device& device)
     {
         images_.push_back(new SwapchainImage(image, format_));
     }
+
+    attachment_details_.format = format_;
+    attachment_details_.samples = vk::SampleCountFlagBits::e1;
 }
 
 as::Swapchain::~Swapchain()
