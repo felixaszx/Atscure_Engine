@@ -15,10 +15,9 @@ namespace as
             std::vector<vk::SubpassDependency> dependency_;
             std::vector<vk::SubpassDescription> subpass_;
             std::vector<vk::AttachmentDescription> attachments_;
-            std::vector<std::vector<vk::AttachmentReference>> reference_;
 
             void add_image_attachment(vk::AttachmentDescription& attachment,                               //
-                                      vk::ImageLayout final_layout = vk::ImageLayout::eUndefined,            //
+                                      vk::ImageLayout final_layout = vk::ImageLayout::eUndefined,          //
                                       vk::AttachmentLoadOp load_op = vk::AttachmentLoadOp::eDontCare,      //
                                       vk::AttachmentStoreOp store_op = vk::AttachmentStoreOp::eDontCare,   //
                                       vk::AttachmentLoadOp stencil_load = vk::AttachmentLoadOp::eDontCare, //
