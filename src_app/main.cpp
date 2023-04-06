@@ -110,7 +110,7 @@ int main(int argc, char** argv)
     dependency[1].srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
     dependency[1].dstAccessMask = vk::AccessFlagBits::eInputAttachmentRead;
     render_detail.dependency_ = dependency;
-    as::RenderPass render_pass = rnew as::RenderPass(render_detail);
+    as::RenderPass& render_pass = rnew as::RenderPass(render_detail);
 
     return EXIT_SUCCESS;
 }
