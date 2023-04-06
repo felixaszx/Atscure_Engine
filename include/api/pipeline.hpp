@@ -28,6 +28,24 @@ namespace as
         ~ShaderModule();
     };
 
+    struct GraphicsPipeline : vk::Pipeline, //
+                              public DeviceRAII
+    {
+        GraphicsPipeline(const std::vector<vk::PipelineShaderStageCreateInfo>& shader_stages, //
+                         vk::PipelineVertexInputStateCreateInfo& input_state,                 //
+                         vk::PipelineInputAssemblyStateCreateInfo& input_assembly,            //
+                         vk::PipelineTessellationStateCreateInfo& tessellation,               //
+                         vk::PipelineViewportStateCreateInfo& viewport,                       //
+                         vk::PipelineRasterizationStateCreateInfo& rasterizer,                //
+                         vk::PipelineMultisampleStateCreateInfo& multisample,                 //
+                         vk::PipelineDepthStencilStateCreateInfo& depth_sentcil,              //
+                         vk::PipelineColorBlendStateCreateInfo& color_blend,                  //
+                         vk::PipelineDynamicStateCreateInfo& dynamic_states,                  //
+                         vk::PipelineLayout layout,                                           //
+                         vk::RenderPass render_pass, uint32_t subpass);
+        ~GraphicsPipeline();
+    };
+
 }; // namespace as
 
 #endif // PIPELINE_HPP
