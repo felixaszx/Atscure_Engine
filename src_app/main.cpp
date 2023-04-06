@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     render_detail.attachments_[6].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
     render_detail.attachments_[6].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
 
-    std::vector<vk::AttachmentReference> reference[3];
+    std::vector<std::vector<vk::AttachmentReference>> reference(3);
     for (uint32_t i = 0; i < 4; i++)
     {
         reference[0].push_back({i, vk::ImageLayout::eColorAttachmentOptimal});
@@ -76,6 +76,7 @@ int main(int argc, char** argv)
 
     reference[2].push_back({4, vk::ImageLayout::eShaderReadOnlyOptimal});
     reference[2].push_back({6, vk::ImageLayout::eColorAttachmentOptimal});
+    render_detail.reference_ = reference;
 
     return EXIT_SUCCESS;
 }
