@@ -1,7 +1,5 @@
 #include "api/device.hpp"
 
-as::Device* as::DeviceRAII::device_ = nullptr;
-
 void as::Device::create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers)
 {
     std::vector<vk::DeviceQueueCreateInfo> queue_create_infos{};
