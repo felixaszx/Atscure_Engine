@@ -42,6 +42,34 @@ int main(int argc, char** argv)
     auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
     as::RenderPass::Detail render_detail{};
-   
+    for (int i = 0; i < 5; i++)
+    {
+        render_detail.add_image_attachment(*attachemnts[i],                          //
+                                           vk::ImageLayout::eColorAttachmentOptimal, //
+                                           vk::AttachmentLoadOp::eClear);
+    }
+    render_detail.add_image_attachment(*attachemnts[5],                                 //
+                                       vk::ImageLayout::eDepthStencilAttachmentOptimal, //
+                                       vk::AttachmentLoadOp::eClear);
+    render_detail.add_image_attachment(*attachemnts[6], vk::ImageLayout::ePresentSrcKHR, //
+                                       vk::AttachmentLoadOp::eClear,                     //
+                                       vk::AttachmentStoreOp::eStore);
+
+    std::vector<vk::AttachmentReference> reference[3];
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        reference[0].push_back({i, vk::ImageLayout::eColorAttachmentOptimal});
+    }
+    reference[0].push_back({5, vk::ImageLayout::eDepthStencilAttachmentOptimal});
+
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        reference[1].push_back({i, vk::ImageLayout::eShaderReadOnlyOptimal});
+    }
+    reference[1].push_back({4, vk::ImageLayout::eColorAttachmentOptimal});
+
+    reference[2].push_back({4, vk::ImageLayout::eShaderReadOnlyOptimal});
+    reference[2].push_back({6, vk::ImageLayout::eColorAttachmentOptimal});
+
     return EXIT_SUCCESS;
 }

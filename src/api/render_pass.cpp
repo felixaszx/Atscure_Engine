@@ -13,3 +13,16 @@ as::RenderPass::~RenderPass()
 {
     device_->destroyRenderPass(*this);
 }
+
+void as::RenderPass::Detail::add_image_attachment(vk::AttachmentDescription& attachment, //
+                                                  vk::AttachmentLoadOp load_op,          //
+                                                  vk::AttachmentStoreOp store_op,        //
+                                                  vk::AttachmentLoadOp stencil_load,     //
+                                                  vk::AttachmentStoreOp stencil_store)
+{
+    attachment.loadOp = load_op;
+    attachment.storeOp = store_op;
+    attachment.stencilLoadOp = stencil_load;
+    attachment.stencilStoreOp = stencil_store;
+    attachments_.push_back(attachment);
+}
