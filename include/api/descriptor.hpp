@@ -30,21 +30,16 @@ namespace as
 
     struct DescriptorPool : vk::DescriptorPool, //
                             std::unordered_map<vk::DescriptorType, uint32_t>,
+                            std::vector<vk::DescriptorSet>,
                             public DeviceRAII
     {
         using std::unordered_map<vk::DescriptorType, uint32_t>::find;
         using std::unordered_map<vk::DescriptorType, uint32_t>::begin;
         using std::unordered_map<vk::DescriptorType, uint32_t>::end;
+        using std::vector<vk::DescriptorSet>::size;
+        using std::vector<vk::DescriptorSet>::operator[];
 
-        struct PushConstant
-        {
-            size_t offset_ = 0;
-            size_t size_ = 0;
-            vk::ShaderStageFlagBits stage_{};
-        };
-
-        DescriptorPool(const std::vector<DescriptorLayout*>& layouts, //
-                       const std::vector<PushConstant>& constants = {});
+        DescriptorPool(const std::vector<DescriptorLayout*>& layouts);
         ~DescriptorPool();
     };
 

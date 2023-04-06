@@ -7,6 +7,7 @@
 #include "api/syncs.hpp"
 #include "api/buffer.hpp"
 #include "api/descriptor.hpp"
+#include "api/pipeline.hpp"
 
 int main(int argc, char** argv)
 {
@@ -42,7 +43,9 @@ int main(int argc, char** argv)
                                  {1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
                                  {2, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex}});
 
-    as::DescriptorPool aaaa({&layout}, {});
+    as::DescriptorPool aaaa({&layout, &layout, &layout});
+    as::PipelineLayout pipeline_layout({layout});
+    as::ShaderModule module("main", "res/shader/vert0.spv", vk::ShaderStageFlagBits::eVertex);
 
     return EXIT_SUCCESS;
 }

@@ -41,8 +41,7 @@ as::DescriptorLayout::~DescriptorLayout()
     device_->destroyDescriptorSetLayout(*this);
 }
 
-as::DescriptorPool::DescriptorPool(const std::vector<DescriptorLayout*>& layouts, //
-                                   const std::vector<PushConstant>& constants)
+as::DescriptorPool::DescriptorPool(const std::vector<DescriptorLayout*>& layouts)
 {
     for (const auto& layout : layouts)
     {
@@ -74,6 +73,19 @@ as::DescriptorPool::DescriptorPool(const std::vector<DescriptorLayout*>& layouts
     create_info.setPoolSizes(sizes);
     create_info.maxSets = layouts.size();
     sset(*this, device_->createDescriptorPool(create_info));
+
+    std::vector<vk::DescriptorSetLayout> llayouts;
+    llayouts.reserve(layouts.size());
+    for (auto layout : layouts)
+    {
+        llayouts.push_back(*layout);
+    }
+
+    vk::DescriptorSetAllocateInfo alloc_info{};
+    alloc_info.descriptorPool = *this;
+    alloc_info.descriptorSetCount = layouts.size();
+    alloc_info.setSetLayouts(llayouts);
+    sset(*this, device_->allocateDescriptorSets(alloc_info));
 }
 
 as::DescriptorPool::~DescriptorPool()
