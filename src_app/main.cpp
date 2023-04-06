@@ -111,6 +111,11 @@ int main(int argc, char** argv)
     dependency[1].dstAccessMask = vk::AccessFlagBits::eInputAttachmentRead;
     render_detail.dependency_ = dependency;
     as::RenderPass& render_pass = rnew as::RenderPass(render_detail);
+    for (int i = 0; i < 7; i++)
+    {
+        render_pass.clears_.push_back({{0.0f, 0.0f, 0.0f, 1.0f}});
+    }
+    render_pass.clears_[5].depthStencil = vk::ClearDepthStencilValue(1.0f, 0.0f);
 
     return EXIT_SUCCESS;
 }

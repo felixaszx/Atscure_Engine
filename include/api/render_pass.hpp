@@ -24,6 +24,8 @@ namespace as
                                       vk::AttachmentStoreOp stencil_store = vk::AttachmentStoreOp::eDontCare);
         };
 
+        std::vector<vk::ClearValue> clears_{};
+
         RenderPass(const RenderPass::Detail& details);
         ~RenderPass() override;
     };

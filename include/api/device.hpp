@@ -53,7 +53,7 @@ namespace as
         DeviceRAII();
         virtual ~DeviceRAII();
 
-        void release();
+        DeviceRAII* release();
     };
 
 }; // namespace as

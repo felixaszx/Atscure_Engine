@@ -144,8 +144,9 @@ as::DeviceRAII::~DeviceRAII()
     release();
 }
 
-void as::DeviceRAII::release()
+as::DeviceRAII* as::DeviceRAII::release()
 {
     DeviceRAII* tmp = this_in_list->release();
     this_in_list = nullptr;
+    return tmp;
 }
