@@ -92,6 +92,10 @@ std::vector<as::ImageAttachment*> as::create_image_attachments(std::vector<vk::F
         view_info.subresourceRange.baseArrayLayer = 0;
         view_info.subresourceRange.layerCount = 1;
         attachments[i] = new ImageAttachment(create_info, alloc_info, view_info);
+
+        attachments[i]->format = create_info.format;
+        attachments[i]->samples = create_info.samples;
+        attachments[i]->initialLayout = create_info.initialLayout;
     }
 
     return attachments;
