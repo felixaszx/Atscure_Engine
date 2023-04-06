@@ -57,14 +57,13 @@ as::SwapchainImage::~SwapchainImage()
     device_->destroyImageView(*this);
 }
 
-
-std::vector<as::Image*> as::create_image_attachments(std::vector<vk::Format> formats,              //
-                                                     std::vector<vk::Extent2D> extends,            //
-                                                     std::vector<vk::SampleCountFlagBits> samples, //
-                                                     std::vector<vk::ImageUsageFlags> usages,      //
-                                                     std::vector<vk::ImageAspectFlags> aspects)
+std::vector<as::ImageAttachment*> as::create_image_attachments(std::vector<vk::Format> formats,              //
+                                                               std::vector<vk::Extent2D> extends,            //
+                                                               std::vector<vk::SampleCountFlagBits> samples, //
+                                                               std::vector<vk::ImageUsageFlags> usages,      //
+                                                               std::vector<vk::ImageAspectFlags> aspects)
 {
-    std::vector<Image*> attachments(formats.size());
+    std::vector<ImageAttachment*> attachments(formats.size());
     for (int i = 0; i < attachments.size(); i++)
     {
         vk::ImageCreateInfo create_info{};
@@ -92,8 +91,18 @@ std::vector<as::Image*> as::create_image_attachments(std::vector<vk::Format> for
         view_info.subresourceRange.levelCount = 1;
         view_info.subresourceRange.baseArrayLayer = 0;
         view_info.subresourceRange.layerCount = 1;
-        attachments[i] = new Image(create_info, alloc_info, view_info);
+        attachments[i] = new ImageAttachment(create_info, alloc_info, view_info);
     }
 
     return attachments;
+}
+as::ImageAttachment::ImageAttachment(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info)
+    : Image(image_info, alloc_info)
+{
+}
+
+as::ImageAttachment::ImageAttachment(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info,
+                                     vk::ImageViewCreateInfo view_info)
+    : Image(image_info, alloc_info, view_info)
+{
 }

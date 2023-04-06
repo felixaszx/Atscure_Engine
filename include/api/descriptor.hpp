@@ -25,7 +25,7 @@ namespace as
         DescriptorLayout(const std::vector<Binding>& bindings, //
                          vk::DescriptorSetLayoutCreateFlagBits flags);
         DescriptorLayout(const std::vector<Binding>& bindings);
-        ~DescriptorLayout();
+        ~DescriptorLayout() override;
     };
 
     struct DescriptorPool : vk::DescriptorPool, //
@@ -40,7 +40,7 @@ namespace as
         using std::vector<vk::DescriptorSet>::operator[];
 
         DescriptorPool(const std::vector<DescriptorLayout*>& layouts);
-        ~DescriptorPool();
+        ~DescriptorPool() override;
 
         void update_set(const std::vector<vk::WriteDescriptorSet>& write);
     };

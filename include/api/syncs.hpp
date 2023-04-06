@@ -25,14 +25,14 @@ namespace as
                           public DeviceRAII
     {
         GpuSemaphore();
-        ~GpuSemaphore();
+        ~GpuSemaphore() override;
     };
 
     struct GpuFence : public vk::Fence, //
                       public DeviceRAII
     {
         GpuFence(bool signal);
-        ~GpuFence();
+        ~GpuFence() override;
     };
 
 }; // namespace as

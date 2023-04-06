@@ -18,7 +18,7 @@ namespace as
         const size_t size_ = 0;
 
         Buffer(const vk::BufferCreateInfo& buffer_info, const vma::AllocationCreateInfo& alloc_info);
-        ~Buffer();
+        ~Buffer() override;
 
         Buffer& copy_from(const Buffer& buffer, CmdPool& pool);
 

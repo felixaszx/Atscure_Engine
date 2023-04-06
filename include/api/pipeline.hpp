@@ -12,7 +12,7 @@ namespace as
     {
         PipelineLayout(const std::vector<vk::DescriptorSetLayout>& layouts, //
                        const std::vector<vk::PushConstantRange>& constants = {});
-        ~PipelineLayout();
+        ~PipelineLayout() override;
     };
 
     struct ShaderModule : vk::ShaderModule, //
@@ -25,7 +25,7 @@ namespace as
       public:
         ShaderModule(const std::string& entry, const std::string& file_name, //
                      vk::ShaderStageFlagBits stage);
-        ~ShaderModule();
+        ~ShaderModule() override;
     };
 
     struct GraphicsPipeline : vk::Pipeline, //
@@ -43,7 +43,7 @@ namespace as
                          vk::PipelineDynamicStateCreateInfo& dynamic_states,                  //
                          vk::PipelineLayout layout,                                           //
                          vk::RenderPass render_pass, uint32_t subpass);
-        ~GraphicsPipeline();
+        ~GraphicsPipeline() override;
     };
 
 }; // namespace as
