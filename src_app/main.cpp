@@ -10,8 +10,6 @@
 #include "api/pipeline.hpp"
 #include "api/render_pass.hpp"
 
-#define new new
-
 int main(int argc, char** argv)
 {
     as::Window window(1920, 1080);
