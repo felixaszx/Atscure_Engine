@@ -7,6 +7,8 @@ as::RenderPass::RenderPass(const as::RenderPass::Detail& details)
     create_info.setAttachments(details.attachments_);
     create_info.setDependencies(details.dependency_);
     sset(*this, device_->createRenderPass(create_info));
+
+    renderPass = *this;
 }
 
 as::RenderPass::~RenderPass()

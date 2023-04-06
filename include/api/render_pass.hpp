@@ -8,6 +8,7 @@ namespace as
 {
 
     struct RenderPass : vk::RenderPass, //
+                        public vk::RenderPassBeginInfo,
                         public DeviceRAII
     {
         struct Detail
@@ -23,9 +24,7 @@ namespace as
                                       vk::AttachmentLoadOp stencil_load = vk::AttachmentLoadOp::eDontCare, //
                                       vk::AttachmentStoreOp stencil_store = vk::AttachmentStoreOp::eDontCare);
         };
-
-        std::vector<vk::ClearValue> clears_{};
-
+        
         RenderPass(const RenderPass::Detail& details);
         ~RenderPass() override;
     };
