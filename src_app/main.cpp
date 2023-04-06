@@ -112,11 +112,7 @@ int main(int argc, char** argv)
     render_detail.dependency_ = dependency;
     as::RenderPass& render_pass = rnew as::RenderPass(render_detail);
 
-    std::vector<vk::ClearValue> clears{};
-    for (int i = 0; i < 7; i++)
-    {
-        clears.push_back({{0.0f, 0.0f, 0.0f, 1.0f}});
-    }
+    std::vector<vk::ClearValue> clears(7, {{0.0f, 0.0f, 0.0f, 1.0f}});
     clears[5].depthStencil = vk::ClearDepthStencilValue(1.0f, 0.0f);
     render_pass.setClearValues(clears);
 
