@@ -92,3 +92,8 @@ as::DescriptorPool::~DescriptorPool()
 {
     device_->destroyDescriptorPool(*this);
 }
+
+void as::DescriptorPool::update_set(const std::vector<vk::WriteDescriptorSet>& write)
+{
+    device_->updateDescriptorSets(write, {});
+}

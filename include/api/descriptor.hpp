@@ -41,6 +41,8 @@ namespace as
 
         DescriptorPool(const std::vector<DescriptorLayout*>& layouts);
         ~DescriptorPool();
+
+        void update_set(const std::vector<vk::WriteDescriptorSet>& write);
     };
 
 }; // namespace as
