@@ -9,6 +9,8 @@
 #include "api/descriptor.hpp"
 #include "api/pipeline.hpp"
 
+#define new new
+
 int main(int argc, char** argv)
 {
     as::Window window(1920, 1080);
@@ -38,14 +40,15 @@ int main(int argc, char** argv)
                                                  vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil};
     auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
-    as::CmdPool cmd_pool;
-    as::DescriptorLayout layout({{0, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
-                                 {1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
-                                 {2, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex}});
+    as::CmdPool& cmd_pool = rnew as::CmdPool;
+    as::DescriptorLayout& layout = rnew as::DescriptorLayout //
+        ({{0, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
+          {1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eVertex},
+          {2, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex}});
 
-    as::DescriptorPool aaaa({&layout, &layout, &layout});
-    as::PipelineLayout pipeline_layout({layout});
-    as::ShaderModule module("main", "res/shader/vert0.spv", vk::ShaderStageFlagBits::eVertex);
+    as::DescriptorPool& aaaa = rnew as::DescriptorPool({&layout, &layout, &layout});
+    as::PipelineLayout& pipeline_layout = rnew as::PipelineLayout({layout});
+    as::ShaderModule& module = rnew as::ShaderModule("main", "res/shader/vert0.spv", vk::ShaderStageFlagBits::eVertex);
 
     return EXIT_SUCCESS;
 }
