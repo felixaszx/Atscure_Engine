@@ -114,5 +114,7 @@ int main(int argc, char** argv)
     clears[5].depthStencil = vk::ClearDepthStencilValue(1.0f, 0.0f);
     render_pass.setClearValues(clears);
 
+    as::GraphicsPipelineDetails pipeline_details{};
+
     return EXIT_SUCCESS;
 }
