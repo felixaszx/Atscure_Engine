@@ -45,33 +45,9 @@ as::ShaderModule::~ShaderModule()
     device_->destroyShaderModule(*this);
 }
 
-as::GraphicsPipeline::GraphicsPipeline(const std::vector<vk::PipelineShaderStageCreateInfo>& shader_stages, //
-                                       vk::PipelineVertexInputStateCreateInfo& input_state,                 //
-                                       vk::PipelineInputAssemblyStateCreateInfo& input_assembly,            //
-                                       vk::PipelineTessellationStateCreateInfo& tessellation,               //
-                                       vk::PipelineViewportStateCreateInfo& viewport,                       //
-                                       vk::PipelineRasterizationStateCreateInfo& rasterizer,                //
-                                       vk::PipelineMultisampleStateCreateInfo& multisample,                 //
-                                       vk::PipelineDepthStencilStateCreateInfo& depth_sentcil,              //
-                                       vk::PipelineColorBlendStateCreateInfo& color_blend,                  //
-                                       vk::PipelineDynamicStateCreateInfo& dynamic_states,                  //
-                                       vk::PipelineLayout layout,                                           //
-                                       vk::RenderPass render_pass, uint32_t subpass)
+as::GraphicsPipeline::GraphicsPipeline(GraphicsPipelineDetails& details)
 {
     vk::GraphicsPipelineCreateInfo create_info{};
-    create_info.setStages(shader_stages);
-    create_info.pVertexInputState = &input_state;
-    create_info.pInputAssemblyState = &input_assembly;
-    create_info.pTessellationState = &tessellation;
-    create_info.pViewportState = &viewport;
-    create_info.pRasterizationState = &rasterizer;
-    create_info.pMultisampleState = &multisample;
-    create_info.pDepthStencilState = &depth_sentcil;
-    create_info.pColorBlendState = &color_blend;
-    create_info.pDynamicState = &dynamic_states;
-    create_info.layout = layout;
-    create_info.renderPass = render_pass;
-    create_info.subpass = subpass;
     sset(*this, device_->createGraphicsPipeline(VK_NULL_HANDLE, create_info).value);
 }
 
