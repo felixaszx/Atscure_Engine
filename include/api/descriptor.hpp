@@ -23,8 +23,7 @@ namespace as
         };
 
         DescriptorLayout(const std::vector<Binding>& bindings, //
-                         vk::DescriptorSetLayoutCreateFlagBits flags);
-        DescriptorLayout(const std::vector<Binding>& bindings);
+                         vk::DescriptorSetLayoutCreateFlagBits flags = {});
         ~DescriptorLayout() override;
     };
 

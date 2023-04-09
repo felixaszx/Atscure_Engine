@@ -31,11 +31,6 @@ as::DescriptorLayout::DescriptorLayout(const std::vector<Binding>& bindings, //
     sset(*this, device_->createDescriptorSetLayout(create_info));
 }
 
-as::DescriptorLayout::DescriptorLayout(const std::vector<Binding>& bindings)
-    : DescriptorLayout::DescriptorLayout(bindings, {})
-{
-}
-
 as::DescriptorLayout::~DescriptorLayout()
 {
     device_->destroyDescriptorSetLayout(*this);
