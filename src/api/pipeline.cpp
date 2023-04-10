@@ -45,9 +45,22 @@ as::ShaderModule::~ShaderModule()
     device_->destroyShaderModule(*this);
 }
 
-as::GraphicsPipeline::GraphicsPipeline(GraphicsPipelineDetails& details)
+as::GraphicsPipeline::GraphicsPipeline(GraphicsPipelineDetails& details, //
+                                       const std::vector<vk::PipelineShaderStageCreateInfo>& stage_info)
 {
     vk::GraphicsPipelineCreateInfo create_info{};
+    create_info.setStages(stage_info);
+    create_info.subpass = details.subpass_;
+    create_info.renderPass = details.render_pass_;
+    create_info.layout = details.pipeline_layout_;
+    create_info.pVertexInputState = &details;
+    create_info.pInputAssemblyState = &details;
+    create_info.pViewportState = &details;
+    create_info.pRasterizationState = &details;
+    create_info.pMultisampleState = &details;
+    create_info.pColorBlendState = &details;
+    create_info.pDynamicState = &details;
+    create_info.pDepthStencilState = &details;
     sset(*this, device_->createGraphicsPipeline(VK_NULL_HANDLE, create_info).value);
 }
 

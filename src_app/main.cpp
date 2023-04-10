@@ -125,6 +125,28 @@ int main(int argc, char** argv)
     }
 
     as::GraphicsPipelineDetails pipeline_details[3]{};
+    vk::DynamicState dynamic_states[2] = {vk::DynamicState::eViewport, vk::DynamicState::eScissor};
+    pipeline_details[0].setDynamicStates(dynamic_states);
+    pipeline_details[0].viewportCount = 1;
+    pipeline_details[0].scissorCount = 1;
+
+    pipeline_details[0].polygonMode = vk::PolygonMode::eFill;
+    pipeline_details[0].lineWidth = 1.0f;
+    pipeline_details[0].cullMode = vk::CullModeFlagBits::eBack;
+    pipeline_details[0].frontFace = vk::FrontFace::eCounterClockwise;
+
+    pipeline_details[0].rasterizationSamples = vk::SampleCountFlagBits::e1;
+    vk::PipelineColorBlendAttachmentState color_blend_attachments[3]{};
+    for (int i = 0; i < 3; i++)
+    {
+        color_blend_attachments[i].colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+                                                    vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+    }
+    pipeline_details[0].setAttachments(color_blend_attachments);
+    pipeline_details[0].depthTestEnable = true;
+    pipeline_details[0].depthWriteEnable = true;
+    pipeline_details[0].depthCompareOp = vk::CompareOp::eLess;
+
 
     return EXIT_SUCCESS;
 }

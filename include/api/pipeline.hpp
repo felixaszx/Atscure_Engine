@@ -39,12 +39,16 @@ namespace as
                                      public vk::PipelineDynamicStateCreateInfo,
                                      public vk::PipelineLayout
     {
+        uint32_t subpass_{};
+        vk::RenderPass render_pass_{};
+        vk::PipelineLayout pipeline_layout_{};
     };
 
     struct GraphicsPipeline : vk::Pipeline, //
                               public DeviceRAII
     {
-        GraphicsPipeline(GraphicsPipelineDetails& details);
+        GraphicsPipeline(GraphicsPipelineDetails& details, //
+                         const std::vector<vk::PipelineShaderStageCreateInfo>& stage_info);
         ~GraphicsPipeline() override;
     };
 

@@ -24,7 +24,7 @@ namespace as
                                       vk::AttachmentLoadOp stencil_load = vk::AttachmentLoadOp::eDontCare, //
                                       vk::AttachmentStoreOp stencil_store = vk::AttachmentStoreOp::eDontCare);
         };
-        
+
         RenderPass(const RenderPass::Detail& details);
         ~RenderPass() override;
     };
