@@ -39,6 +39,15 @@ int main(int argc, char** argv)
                                                  vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil};
     auto attachemnts = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
+    std::vector<as::DescriptorLayout::Binding> pipeline_bindings[3]{};
+    pipeline_bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
+
+    std::vector<as::DescriptorLayout*> descriptor_layouts{};
+    descriptor_layouts.push_back(new as::DescriptorLayout(pipeline_bindings[0]));
+
+    as::DescriptorPool& descriptor_pool = rnew as::DescriptorPool(descriptor_layouts);
+    as::PipelineLayout& pipeline_layout = rnew as::PipelineLayout({*descriptor_layouts[0]});
+
     as::RenderPass::Detail render_detail{};
     for (int i = 0; i < 5; i++)
     {
@@ -146,7 +155,6 @@ int main(int argc, char** argv)
     pipeline_details[0].depthTestEnable = true;
     pipeline_details[0].depthWriteEnable = true;
     pipeline_details[0].depthCompareOp = vk::CompareOp::eLess;
-
 
     return EXIT_SUCCESS;
 }
