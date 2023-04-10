@@ -114,7 +114,17 @@ int main(int argc, char** argv)
     clears[5].depthStencil = vk::ClearDepthStencilValue(1.0f, 0.0f);
     render_pass.setClearValues(clears);
 
-    as::GraphicsPipelineDetails pipeline_details{};
+    std::vector<as::ShaderModule*> vert_shaders;
+    std::vector<as::ShaderModule*> frag_shaders;
+    for (int i = 0; i < 3; i++)
+    {
+        vert_shaders.push_back(new as::ShaderModule("main", fmt::format("res/shader/vert{}.spv", i), //
+                                                    vk::ShaderStageFlagBits::eVertex));
+        frag_shaders.push_back(new as::ShaderModule("main", fmt::format("res/shader/frag{}.spv", i), //
+                                                    vk::ShaderStageFlagBits::eFragment));
+    }
+
+    as::GraphicsPipelineDetails pipeline_details[3]{};
 
     return EXIT_SUCCESS;
 }

@@ -15,8 +15,8 @@
 #define castr(type, value) reinterpret_cast<type>(value)
 #define castc(type, value) const_cast<type>(value)
 #define castf(type, value) (type)(value)
-#define rnew *new
-#define rdelete delete &
+#define rnew               *new
+#define rdelete            delete&
 
 #define try_log() \
     try           \
@@ -42,6 +42,9 @@
 
 namespace as
 {
+    template <typename T>
+    using Reff = std::reference_wrapper<T>;
+
     struct Context : public vk::Instance
     {
         vk::SurfaceKHR surface_{};
