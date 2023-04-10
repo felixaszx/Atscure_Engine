@@ -117,10 +117,11 @@ int main(int argc, char** argv)
     dependency[1].srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
     dependency[1].dstAccessMask = vk::AccessFlagBits::eInputAttachmentRead;
     render_detail.dependency_ = dependency;
-    as::RenderPass& render_pass = rnew as::RenderPass(render_detail);
 
     std::vector<vk::ClearValue> clears(7, {{0.0f, 0.0f, 0.0f, 1.0f}});
     clears[5].depthStencil = vk::ClearDepthStencilValue(1.0f, 0.0f);
+
+    as::RenderPass& render_pass = rnew as::RenderPass(render_detail);
     render_pass.setClearValues(clears);
 
     std::vector<as::ShaderModule*> vert_shaders;
