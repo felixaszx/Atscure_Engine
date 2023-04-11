@@ -120,7 +120,6 @@ int main(int argc, char** argv)
 
     std::vector<vk::ClearValue> clears(7, {{0.0f, 0.0f, 0.0f, 1.0f}});
     clears[5].depthStencil = vk::ClearDepthStencilValue(1.0f, 0.0f);
-
     as::RenderPass& render_pass = rnew as::RenderPass(render_detail);
     render_pass.setClearValues(clears);
 
