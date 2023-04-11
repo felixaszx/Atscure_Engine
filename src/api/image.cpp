@@ -57,13 +57,13 @@ as::SwapchainImage::~SwapchainImage()
     device_->destroyImageView(*this);
 }
 
-std::vector<as::Reff<as::ImageAttachment>> as::create_image_attachments(std::vector<vk::Format> formats,              //
-                                                                        std::vector<vk::Extent2D> extends,            //
-                                                                        std::vector<vk::SampleCountFlagBits> samples, //
-                                                                        std::vector<vk::ImageUsageFlags> usages,      //
-                                                                        std::vector<vk::ImageAspectFlags> aspects)
+std::vector<as::ImageAttachment*> as::create_image_attachments(std::vector<vk::Format> formats,              //
+                                                               std::vector<vk::Extent2D> extends,            //
+                                                               std::vector<vk::SampleCountFlagBits> samples, //
+                                                               std::vector<vk::ImageUsageFlags> usages,      //
+                                                               std::vector<vk::ImageAspectFlags> aspects)
 {
-    std::vector<Reff<ImageAttachment>> attachments(formats.size());
+    std::vector<ImageAttachment*> attachments(formats.size());
     for (int i = 0; i < attachments.size(); i++)
     {
         vk::ImageCreateInfo create_info{};
@@ -93,9 +93,9 @@ std::vector<as::Reff<as::ImageAttachment>> as::create_image_attachments(std::vec
         view_info.subresourceRange.layerCount = 1;
         attachments[i] = new ImageAttachment(create_info, alloc_info, view_info);
 
-        attachments[i].get().format = create_info.format;
-        attachments[i].get().samples = create_info.samples;
-        attachments[i].get().initialLayout = create_info.initialLayout;
+        attachments[i]->format = create_info.format;
+        attachments[i]->samples = create_info.samples;
+        attachments[i]->initialLayout = create_info.initialLayout;
     }
 
     return attachments;
