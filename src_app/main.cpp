@@ -42,20 +42,20 @@ int main(int argc, char** argv)
     std::vector<as::DescriptorLayout::Binding> pipeline_bindings[3]{};
     pipeline_bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
 
-    std::vector<as::DescriptorLayout*> descriptor_layouts{};
+    std::vector<as::Reff<as::DescriptorLayout>> descriptor_layouts{};
     descriptor_layouts.push_back(new as::DescriptorLayout(pipeline_bindings[0]));
 
     as::DescriptorPool& descriptor_pool = rnew as::DescriptorPool(descriptor_layouts);
-    as::PipelineLayout& pipeline_layout = rnew as::PipelineLayout({*descriptor_layouts[0]});
+    as::PipelineLayout& pipeline_layout = rnew as::PipelineLayout({descriptor_layouts[0]});
 
     as::RenderPass::Detail render_detail{};
     for (int i = 0; i < 5; i++)
     {
-        render_detail.add_image_attachment(*attachemnts[i],                          //
+        render_detail.add_image_attachment(attachemnts[i],                          //
                                            vk::ImageLayout::eColorAttachmentOptimal, //
                                            vk::AttachmentLoadOp::eClear);
     }
-    render_detail.add_image_attachment(*attachemnts[5],                                 //
+    render_detail.add_image_attachment(attachemnts[5],                                 //
                                        vk::ImageLayout::eDepthStencilAttachmentOptimal, //
                                        vk::AttachmentLoadOp::eClear);
     render_detail.attachments_.push_back({});

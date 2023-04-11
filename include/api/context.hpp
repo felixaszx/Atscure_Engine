@@ -43,7 +43,32 @@
 namespace as
 {
     template <typename T>
-    using Reff = std::reference_wrapper<T>;
+    class Reff
+    {
+      private:
+        T* data_ptr_{};
+
+      public:
+        Reff() {}
+        Reff(T* obj) { data_ptr_ = obj; }
+        Reff(T& obj) { data_ptr_ = &obj; }
+
+        T* operator&() { return data_ptr_; }
+        operator T&() { return *data_ptr_; }
+        T& operator=(const T& obj)
+        {
+            *data_ptr_ = obj;
+            return *this;
+        }
+        T& operator=(T* obj)
+        {
+            data_ptr_ = obj;
+            return *this;
+        }
+
+        Reff* ptr() { return this; }
+        T& get() { return *this; }
+    };
 
     struct Context : public vk::Instance
     {

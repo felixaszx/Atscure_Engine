@@ -38,7 +38,7 @@ namespace as
         using std::vector<vk::DescriptorSet>::size;
         using std::vector<vk::DescriptorSet>::operator[];
 
-        DescriptorPool(const std::vector<DescriptorLayout*>& layouts);
+        DescriptorPool(std::vector<Reff<DescriptorLayout>>& layouts);
         ~DescriptorPool() override;
 
         void update_sets(const std::vector<vk::WriteDescriptorSet>& write);
