@@ -28,26 +28,25 @@ namespace as
         ~ShaderModule() override;
     };
 
-    struct GraphicsPipelineDetails : public vk::PipelineVertexInputStateCreateInfo, //
-                                     public vk::PipelineInputAssemblyStateCreateInfo,
-                                     public vk::PipelineTessellationStateCreateInfo,
-                                     public vk::PipelineViewportStateCreateInfo,
-                                     public vk::PipelineRasterizationStateCreateInfo,
-                                     public vk::PipelineMultisampleStateCreateInfo,
-                                     public vk::PipelineDepthStencilStateCreateInfo,
-                                     public vk::PipelineColorBlendStateCreateInfo,
-                                     public vk::PipelineDynamicStateCreateInfo,
-                                     public vk::PipelineLayout
-    {
-        uint32_t subpass_{};
-        vk::RenderPass render_pass_{};
-        vk::PipelineLayout pipeline_layout_{};
-    };
-
     struct GraphicsPipeline : vk::Pipeline, //
                               public DeviceRAII
     {
-        GraphicsPipeline(GraphicsPipelineDetails& details, //
+        struct Details : public vk::PipelineVertexInputStateCreateInfo, //
+                         public vk::PipelineInputAssemblyStateCreateInfo,
+                         public vk::PipelineTessellationStateCreateInfo,
+                         public vk::PipelineViewportStateCreateInfo,
+                         public vk::PipelineRasterizationStateCreateInfo,
+                         public vk::PipelineMultisampleStateCreateInfo,
+                         public vk::PipelineDepthStencilStateCreateInfo,
+                         public vk::PipelineColorBlendStateCreateInfo,
+                         public vk::PipelineDynamicStateCreateInfo,
+                         public vk::PipelineLayout
+        {
+            uint32_t subpass_{};
+            vk::RenderPass render_pass_{};
+            vk::PipelineLayout pipeline_layout_{};
+        };
+        GraphicsPipeline(Details& details, //
                          const std::vector<vk::PipelineShaderStageCreateInfo>& stage_info);
         ~GraphicsPipeline() override;
     };

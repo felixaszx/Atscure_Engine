@@ -45,7 +45,7 @@ as::ShaderModule::~ShaderModule()
     device_->destroyShaderModule(*this);
 }
 
-as::GraphicsPipeline::GraphicsPipeline(GraphicsPipelineDetails& details, //
+as::GraphicsPipeline::GraphicsPipeline(Details& details, //
                                        const std::vector<vk::PipelineShaderStageCreateInfo>& stage_info)
 {
     vk::GraphicsPipelineCreateInfo create_info{};
