@@ -6,7 +6,7 @@
 #include "api/logging.hpp"
 
 #define AS_SCRIPT_CREATION_NAME "script_obj_creation"
-#define AS_SCRIPT_CREATION_SIG  extern "C" __declspec(dllexport) as::ScriptGeneral* script_obj_creation()
+#define AS_SCRIPT_CREATION_SIG  extern "C" __declspec(dllexport) as::ScriptGeneral* script_obj_creation
 
 namespace as
 {
