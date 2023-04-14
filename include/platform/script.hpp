@@ -5,8 +5,8 @@
 #include <string>
 #include "api/logging.hpp"
 
-#define AS_SCRIPT_CREATION_FUNC_NAME "script_obj_creation"
-#define AS_SCRIPT_CREATION_FUNC_SIG  extern "C" __declspec(dllexport) as::ScriptGeneral* script_obj_creation()
+#define AS_SCRIPT_CREATION_NAME "script_obj_creation"
+#define AS_SCRIPT_CREATION_SIG  extern "C" __declspec(dllexport) as::ScriptGeneral* script_obj_creation()
 
 namespace as
 {
@@ -16,6 +16,7 @@ namespace as
         // each script must have a object creation function with this signature
         // and name: <AS_SCRIPT_CREATION script_obj_creation()>
         using Creation = ScriptGeneral* (*)();
+        virtual ~ScriptGeneral(){};
 
         virtual void init_call() { as::Log::info("Calling [ScriptGeneral] init_call()"); };
         virtual void test_call() { as::Log::info("Calling [ScriptGeneral] testcall()"); };

@@ -1,13 +1,13 @@
 #include <iostream>
 #include "api/logging.hpp"
-#include "platform/script_defines.hpp"
+#include "platform/script.hpp"
 
 struct TestScriptOne : public as::ScriptGeneral
 {
-    void init_call() override { std::cout << "Calliing test's init_call()"; }
+    void init_call() override { std::cout << "Calliing test's init_call()" << std::endl; }
 };
 
-AS_SCRIPT_CREATION_FUNC_SIG
+AS_SCRIPT_CREATION_SIG
 {
     return new TestScriptOne();
 }
