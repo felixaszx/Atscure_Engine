@@ -4,14 +4,20 @@
 #include <windows.h>
 #include "api/logging.hpp"
 
-namespace as
+namespace
 {
     struct WinDLL
     {
         HINSTANCE dll_libs;
 
-        WinDLL(const std::string& dll_name);
-        ~WinDLL();
+        WinDLL(const std::string& dll_name) { dll_libs = LoadLibraryA(dll_name.c_str()); }
+        ~WinDLL()
+        {
+            if (dll_libs != nullptr)
+            {
+                FreeLibrary(dll_libs);
+            }
+        }
 
         template <typename F>
         F get_function(const std::string& func_name)
@@ -24,6 +30,26 @@ namespace as
             return (F) nullptr;
         }
     };
+
+    struct NixDLL
+    {
+    };
+
+    struct UnsopportedPlatform
+    {
+    };
+}; // namespace
+
+namespace as
+{
+
+#if defined(_WIN32)
+    using DynamicLoader = WinDLL;
+#elif defined(__linux__)
+    using DynamicLoader = NixDLL;
+#else
+    using DynamicLoader = UnsopportedPlatform;
+#endif
 
 }; // namespace as
 

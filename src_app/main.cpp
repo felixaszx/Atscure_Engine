@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-    as::WinDLL dsada("build/libtest.dll");
+    as::DynamicLoader dsada("build/libtest.dll");
     auto ddd = dsada.get_function<as::Script::Creation>(AS_SCRIPT_CREATION_NAME);
     auto dddd = ddd();
     dddd->init_call();
