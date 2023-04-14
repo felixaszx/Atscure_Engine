@@ -1,7 +1,7 @@
 #include "engine/renderer.hpp"
 AS_SCRIPT_CREATION_FUNC(as::Renderer)
 
-void as::Renderer::init_call()
+void as::Renderer::init()
 {
     window_ = new Window(1920, 1080);
     context_ = new Context(true);
@@ -53,7 +53,7 @@ void as::Renderer::init_call()
     vk::AttachmentReference attachment_references2[2]{};
 }
 
-void as::Renderer::finish_call()
+void as::Renderer::finish()
 {
     delete device_;
     delete context_;

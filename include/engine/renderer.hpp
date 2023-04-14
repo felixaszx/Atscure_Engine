@@ -16,8 +16,8 @@ namespace as
         Swapchain* swapchian_{};
         std::vector<ImageAttachment*> attachments_{};
 
-        void init_call() override;
-        void finish_call() override;
+        void init() override;
+        void finish() override;
     };
 
 }; // namespace as

@@ -8,8 +8,8 @@ int main(int argc, char** argv)
 {
     as::DynamicLoader renderer_dll("script/bin/librenderer.dll");
     std::unique_ptr<as::Renderer> renderer((as::Renderer*)as::Script::load_creation(renderer_dll));
-    renderer->init_call();
-    renderer->finish_call();
+    renderer->init();
+    renderer->finish();
 
     return EXIT_SUCCESS;
 }

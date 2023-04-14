@@ -23,10 +23,10 @@ namespace as
         using Creation = Script* (*)();
         virtual ~Script(){};
 
-        virtual void init_call() { as::Log::info("Calling [Script] init_call()"); };
-        virtual void finish_call() { as::Log::info("Calling [Script] done_call()"); };
-        virtual void frame_call() { as::Log::info("Calling [Script] frame_call()"); };
-        virtual void fixed_call() { as::Log::info("Calling [Script] fixed_call()"); };
+        virtual void init() { as::Log::info("Calling [Script] init_call()"); };
+        virtual void finish() { as::Log::info("Calling [Script] done_call()"); };
+        virtual void update() { as::Log::info("Calling [Script] frame_call()"); };
+        virtual void fixed() { as::Log::info("Calling [Script] fixed_call()"); };
 
         inline static Script* load_creation(DynamicLoader& loader)
         {
