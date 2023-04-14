@@ -8,7 +8,5 @@
 #include "syncs.hpp"
 #include "buffer.hpp"
 #include "descriptor.hpp"
-#include "pipeline.hpp"
-#include "render_pass.hpp"
 
 #endif // API_WRAPPER_HPP

@@ -14,6 +14,7 @@ namespace as
         Context* context_{};
         Device* device_{};
         Swapchain* swapchian_{};
+        std::vector<ImageAttachment*> attachments_{};
 
         void init_call() override;
         void finish_call() override;
