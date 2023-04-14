@@ -12,8 +12,10 @@ pkg_check_modules(FMT REQUIRED fmt)
 pkg_check_modules(LUA REQUIRED lua)
 
 # engine
+# engine
+# engine
 file(GLOB_RECURSE SRC src/*.cpp)
-add_library(atscure_engine ${SRC})
+add_library(atscure_engine SHARED ${SRC})
 
 # includes-cpp
 target_include_directories(atscure_engine PUBLIC include)
@@ -31,6 +33,8 @@ target_link_libraries(atscure_engine ${FMT_LIBRARIES})
 target_link_libraries(atscure_engine ${LUA_LIBRARIES})
 
 # example app
+# example app
+# example app
 file(GLOB_RECURSE SRC_APP src_app/*.cpp)
 add_executable(atscure_testing ${SRC_APP})
 
@@ -40,5 +44,18 @@ target_include_directories(atscure_testing PUBLIC include_app)
 
 # libraries-cpp
 target_link_libraries(atscure_testing atscure_engine)
+
+# script
+# script
+# script
+file(GLOB_RECURSE SCRIPTS script/*.cpp)
+foreach(SCRIPT_FILE ${SCRIPTS})
+    get_filename_component(SCRIPT_NAME ${SCRIPT_FILE} NAME_WLE)
+    add_library(${SCRIPT_NAME} SHARED ${SCRIPT_FILE})
+    target_include_directories(${SCRIPT_NAME} PUBLIC include)
+    target_include_directories(${SCRIPT_NAME} PUBLIC include_app)
+    target_link_libraries(${SCRIPT_NAME} atscure_engine)
+endforeach()
+
 
 
