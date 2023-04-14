@@ -3,8 +3,9 @@ project(atscure_engine VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS off)
-find_package(PkgConfig REQUIRED)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(VULKAN REQUIRED vulkan)
 pkg_check_modules(ASSIMP REQUIRED assimp)
 pkg_check_modules(GLFW3 REQUIRED glfw3)
@@ -48,14 +49,7 @@ target_link_libraries(atscure_testing atscure_engine)
 # script
 # script
 # script
-file(GLOB_RECURSE SCRIPTS script/*.cpp)
-foreach(SCRIPT_FILE ${SCRIPTS})
-    get_filename_component(SCRIPT_NAME ${SCRIPT_FILE} NAME_WLE)
-    add_library(${SCRIPT_NAME} SHARED ${SCRIPT_FILE})
-    target_include_directories(${SCRIPT_NAME} PUBLIC include)
-    target_include_directories(${SCRIPT_NAME} PUBLIC include_app)
-    target_link_libraries(${SCRIPT_NAME} atscure_engine)
-endforeach()
+add_subdirectory(script)
 
 
 

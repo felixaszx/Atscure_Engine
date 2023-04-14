@@ -2,14 +2,14 @@
 #include <string>
 #include "api/api_wrapper.hpp"
 #include "platform/platform_wrapper.hpp"
+#include "engine/engine_wrapper.hpp"
 
 int main(int argc, char** argv)
 {
-    as::DynamicLoader dsada("build/libtest.dll");
-    auto ddd = dsada.get_function<as::Script::Creation>(AS_SCRIPT_CREATION_NAME);
-    auto dddd = ddd();
-    dddd->init_call();
-    delete dddd;
+    as::DynamicLoader renderer_dll("script/bin/librenderer.dll");
+    std::unique_ptr<as::Renderer> renderer((as::Renderer*)as::Script::load_creation(renderer_dll));
+    renderer->init_call();
+    renderer->finish_call();
 
     return EXIT_SUCCESS;
 }
