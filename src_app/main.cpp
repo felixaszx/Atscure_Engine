@@ -17,6 +17,8 @@ int main(int argc, char** argv)
     renderer_script.write(&engine);
     renderer_script.init();
 
+    renderer->render_scene({});
+
     renderer_script.finish();
     engine_script.finish();
     return EXIT_SUCCESS;

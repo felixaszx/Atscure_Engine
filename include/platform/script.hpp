@@ -7,7 +7,8 @@
 #include "api/logging.hpp"
 #include "platform/loader.hpp"
 
-#define AS_SCRIPT extern "C" __declspec(dllexport)
+#define AS_SCRIPT          extern "C" __declspec(dllexport)
+#define AS_SCRIPT_MEM_FUNC virtual
 
 namespace as
 {

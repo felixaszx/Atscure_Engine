@@ -20,7 +20,7 @@ namespace as
         DescriptorPool* descriptor_pool_{};
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
 
-        void render_scene(const Scene& scene);
+        AS_SCRIPT_MEM_FUNC void render_scene(const Scene& scene);
     };
 
 }; // namespace as
