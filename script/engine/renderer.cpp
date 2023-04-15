@@ -1,16 +1,17 @@
 #include "engine/renderer.hpp"
-AS_SCRIPT_CREATION_FUNC(as::Renderer)
 
-void as::Renderer::init()
+as::Renderer renderer;
+
+AS_SCRIPT void init()
 {
-    window_ = new Window(1920, 1080);
-    context_ = new Context(true);
-    window_->create_surface(*context_);
+    renderer.window_ = new as::Window(1920, 1080);
+    renderer.context_ = new as::Context(true);
+    renderer.window_->create_surface(*renderer.context_);
 
-    device_ = new Device(*context_, context_->VALIDATION_LAYERS);
-    swapchian_ = new Swapchain(*window_, *context_, *device_);
+    renderer.device_ = new as::Device(*renderer.context_, renderer.context_->VALIDATION_LAYERS);
+    renderer.swapchian_ = new as::Swapchain(*renderer.window_, *renderer.context_, *renderer.device_);
 
-    std::vector<vk::Extent2D> extends(6, swapchian_->extend_);
+    std::vector<vk::Extent2D> extends(6, renderer.swapchian_->extend_);
     std::vector<vk::SampleCountFlagBits> samples(6, vk::SampleCountFlagBits::e1);
     std::vector<vk::Format> formats = {vk::Format::eR32G32B32A32Sfloat, vk::Format::eR32G32B32A32Sfloat,
                                        vk::Format::eR32G32B32A32Sfloat, vk::Format::eR32G32B32A32Sfloat,
@@ -28,7 +29,7 @@ void as::Renderer::init()
                                                  vk::ImageAspectFlagBits::eColor, //
                                                  vk::ImageAspectFlagBits::eColor, //
                                                  vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil};
-    attachments_ = as::create_image_attachments(formats, extends, samples, usages, aspects);
+    renderer.attachments_ = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
     vk::AttachmentDescription attachment_descriptions[7]{};
     for (uint32_t i = 0; i < 7; i++)
@@ -44,7 +45,7 @@ void as::Renderer::init()
     }
     attachment_descriptions[5].finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
     attachment_descriptions[5].format = vk::Format::eD32SfloatS8Uint;
-    attachment_descriptions[6].format = swapchian_->format_;
+    attachment_descriptions[6].format = renderer.swapchian_->format_;
     attachment_descriptions[6].finalLayout = vk::ImageLayout::ePresentSrcKHR;
     attachment_descriptions[6].storeOp = vk::AttachmentStoreOp::eStore;
 
@@ -53,9 +54,14 @@ void as::Renderer::init()
     vk::AttachmentReference attachment_references2[2]{};
 }
 
-void as::Renderer::finish()
+AS_SCRIPT void finish()
 {
-    delete device_;
-    delete context_;
-    delete window_;
+    delete renderer.device_;
+    delete renderer.context_;
+    delete renderer.window_;
+}
+
+AS_SCRIPT void* read()
+{
+    return &renderer;
 }

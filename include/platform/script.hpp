@@ -6,31 +6,57 @@
 #include "api/logging.hpp"
 #include "platform/loader.hpp"
 
+#define AS_SCRIPT               extern "C" __declspec(dllexport)
 #define AS_SCRIPT_CREATION_NAME "script_obj_creation"
-#define AS_SCRIPT_CREATION_FUNC(type)                                  \
-    extern "C" __declspec(dllexport) as::Script* script_obj_creation() \
-    {                                                                  \
-        return new type();                                             \
+#define AS_SCRIPT_CREATE_FUNC(type, script) \
+    AS_SCRIPT script* script_obj_creation() \
+    {                                       \
+        return new type();                  \
     }
 
 namespace as
 {
     // all script must inhritance from this
-    struct Script
+    struct ScriptGeneral
     {
         // each script must have a object creation function with this signature
         // and name: <AS_SCRIPT_CREATION script_obj_creation()>
-        using Creation = Script* (*)();
-        virtual ~Script(){};
+        using Creation = ScriptGeneral* (*)();
+        virtual ~ScriptGeneral(){};
 
-        virtual void init() { as::Log::info("Calling [Script] init_call()"); };
-        virtual void finish() { as::Log::info("Calling [Script] done_call()"); };
-        virtual void update() { as::Log::info("Calling [Script] frame_call()"); };
-        virtual void fixed() { as::Log::info("Calling [Script] fixed_call()"); };
+        virtual void init() = 0;
+        virtual void finish() = 0;
 
-        inline static Script* load_creation(DynamicLoader& loader)
+        inline static ScriptGeneral* create(DynamicLoader& loader)
         {
             return loader.get_function<Creation>(AS_SCRIPT_CREATION_NAME)();
+        }
+    };
+
+    using init_func = void (*)();
+    using finish_func = void (*)();
+    using update_func = void (*)();
+    using fixed_func = void (*)();
+    using write_func = void (*)(void*);
+    using read_func = void* (*)();
+
+    struct Script2
+    {
+        init_func init{};
+        finish_func finish{};
+        update_func update{};
+        fixed_func fixed{};
+        write_func write{};
+        read_func read{};
+
+        Script2(DynamicLoader& loader)
+        {
+            init = LoadFunc(loader, "init");
+            finish = LoadFunc(loader, "finish");
+            update = LoadFunc(loader, "update");
+            fixed = LoadFunc(loader, "fixed");
+            write = LoadFunc(loader, "write");
+            read = LoadFunc(loader, "read");
         }
     };
 

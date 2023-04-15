@@ -4,52 +4,63 @@
 #include <windows.h>
 #include "api/logging.hpp"
 
-namespace
+namespace as
 {
-    struct WinDLL
-    {
-        HINSTANCE dll_libs;
 
-        WinDLL(const std::string& dll_name) { dll_libs = LoadLibraryA(dll_name.c_str()); }
-        ~WinDLL()
+#if defined(_WIN32)
+    struct DynamicLoader
+    {
+        HINSTANCE dll_libs_;
+
+        DynamicLoader(const std::string& dll_name) { dll_libs_ = LoadLibraryA(dll_name.c_str()); }
+        ~DynamicLoader()
         {
-            if (dll_libs != nullptr)
+            if (dll_libs_ != nullptr)
             {
-                FreeLibrary(dll_libs);
+                FreeLibrary(dll_libs_);
             }
         }
 
         template <typename F>
         F get_function(const std::string& func_name)
         {
-            if (dll_libs != nullptr)
+            if (dll_libs_ != nullptr)
             {
-                return (F)GetProcAddress(dll_libs, func_name.c_str());
+                return (F)GetProcAddress(dll_libs_, func_name.c_str());
             }
 
             return (F) nullptr;
         }
     };
-
-    struct NixDLL
-    {
-    };
-
-    struct UnsopportedPlatform
-    {
-    };
-}; // namespace
-
-namespace as
-{
-
-#if defined(_WIN32)
-    using DynamicLoader = WinDLL;
 #elif defined(__linux__)
-    using DynamicLoader = NixDLL;
+    struct DynamicLoader
+    {
+    };
 #else
-    using DynamicLoader = UnsopportedPlatform;
+    struct DynamicLoader
+    {
+    };
 #endif
+
+    class LoadFunc
+    {
+      private:
+        DynamicLoader* loader_{};
+        std::string name_{};
+
+      public:
+        LoadFunc(DynamicLoader& loader, const std::string& func_name)
+        {
+            loader_ = &loader;
+            name_ = func_name;
+        }
+
+        template <typename T>
+        operator T()
+        {
+            return loader_->get_function<T>(name_);
+        }
+    };
 
 }; // namespace as
 

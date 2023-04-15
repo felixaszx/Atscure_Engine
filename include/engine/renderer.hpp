@@ -8,16 +8,13 @@
 
 namespace as
 {
-    struct Renderer : public Script
+    struct Renderer
     {
         Window* window_{};
         Context* context_{};
         Device* device_{};
         Swapchain* swapchian_{};
         std::vector<ImageAttachment*> attachments_{};
-
-        void init() override;
-        void finish() override;
     };
 
 }; // namespace as
