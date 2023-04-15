@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <atomic>
 #include "../api/api_wrapper.hpp"
 #include "../platform/platform_wrapper.hpp"
 #include "engine.hpp"
