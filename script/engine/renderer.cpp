@@ -18,6 +18,8 @@ void as::Renderer::render_scene(const Scene& scene)
     }
     uint32_t image_index = engine_->device_->acquireNextImageKHR(*engine_->swapchian_, UINT64_MAX, *image_sem_).value;
     engine_->device_->resetFences(*frame_fence_);
+
+    main_cmd_->reset();
 }
 
 as::Renderer::~Renderer()
@@ -41,8 +43,6 @@ as::Renderer::~Renderer()
         engine_->device_->destroyPipelineLayout(pipeline_layouts_[i]);
     }
     engine_->device_->destroyRenderPass(render_pass_);
-
-    main_cmd_->reset();
 }
 
 /*
