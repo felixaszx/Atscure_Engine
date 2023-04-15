@@ -15,5 +15,9 @@ int main(int argc, char** argv)
     as::Renderer* renderer = renderer_script.create<as::Renderer>(engine);
 
     renderer->render_scene({});
+
+    delete renderer;
+    delete engine;
+
     return EXIT_SUCCESS;
 }
