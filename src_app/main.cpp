@@ -13,13 +13,11 @@ int main(int argc, char** argv)
 
     as::DynamicLoader renderer_dll("script/bin/librenderer.dll");
     as::Script renderer_script(renderer_dll);
-    as::Renderer* renderer = (as::Renderer*)renderer_script.read();
-    renderer_script.write(&engine);
-    renderer_script.init();
+    as::Renderer* renderer = as::ScriptCreate(renderer_script, engine);
 
     renderer->render_scene({});
 
-    renderer_script.finish();
+    delete renderer;
     engine_script.finish();
     return EXIT_SUCCESS;
 }

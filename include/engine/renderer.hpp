@@ -21,6 +21,7 @@ namespace as
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
 
         AS_SCRIPT_MEM_FUNC void render_scene(const Scene& scene);
+        AS_SCRIPT_MEM_FUNC ~Renderer();
     };
 
 }; // namespace as

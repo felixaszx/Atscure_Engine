@@ -10,17 +10,33 @@ void as::Renderer::render_scene(const Scene& scene)
 {
 }
 
+as::Renderer::~Renderer()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        engine_->device_->destroyPipelineLayout(pipeline_layouts_[i]);
+    }
+    engine_->device_->destroyRenderPass(render_pass_);
+}
+
 /*
  *
  * SCRIPT PART
  *
  */
+as::Renderer* renderer{};
 
-as::Engine* engine{};
-as::Renderer renderer{};
-
-AS_SCRIPT void init()
+AS_SCRIPT void* read()
 {
+    return renderer;
+}
+
+AS_SCRIPT void write(void* src)
+{
+    as::Engine* engine = (as::Engine*)src;
+    renderer = new as::Renderer;
+    renderer->engine_ = engine;
+
     std::vector<vk::Extent2D> extends(6, engine->swapchian_->extend_);
     std::vector<vk::SampleCountFlagBits> samples(6, vk::SampleCountFlagBits::e1);
     std::vector<vk::Format> formats = {vk::Format::eR32G32B32A32Sfloat, vk::Format::eR32G32B32A32Sfloat,
@@ -39,7 +55,7 @@ AS_SCRIPT void init()
                                                  vk::ImageAspectFlagBits::eColor, //
                                                  vk::ImageAspectFlagBits::eColor, //
                                                  vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil};
-    renderer.attachments_ = as::create_image_attachments(formats, extends, samples, usages, aspects);
+    renderer->attachments_ = as::create_image_attachments(formats, extends, samples, usages, aspects);
 
     vk::AttachmentDescription attachment_descriptions[7]{};
     for (uint32_t i = 0; i < 7; i++)
@@ -121,7 +137,7 @@ AS_SCRIPT void init()
     render_pass_info.setSubpasses(subpasses);
     render_pass_info.setAttachments(attachment_descriptions);
     render_pass_info.setDependencies(dependencies);
-    renderer.render_pass_ = engine->device_->createRenderPass(render_pass_info);
+    renderer->render_pass_ = engine->device_->createRenderPass(render_pass_info);
 
     std::vector<as::DescriptorLayout::Binding> bindings[3]{};
     bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
@@ -134,34 +150,15 @@ AS_SCRIPT void init()
 
     for (int i = 0; i < 3; i++)
     {
-        renderer.descriptor_layouts_.push_back(new as::DescriptorLayout(bindings[i]));
+        renderer->descriptor_layouts_.push_back(new as::DescriptorLayout(bindings[i]));
     }
-    renderer.descriptor_pool_ = new as::DescriptorPool(renderer.descriptor_layouts_);
+    renderer->descriptor_pool_ = new as::DescriptorPool(renderer->descriptor_layouts_);
 
     for (int i = 0; i < 3; i++)
     {
         vk::PipelineLayoutCreateInfo create_info{};
-        create_info.pSetLayouts = renderer.descriptor_layouts_[i];
+        create_info.pSetLayouts = renderer->descriptor_layouts_[i];
         create_info.setLayoutCount = 1;
-        renderer.pipeline_layouts_.push_back(engine->device_->createPipelineLayout(create_info));
+        renderer->pipeline_layouts_.push_back(engine->device_->createPipelineLayout(create_info));
     }
-}
-
-AS_SCRIPT void finish()
-{
-    for (int i = 0; i < 3; i++)
-    {
-        engine->device_->destroyPipelineLayout(renderer.pipeline_layouts_[i]);
-    }
-    engine->device_->destroyRenderPass(renderer.render_pass_);
-}
-
-AS_SCRIPT void* read()
-{
-    return &renderer;
-}
-
-AS_SCRIPT void write(void* src)
-{
-    memcpy(&engine, src, sizeof(engine));
 }
