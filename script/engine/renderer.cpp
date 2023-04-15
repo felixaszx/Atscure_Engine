@@ -1,5 +1,21 @@
 #include "engine/renderer.hpp"
 
+/*
+ *
+ * class PART
+ *
+ */
+
+void as::Renderer::render_scene(const Scene& scene)
+{
+}
+
+/*
+ *
+ * SCRIPT PART
+ *
+ */
+
 as::Engine* engine{};
 as::Renderer renderer{};
 

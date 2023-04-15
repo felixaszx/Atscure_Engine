@@ -6,13 +6,10 @@
 #include "../api/api_wrapper.hpp"
 #include "../platform/platform_wrapper.hpp"
 #include "engine.hpp"
+#include "scene.hpp"
 
 namespace as
 {
-    struct Scene
-    {
-    };
-
     struct Renderer
     {
         as::Engine* engine;
@@ -22,6 +19,8 @@ namespace as
         std::vector<DescriptorLayout*> descriptor_layouts_{};
         DescriptorPool* descriptor_pool_{};
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
+
+        void render_scene(const Scene& scene);
     };
 
 }; // namespace as
