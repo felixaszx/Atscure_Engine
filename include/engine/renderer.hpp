@@ -23,12 +23,13 @@ namespace as
         DescriptorPool* descriptor_pool_{};
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
         std::vector<vk::Pipeline> pipelines_{};
+        std::vector<vk::Framebuffer> framebufs_{};
 
-        GpuSemaphore* image_sema_{};
+        GpuSemaphore* image_sem_{};
         GpuSemaphore* submit_sem_{};
         GpuFence* frame_fence_{};
         CmdPool* cmd_pool_{};
-        std::vector<vk::Framebuffer> framebufs_{};
+        CmdBuffer* main_cmd_{};
 
         AS_SCRIPT_MEM_FUNC void render_scene(const Scene& scene);
         AS_SCRIPT_MEM_FUNC ~Renderer();

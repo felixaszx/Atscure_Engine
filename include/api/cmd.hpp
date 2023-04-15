@@ -30,6 +30,10 @@ namespace as
         ~CmdBuffers() override;
     };
 
+    void begin_cmd(vk::CommandBuffer* cmd,                              //
+                   vk::CommandBufferInheritanceInfo* inheritance = {}, //
+                   vk::CommandBufferUsageFlags flags = {});
+
     struct CmdPool : public vk::CommandPool, //
                      public DeviceRAII
     {

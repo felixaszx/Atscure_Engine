@@ -8,6 +8,16 @@
 
 void as::Renderer::render_scene(const Scene& scene)
 {
+    try
+    {
+        auto result = engine_->device_->waitForFences(*frame_fence_, true, UINT64_MAX);
+    }
+    catch (const std::exception& e)
+    {
+        as::Log::error(e.what());
+    }
+    uint32_t image_index = engine_->device_->acquireNextImageKHR(*engine_->swapchian_, UINT64_MAX, *image_sem_).value;
+    engine_->device_->resetFences(*frame_fence_);
 }
 
 as::Renderer::~Renderer()
@@ -18,7 +28,7 @@ as::Renderer::~Renderer()
     }
 
     delete cmd_pool_;
-    delete image_sema_;
+    delete image_sem_;
     delete submit_sem_;
     delete frame_fence_;
 
@@ -31,6 +41,9 @@ as::Renderer::~Renderer()
         engine_->device_->destroyPipelineLayout(pipeline_layouts_[i]);
     }
     engine_->device_->destroyRenderPass(render_pass_);
+
+    main_cmd_->reset();
+    as::begin_cmd(main_cmd_);
 }
 
 /*
@@ -388,7 +401,8 @@ AS_SCRIPT void write(void* src)
     }
 
     renderer->cmd_pool_ = new as::CmdPool;
-    renderer->image_sema_ = new as::GpuSemaphore;
+    renderer->main_cmd_ = renderer->cmd_pool_->alloc_buffer();
+    renderer->image_sem_ = new as::GpuSemaphore;
     renderer->submit_sem_ = new as::GpuSemaphore;
     renderer->frame_fence_ = new as::GpuFence(true);
 

@@ -58,3 +58,13 @@ as::CmdBuffers* as::CmdPool::alloc_buffers(uint32_t count, vk::CommandBufferLeve
 
     return new CmdBuffers(device_->allocateCommandBuffers(alloc_info), this);
 }
+
+void as::begin_cmd(vk::CommandBuffer* cmd,                         //
+                   vk::CommandBufferInheritanceInfo* inheritance, //
+                   vk::CommandBufferUsageFlags flags)
+{
+    vk::CommandBufferBeginInfo begin_info{};
+    begin_info.pInheritanceInfo = inheritance;
+    begin_info.flags = flags;
+    cmd->begin(begin_info);
+}
