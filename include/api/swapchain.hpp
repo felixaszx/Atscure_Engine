@@ -4,6 +4,7 @@
 #include "context.hpp"
 #include "device.hpp"
 #include "image.hpp"
+#include "syncs.hpp"
 
 namespace as
 {
@@ -17,6 +18,8 @@ namespace as
 
         Swapchain(Window& window, Context& context, Device& device);
         ~Swapchain() override;
+
+        vk::Result present(uint32_t image_index, const std::vector<GpuSemaphore>& wait_sems);
     };
 
 }; // namespace as

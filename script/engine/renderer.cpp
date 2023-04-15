@@ -12,6 +12,16 @@ void as::Renderer::render_scene(const Scene& scene)
 
 as::Renderer::~Renderer()
 {
+    for (int i = 0; i < framebufs_.size(); i++)
+    {
+        engine_->device_->destroyFramebuffer(framebufs_[i]);
+    }
+
+    delete cmd_pool_;
+    delete image_sema_;
+    delete submit_sem_;
+    delete frame_fence_;
+
     for (int i = 0; i < pipelines_.size(); i++)
     {
         engine_->device_->destroyPipeline(pipelines_[i]);
@@ -89,11 +99,11 @@ AS_SCRIPT void write(void* src)
                                        vk::Format::eR32G32B32A32Sfloat, vk::Format::eR32G32B32A32Sfloat,
                                        vk::Format::eR32G32B32A32Sfloat, vk::Format::eD32SfloatS8Uint};
     std::vector<vk::ImageUsageFlags> usages = {
-        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eColorAttachment, //
-        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eColorAttachment, //
-        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eColorAttachment, //
-        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eColorAttachment, //
-        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eColorAttachment, //
+        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eInputAttachment, //
+        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eInputAttachment, //
+        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eInputAttachment, //
+        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eInputAttachment, //
+        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eInputAttachment, //
         vk::ImageUsageFlagBits::eDepthStencilAttachment};
     std::vector<vk::ImageAspectFlags> aspects = {vk::ImageAspectFlagBits::eColor, //
                                                  vk::ImageAspectFlagBits::eColor, //
@@ -220,54 +230,183 @@ AS_SCRIPT void write(void* src)
                                         vk::ShaderStageFlagBits::eFragment);
     }
 
-    vk::PipelineVertexInputStateCreateInfo input_state{};
-    input_state.setVertexAttributeDescriptions(attribute_description);
-    input_state.setVertexBindingDescriptions(binding_description);
+    {
+        vk::PipelineVertexInputStateCreateInfo input_state{};
+        input_state.setVertexAttributeDescriptions(attribute_description);
+        input_state.setVertexBindingDescriptions(binding_description);
 
-    vk::PipelineViewportStateCreateInfo viewport_state{};
-    viewport_state.viewportCount = 1;
-    viewport_state.scissorCount = 1;
+        vk::PipelineViewportStateCreateInfo viewport_state{};
+        viewport_state.viewportCount = 1;
+        viewport_state.scissorCount = 1;
 
-    vk::PipelineRasterizationStateCreateInfo rasterizer_state{};
-    rasterizer_state.cullMode = vk::CullModeFlagBits::eBack;
-    rasterizer_state.polygonMode = vk::PolygonMode::eFill;
-    rasterizer_state.lineWidth = 1.0f;
+        vk::PipelineRasterizationStateCreateInfo rasterizer_state{};
+        rasterizer_state.cullMode = vk::CullModeFlagBits::eBack;
+        rasterizer_state.polygonMode = vk::PolygonMode::eFill;
+        rasterizer_state.lineWidth = 1.0f;
 
-    vk::PipelineColorBlendStateCreateInfo blend_state{};
-    vk::PipelineColorBlendAttachmentState blend_attachment_state{};
-    blend_attachment_state.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
-                                            vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
-    std::vector<vk::PipelineColorBlendAttachmentState> blend_attachment_states(4, blend_attachment_state);
-    blend_state.setAttachments(blend_attachment_states);
+        vk::PipelineColorBlendStateCreateInfo blend_state{};
+        vk::PipelineColorBlendAttachmentState blend_attachment_state{};
+        blend_attachment_state.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+                                                vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+        std::vector<vk::PipelineColorBlendAttachmentState> blend_attachment_states(4, blend_attachment_state);
+        blend_state.setAttachments(blend_attachment_states);
 
-    vk::PipelineDepthStencilStateCreateInfo depth_state{};
-    depth_state.depthTestEnable = true;
-    depth_state.depthWriteEnable = true;
-    depth_state.depthCompareOp = vk::CompareOp::eLess;
+        vk::PipelineDepthStencilStateCreateInfo depth_state{};
+        depth_state.depthTestEnable = true;
+        depth_state.depthWriteEnable = true;
+        depth_state.depthCompareOp = vk::CompareOp::eLess;
 
-    vk::PipelineInputAssemblyStateCreateInfo input_assembly{};
-    input_assembly.topology = vk::PrimitiveTopology::eTriangleList;
+        vk::PipelineInputAssemblyStateCreateInfo input_assembly{};
+        input_assembly.topology = vk::PrimitiveTopology::eTriangleList;
 
-    vk::PipelineMultisampleStateCreateInfo multisample_state{};
-    multisample_state.rasterizationSamples = vk::SampleCountFlagBits::e1;
+        vk::PipelineMultisampleStateCreateInfo multisample_state{};
+        multisample_state.rasterizationSamples = vk::SampleCountFlagBits::e1;
 
-    vk::PipelineDynamicStateCreateInfo dynamic_states{};
-    vk::DynamicState dss[] = {vk::DynamicState::eViewport, vk::DynamicState::eScissor};
-    dynamic_states.setDynamicStates(dss);
+        vk::PipelineDynamicStateCreateInfo dynamic_states{};
+        vk::DynamicState dss[] = {vk::DynamicState::eViewport, vk::DynamicState::eScissor};
+        dynamic_states.setDynamicStates(dss);
 
-    vk::GraphicsPipelineCreateInfo pipeline_info0{};
-    vk::PipelineShaderStageCreateInfo stages0[] = {*verts[0], *frags[0]};
-    pipeline_info0.setStages(stages0);
-    pipeline_info0.pVertexInputState = &input_state;
-    pipeline_info0.pInputAssemblyState = &input_assembly;
-    pipeline_info0.pViewportState = &viewport_state;
-    pipeline_info0.pRasterizationState = &rasterizer_state;
-    pipeline_info0.pMultisampleState = &multisample_state;
-    pipeline_info0.pColorBlendState = &blend_state;
-    pipeline_info0.pDynamicState = &dynamic_states;
-    pipeline_info0.pDepthStencilState = &depth_state;
-    pipeline_info0.layout = renderer->pipeline_layouts_[0];
-    pipeline_info0.renderPass = renderer->render_pass_;
-    pipeline_info0.subpass = 0;
-    renderer->pipelines_.push_back(engine->device_->createGraphicsPipeline({}, pipeline_info0).value);
+        vk::GraphicsPipelineCreateInfo pipeline_info{};
+        vk::PipelineShaderStageCreateInfo stages0[] = {*verts[0], *frags[0]};
+        pipeline_info.setStages(stages0);
+        pipeline_info.pVertexInputState = &input_state;
+        pipeline_info.pInputAssemblyState = &input_assembly;
+        pipeline_info.pViewportState = &viewport_state;
+        pipeline_info.pRasterizationState = &rasterizer_state;
+        pipeline_info.pMultisampleState = &multisample_state;
+        pipeline_info.pColorBlendState = &blend_state;
+        pipeline_info.pDynamicState = &dynamic_states;
+        pipeline_info.pDepthStencilState = &depth_state;
+        pipeline_info.layout = renderer->pipeline_layouts_[0];
+        pipeline_info.renderPass = renderer->render_pass_;
+        pipeline_info.subpass = 0;
+        renderer->pipelines_.push_back(engine->device_->createGraphicsPipeline({}, pipeline_info).value);
+    }
+
+    {
+        vk::PipelineVertexInputStateCreateInfo input_state{};
+
+        vk::PipelineViewportStateCreateInfo viewport_state{};
+        viewport_state.viewportCount = 1;
+        viewport_state.scissorCount = 1;
+
+        vk::PipelineRasterizationStateCreateInfo rasterizer_state{};
+        rasterizer_state.cullMode = vk::CullModeFlagBits::eBack;
+        rasterizer_state.polygonMode = vk::PolygonMode::eFill;
+        rasterizer_state.lineWidth = 1.0f;
+
+        vk::PipelineColorBlendStateCreateInfo blend_state{};
+        vk::PipelineColorBlendAttachmentState blend_attachment_state{};
+        blend_attachment_state.blendEnable = true;
+        blend_attachment_state.colorBlendOp = vk::BlendOp::eAdd;
+        blend_attachment_state.srcColorBlendFactor = vk::BlendFactor::eOne;
+        blend_attachment_state.dstColorBlendFactor = vk::BlendFactor::eOne;
+        blend_attachment_state.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+                                                vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+        std::vector<vk::PipelineColorBlendAttachmentState> blend_attachment_states(1, blend_attachment_state);
+        blend_state.setAttachments(blend_attachment_states);
+
+        vk::PipelineDepthStencilStateCreateInfo depth_state{};
+        depth_state.depthTestEnable = false;
+        depth_state.depthWriteEnable = false;
+
+        vk::PipelineInputAssemblyStateCreateInfo input_assembly{};
+        input_assembly.topology = vk::PrimitiveTopology::eTriangleList;
+
+        vk::PipelineMultisampleStateCreateInfo multisample_state{};
+        multisample_state.rasterizationSamples = vk::SampleCountFlagBits::e1;
+
+        vk::PipelineDynamicStateCreateInfo dynamic_states{};
+        vk::DynamicState dss[] = {vk::DynamicState::eViewport, vk::DynamicState::eScissor};
+        dynamic_states.setDynamicStates(dss);
+
+        vk::GraphicsPipelineCreateInfo pipeline_info{};
+        vk::PipelineShaderStageCreateInfo stages[] = {*verts[1], *frags[1]};
+        pipeline_info.setStages(stages);
+        pipeline_info.pVertexInputState = &input_state;
+        pipeline_info.pInputAssemblyState = &input_assembly;
+        pipeline_info.pViewportState = &viewport_state;
+        pipeline_info.pRasterizationState = &rasterizer_state;
+        pipeline_info.pMultisampleState = &multisample_state;
+        pipeline_info.pColorBlendState = &blend_state;
+        pipeline_info.pDynamicState = &dynamic_states;
+        pipeline_info.pDepthStencilState = &depth_state;
+        pipeline_info.layout = renderer->pipeline_layouts_[1];
+        pipeline_info.renderPass = renderer->render_pass_;
+        pipeline_info.subpass = 1;
+        renderer->pipelines_.push_back(engine->device_->createGraphicsPipeline({}, pipeline_info).value);
+    }
+
+    {
+        vk::PipelineVertexInputStateCreateInfo input_state{};
+
+        vk::PipelineViewportStateCreateInfo viewport_state{};
+        viewport_state.viewportCount = 1;
+        viewport_state.scissorCount = 1;
+
+        vk::PipelineRasterizationStateCreateInfo rasterizer_state{};
+        rasterizer_state.cullMode = vk::CullModeFlagBits::eBack;
+        rasterizer_state.polygonMode = vk::PolygonMode::eFill;
+        rasterizer_state.lineWidth = 1.0f;
+
+        vk::PipelineColorBlendStateCreateInfo blend_state{};
+        vk::PipelineColorBlendAttachmentState blend_attachment_state{};
+        blend_attachment_state.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+                                                vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+        std::vector<vk::PipelineColorBlendAttachmentState> blend_attachment_states(1, blend_attachment_state);
+        blend_state.setAttachments(blend_attachment_states);
+
+        vk::PipelineDepthStencilStateCreateInfo depth_state{};
+        depth_state.depthTestEnable = false;
+        depth_state.depthWriteEnable = false;
+
+        vk::PipelineInputAssemblyStateCreateInfo input_assembly{};
+        input_assembly.topology = vk::PrimitiveTopology::eTriangleList;
+
+        vk::PipelineMultisampleStateCreateInfo multisample_state{};
+        multisample_state.rasterizationSamples = vk::SampleCountFlagBits::e1;
+
+        vk::PipelineDynamicStateCreateInfo dynamic_states{};
+        vk::DynamicState dss[] = {vk::DynamicState::eViewport, vk::DynamicState::eScissor};
+        dynamic_states.setDynamicStates(dss);
+
+        vk::GraphicsPipelineCreateInfo pipeline_info{};
+        vk::PipelineShaderStageCreateInfo stages[] = {*verts[2], *frags[2]};
+        pipeline_info.setStages(stages);
+        pipeline_info.pVertexInputState = &input_state;
+        pipeline_info.pInputAssemblyState = &input_assembly;
+        pipeline_info.pViewportState = &viewport_state;
+        pipeline_info.pRasterizationState = &rasterizer_state;
+        pipeline_info.pMultisampleState = &multisample_state;
+        pipeline_info.pColorBlendState = &blend_state;
+        pipeline_info.pDynamicState = &dynamic_states;
+        pipeline_info.pDepthStencilState = &depth_state;
+        pipeline_info.layout = renderer->pipeline_layouts_[2];
+        pipeline_info.renderPass = renderer->render_pass_;
+        pipeline_info.subpass = 2;
+        renderer->pipelines_.push_back(engine->device_->createGraphicsPipeline({}, pipeline_info).value);
+    }
+
+    renderer->cmd_pool_ = new as::CmdPool;
+    renderer->image_sema_ = new as::GpuSemaphore;
+    renderer->submit_sem_ = new as::GpuSemaphore;
+    renderer->frame_fence_ = new as::GpuFence(true);
+
+    renderer->framebufs_.resize(engine->swapchian_->images_.size());
+    for (int i = 0; i < engine->swapchian_->images_.size(); i++)
+    {
+        VkImageView fattachments[] = {*renderer->attachments_[0],     *renderer->attachments_[1],
+                                      *renderer->attachments_[2],     *renderer->attachments_[3],
+                                      *renderer->attachments_[4],     *renderer->attachments_[5], //
+                                      *engine->swapchian_->images_[i]};
+        VkFramebufferCreateInfo fcreate_info{};
+        fcreate_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        fcreate_info.renderPass = renderer->render_pass_;
+        fcreate_info.attachmentCount = 7;
+        fcreate_info.pAttachments = fattachments;
+        fcreate_info.width = engine->swapchian_->extend_.width;
+        fcreate_info.height = engine->swapchian_->extend_.height;
+        fcreate_info.layers = 1;
+        renderer->framebufs_[i] = engine->device_->createFramebuffer(fcreate_info);
+    }
 }

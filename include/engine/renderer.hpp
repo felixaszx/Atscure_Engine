@@ -13,9 +13,9 @@ namespace as
 {
     struct Renderer
     {
-        using CreateInfo = as::Engine;
+        using CreateInfo = Engine;
 
-        as::Engine* engine_;
+        Engine* engine_;
         std::vector<ImageAttachment*> attachments_{};
         vk::RenderPass render_pass_{};
 
@@ -23,6 +23,12 @@ namespace as
         DescriptorPool* descriptor_pool_{};
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
         std::vector<vk::Pipeline> pipelines_{};
+
+        GpuSemaphore* image_sema_{};
+        GpuSemaphore* submit_sem_{};
+        GpuFence* frame_fence_{};
+        CmdPool* cmd_pool_{};
+        std::vector<vk::Framebuffer> framebufs_{};
 
         AS_SCRIPT_MEM_FUNC void render_scene(const Scene& scene);
         AS_SCRIPT_MEM_FUNC ~Renderer();
