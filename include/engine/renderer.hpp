@@ -12,7 +12,7 @@ namespace as
 {
     struct Renderer
     {
-        as::Engine* engine;
+        as::Engine* engine_;
         std::vector<ImageAttachment*> attachments_{};
         vk::RenderPass render_pass_{};
 
