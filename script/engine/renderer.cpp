@@ -43,7 +43,6 @@ as::Renderer::~Renderer()
     engine_->device_->destroyRenderPass(render_pass_);
 
     main_cmd_->reset();
-    as::begin_cmd(main_cmd_);
 }
 
 /*
