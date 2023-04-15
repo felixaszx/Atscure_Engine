@@ -3,6 +3,7 @@
 
 #include "../api/device.hpp"
 #include "../api/buffer.hpp"
+#include "../platform/script.hpp"
 #include "../third_party/glms.hpp"
 #include "../third_party/ass.hpp"
 
@@ -18,6 +19,13 @@ namespace as
 
     struct Mesh
     {
+        struct CreateInfo
+        {
+            uint32_t max_instance;
+            const aiScene* scene;
+            Device* device;
+        };
+
         Buffer* vertex_buffer_{};
         Buffer* index_buffer_{};
         Buffer* model_buffer_{};
@@ -35,6 +43,9 @@ namespace as
         uint32_t max_instance_ = 0;
         uint32_t instance_count_ = 1;
         std::vector<glm::mat4> models_matrics_{};
+
+        AS_SCRIPT_MEM_FUNC ~Mesh();
+        AS_SCRIPT_MEM_FUNC void update();
     };
 
 }; // namespace as

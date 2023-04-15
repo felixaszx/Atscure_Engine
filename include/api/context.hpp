@@ -87,6 +87,21 @@ namespace as
         sset(dst, src_b...);
     }
 
+    template <typename T>
+    T max_of_all(const std::vector<T>& datas)
+    {
+        T max = datas[0];
+        for (int i = 0; i < datas.size(); i++)
+        {
+            if (datas[i] > max)
+            {
+                max = datas[i];
+            }
+        }
+
+        return max;
+    }
+
 }; // namespace as
 
 #endif // CONTEXT_HPP

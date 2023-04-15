@@ -8,5 +8,6 @@
 #include "syncs.hpp"
 #include "buffer.hpp"
 #include "descriptor.hpp"
+#include "graphics.hpp"
 
 #endif // API_WRAPPER_HPP

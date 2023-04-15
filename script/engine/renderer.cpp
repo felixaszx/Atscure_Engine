@@ -12,7 +12,11 @@ void as::Renderer::render_scene(const Scene& scene)
 
 as::Renderer::~Renderer()
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < pipelines_.size(); i++)
+    {
+        engine_->device_->destroyPipeline(pipelines_[i]);
+    }
+    for (int i = 0; i < pipeline_layouts_.size(); i++)
     {
         engine_->device_->destroyPipelineLayout(pipeline_layouts_[i]);
     }
@@ -31,9 +35,51 @@ AS_SCRIPT void* read()
     return renderer;
 }
 
+std::vector<vk::VertexInputBindingDescription> mesh_bindings()
+{
+    std::vector<vk::VertexInputBindingDescription> binding(2);
+
+    binding[0].binding = 0;
+    binding[0].stride = sizeof(as::Vertex);
+    binding[0].inputRate = vk::VertexInputRate::eVertex;
+
+    binding[1].binding = 1;
+    binding[1].stride = sizeof(glm::mat4);
+    binding[1].inputRate = vk::VertexInputRate::eInstance;
+
+    return binding;
+}
+
+std::vector<vk::VertexInputAttributeDescription> mesh_attributes()
+{
+    std::vector<vk::VertexInputAttributeDescription> attributes(8);
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        attributes[i].binding = 0;
+        attributes[i].location = i;
+        attributes[i].format = vk::Format::eR32G32B32Sfloat;
+    }
+
+    attributes[0].offset = offsetof(as::Vertex, positon_);
+    attributes[1].offset = offsetof(as::Vertex, normal_);
+    attributes[2].offset = offsetof(as::Vertex, uv_);
+    attributes[3].offset = offsetof(as::Vertex, color_);
+
+    for (uint32_t i = 4; i < 8; i++)
+    {
+        attributes[i].binding = 1;
+        attributes[i].location = i;
+        attributes[i].format = vk::Format::eR32G32B32A32Sfloat;
+        attributes[i].offset = (i - 4) * sizeof(glm::vec4);
+    }
+
+    return attributes;
+}
+
 AS_SCRIPT void write(void* src)
 {
-    as::Engine* engine = (as::Engine*)src;
+    as::Renderer::CreateInfo* engine = (as::Renderer::CreateInfo*)src;
+
     renderer = new as::Renderer;
     renderer->engine_ = engine;
 
@@ -161,4 +207,67 @@ AS_SCRIPT void write(void* src)
         create_info.setLayoutCount = 1;
         renderer->pipeline_layouts_.push_back(engine->device_->createPipelineLayout(create_info));
     }
+
+    auto binding_description = mesh_bindings();
+    auto attribute_description = mesh_attributes();
+    std::vector<as::ShaderModule*> verts(3);
+    std::vector<as::ShaderModule*> frags(3);
+    for (int i = 0; i < 3; i++)
+    {
+        verts[i] = new as::ShaderModule("main", "res/shader/vert" + std::to_string(i) + ".spv",
+                                        vk::ShaderStageFlagBits::eVertex);
+        frags[i] = new as::ShaderModule("main", "res/shader/frag" + std::to_string(i) + ".spv",
+                                        vk::ShaderStageFlagBits::eFragment);
+    }
+
+    vk::PipelineVertexInputStateCreateInfo input_state{};
+    input_state.setVertexAttributeDescriptions(attribute_description);
+    input_state.setVertexBindingDescriptions(binding_description);
+
+    vk::PipelineViewportStateCreateInfo viewport_state{};
+    viewport_state.viewportCount = 1;
+    viewport_state.scissorCount = 1;
+
+    vk::PipelineRasterizationStateCreateInfo rasterizer_state{};
+    rasterizer_state.cullMode = vk::CullModeFlagBits::eBack;
+    rasterizer_state.polygonMode = vk::PolygonMode::eFill;
+    rasterizer_state.lineWidth = 1.0f;
+
+    vk::PipelineColorBlendStateCreateInfo blend_state{};
+    vk::PipelineColorBlendAttachmentState blend_attachment_state{};
+    blend_attachment_state.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+                                            vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+    std::vector<vk::PipelineColorBlendAttachmentState> blend_attachment_states(4, blend_attachment_state);
+    blend_state.setAttachments(blend_attachment_states);
+
+    vk::PipelineDepthStencilStateCreateInfo depth_state{};
+    depth_state.depthTestEnable = true;
+    depth_state.depthWriteEnable = true;
+    depth_state.depthCompareOp = vk::CompareOp::eLess;
+
+    vk::PipelineInputAssemblyStateCreateInfo input_assembly{};
+    input_assembly.topology = vk::PrimitiveTopology::eTriangleList;
+
+    vk::PipelineMultisampleStateCreateInfo multisample_state{};
+    multisample_state.rasterizationSamples = vk::SampleCountFlagBits::e1;
+
+    vk::PipelineDynamicStateCreateInfo dynamic_states{};
+    vk::DynamicState dss[] = {vk::DynamicState::eViewport, vk::DynamicState::eScissor};
+    dynamic_states.setDynamicStates(dss);
+
+    vk::GraphicsPipelineCreateInfo pipeline_info0{};
+    vk::PipelineShaderStageCreateInfo stages0[] = {*verts[0], *frags[0]};
+    pipeline_info0.setStages(stages0);
+    pipeline_info0.pVertexInputState = &input_state;
+    pipeline_info0.pInputAssemblyState = &input_assembly;
+    pipeline_info0.pViewportState = &viewport_state;
+    pipeline_info0.pRasterizationState = &rasterizer_state;
+    pipeline_info0.pMultisampleState = &multisample_state;
+    pipeline_info0.pColorBlendState = &blend_state;
+    pipeline_info0.pDynamicState = &dynamic_states;
+    pipeline_info0.pDepthStencilState = &depth_state;
+    pipeline_info0.layout = renderer->pipeline_layouts_[0];
+    pipeline_info0.renderPass = renderer->render_pass_;
+    pipeline_info0.subpass = 0;
+    renderer->pipelines_.push_back(engine->device_->createGraphicsPipeline({}, pipeline_info0).value);
 }

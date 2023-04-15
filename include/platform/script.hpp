@@ -47,29 +47,17 @@ namespace as
             update = LoadFunc(loader, "update");
         }
 
-        template <typename Q, typename T>
-        Q create(T* create_info)
+        template <typename T, typename C = typename T::CreateInfo>
+        T* create(C* create_info)
         {
             write(create_info);
-            return (Q)read();
-        }
-    };
-
-    template <typename Q>
-    struct ScriptCreate
-    {
-        Script* script_{};
-        Q* data_{};
-        ScriptCreate(Script& script, Q* data)
-            : script_(&script),
-              data_(data)
-        {
+            return (T*)read();
         }
 
         template <typename T>
-        operator T()
+        T* create()
         {
-            return script_->create<T>(data_);
+            return (T*)read();
         }
     };
 

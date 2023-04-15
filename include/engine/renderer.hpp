@@ -7,11 +7,14 @@
 #include "../platform/platform_wrapper.hpp"
 #include "engine.hpp"
 #include "scene.hpp"
+#include "mesh.hpp"
 
 namespace as
 {
     struct Renderer
     {
+        using CreateInfo = as::Engine;
+
         as::Engine* engine_;
         std::vector<ImageAttachment*> attachments_{};
         vk::RenderPass render_pass_{};
@@ -19,6 +22,7 @@ namespace as
         std::vector<DescriptorLayout*> descriptor_layouts_{};
         DescriptorPool* descriptor_pool_{};
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
+        std::vector<vk::Pipeline> pipelines_{};
 
         AS_SCRIPT_MEM_FUNC void render_scene(const Scene& scene);
         AS_SCRIPT_MEM_FUNC ~Renderer();

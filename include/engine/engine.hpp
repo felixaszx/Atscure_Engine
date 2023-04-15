@@ -14,6 +14,8 @@ namespace as
         Context* context_{};
         Device* device_{};
         Swapchain* swapchian_{};
+
+        AS_SCRIPT_MEM_FUNC ~Engine();
     };
 
 }; // namespace as
