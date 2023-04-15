@@ -6,33 +6,10 @@
 #include "api/logging.hpp"
 #include "platform/loader.hpp"
 
-#define AS_SCRIPT               extern "C" __declspec(dllexport)
-#define AS_SCRIPT_CREATION_NAME "script_obj_creation"
-#define AS_SCRIPT_CREATE_FUNC(type, script) \
-    AS_SCRIPT script* script_obj_creation() \
-    {                                       \
-        return new type();                  \
-    }
+#define AS_SCRIPT extern "C" __declspec(dllexport)
 
 namespace as
 {
-    // all script must inhritance from this
-    struct ScriptGeneral
-    {
-        // each script must have a object creation function with this signature
-        // and name: <AS_SCRIPT_CREATION script_obj_creation()>
-        using Creation = ScriptGeneral* (*)();
-        virtual ~ScriptGeneral(){};
-
-        virtual void init() = 0;
-        virtual void finish() = 0;
-
-        inline static ScriptGeneral* create(DynamicLoader& loader)
-        {
-            return loader.get_function<Creation>(AS_SCRIPT_CREATION_NAME)();
-        }
-    };
-
     using init_func = void (*)();
     using finish_func = void (*)();
     using update_func = void (*)();
@@ -40,7 +17,7 @@ namespace as
     using write_func = void (*)(void*);
     using read_func = void* (*)();
 
-    struct Script2
+    struct Script
     {
         init_func init{};
         finish_func finish{};
@@ -49,7 +26,7 @@ namespace as
         write_func write{};
         read_func read{};
 
-        Script2(DynamicLoader& loader)
+        Script(DynamicLoader& loader)
         {
             init = LoadFunc(loader, "init");
             finish = LoadFunc(loader, "finish");

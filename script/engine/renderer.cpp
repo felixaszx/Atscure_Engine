@@ -1,17 +1,11 @@
 #include "engine/renderer.hpp"
 
-as::Renderer renderer;
+as::Engine* engine{};
+as::Renderer renderer{};
 
 AS_SCRIPT void init()
 {
-    renderer.window_ = new as::Window(1920, 1080);
-    renderer.context_ = new as::Context(true);
-    renderer.window_->create_surface(*renderer.context_);
-
-    renderer.device_ = new as::Device(*renderer.context_, renderer.context_->VALIDATION_LAYERS);
-    renderer.swapchian_ = new as::Swapchain(*renderer.window_, *renderer.context_, *renderer.device_);
-
-    std::vector<vk::Extent2D> extends(6, renderer.swapchian_->extend_);
+    std::vector<vk::Extent2D> extends(6, engine->swapchian_->extend_);
     std::vector<vk::SampleCountFlagBits> samples(6, vk::SampleCountFlagBits::e1);
     std::vector<vk::Format> formats = {vk::Format::eR32G32B32A32Sfloat, vk::Format::eR32G32B32A32Sfloat,
                                        vk::Format::eR32G32B32A32Sfloat, vk::Format::eR32G32B32A32Sfloat,
@@ -45,23 +39,101 @@ AS_SCRIPT void init()
     }
     attachment_descriptions[5].finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
     attachment_descriptions[5].format = vk::Format::eD32SfloatS8Uint;
-    attachment_descriptions[6].format = renderer.swapchian_->format_;
+    attachment_descriptions[6].format = engine->swapchian_->format_;
     attachment_descriptions[6].finalLayout = vk::ImageLayout::ePresentSrcKHR;
     attachment_descriptions[6].storeOp = vk::AttachmentStoreOp::eStore;
 
-    vk::AttachmentReference attachment_references0[4]{};
-    vk::AttachmentReference attachment_references1[4]{};
+    vk::AttachmentReference attachment_references0[5]{};
+    vk::AttachmentReference attachment_references1[5]{};
     vk::AttachmentReference attachment_references2[2]{};
+
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        attachment_references0[i].attachment = i;
+        attachment_references0[i].layout = vk::ImageLayout::eColorAttachmentOptimal;
+    }
+    attachment_references0[4].attachment = 5;
+    attachment_references0[4].layout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+
+    // second subpass attachment
+    for (uint32_t i = 0; i < 5; i++)
+    {
+        attachment_references1[i].attachment = i;
+        attachment_references1[i].layout = vk::ImageLayout::eShaderReadOnlyOptimal;
+    }
+    attachment_references1[4].layout = vk::ImageLayout::eColorAttachmentOptimal;
+
+    // third subpass attachment
+    attachment_references2[0].attachment = 4;
+    attachment_references2[0].layout = vk::ImageLayout::eShaderReadOnlyOptimal;
+    attachment_references2[1].attachment = 6;
+    attachment_references2[1].layout = vk::ImageLayout::eColorAttachmentOptimal;
+
+    vk::SubpassDescription subpasses[3]{};
+    subpasses[0].colorAttachmentCount = 4;
+    subpasses[0].pColorAttachments = attachment_references0;
+    subpasses[0].pDepthStencilAttachment = attachment_references0 + 4;
+
+    subpasses[1].colorAttachmentCount = 1;
+    subpasses[1].pColorAttachments = attachment_references1 + 4;
+    subpasses[1].inputAttachmentCount = 4;
+    subpasses[1].pInputAttachments = attachment_references1;
+
+    subpasses[2].colorAttachmentCount = 1;
+    subpasses[2].pColorAttachments = attachment_references2 + 1;
+    subpasses[2].inputAttachmentCount = 1;
+    subpasses[2].pInputAttachments = attachment_references2;
+
+    vk::SubpassDependency dependencies[2]{};
+    dependencies[0].srcSubpass = 0;
+    dependencies[0].dstSubpass = 1;
+    dependencies[0].srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | //
+                                   vk::PipelineStageFlagBits::eLateFragmentTests;
+    dependencies[0].dstStageMask = vk::PipelineStageFlagBits::eFragmentShader;
+    dependencies[0].srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite | //
+                                    vk::AccessFlagBits::eDepthStencilAttachmentWrite;
+    dependencies[0].dstAccessMask = vk::AccessFlagBits::eInputAttachmentRead;
+
+    dependencies[1].srcSubpass = 1;
+    dependencies[1].dstSubpass = 2;
+    dependencies[1].srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+    dependencies[1].dstStageMask = vk::PipelineStageFlagBits::eFragmentShader;
+    dependencies[1].srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+    dependencies[1].dstAccessMask = vk::AccessFlagBits::eInputAttachmentRead;
+
+    vk::RenderPassCreateInfo render_pass_info{};
+    render_pass_info.setSubpasses(subpasses);
+    render_pass_info.setAttachments(attachment_descriptions);
+    render_pass_info.setDependencies(dependencies);
+    renderer.render_pass_ = engine->device_->createRenderPass(render_pass_info);
+
+    std::vector<as::DescriptorLayout::Binding> bindings[3]{};
+    bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
+    bindings[0].push_back({1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment});
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        bindings[1].push_back({i, 1, vk::DescriptorType::eInputAttachment, vk::ShaderStageFlagBits::eFragment});
+    }
+    bindings[2].push_back({0, 1, vk::DescriptorType::eInputAttachment, vk::ShaderStageFlagBits::eFragment});
+
+    for (int i = 0; i < 3; i++)
+    {
+        renderer.descriptor_layouts_.push_back(new as::DescriptorLayout(bindings[i]));
+    }
+    renderer.descriptor_pool_ = new as::DescriptorPool(renderer.descriptor_layouts_);
 }
 
 AS_SCRIPT void finish()
 {
-    delete renderer.device_;
-    delete renderer.context_;
-    delete renderer.window_;
+    engine->device_->destroyRenderPass(renderer.render_pass_);
 }
 
 AS_SCRIPT void* read()
 {
     return &renderer;
+}
+
+AS_SCRIPT void write(void* src)
+{
+    memcpy(&engine, src, sizeof(engine));
 }

@@ -4,19 +4,20 @@
 #include "platform/platform_wrapper.hpp"
 #include "engine/engine_wrapper.hpp"
 
-struct Data
-{
-    int a;
-};
-Data data_blcok{};
-
 int main(int argc, char** argv)
 {
-    as::DynamicLoader test_dll("script/bin/libtest.dll");
-    as::Script2 ss(test_dll);
-    data_blcok.a = 10;
-    ss.write(&data_blcok);
-    ss.init();
+    as::DynamicLoader engine_dll("script/bin/libengine.dll");
+    as::Script engine_script(engine_dll);
+    as::Engine* engine = (as::Engine*)engine_script.read();
+    engine_script.init();
 
+    as::DynamicLoader renderer_dll("script/bin/librenderer.dll");
+    as::Script renderer_script(renderer_dll);
+    as::Renderer* renderer = (as::Renderer*)renderer_script.read();
+    renderer_script.write(&engine);
+    renderer_script.init();
+
+    renderer_script.finish();
+    engine_script.finish();
     return EXIT_SUCCESS;
 }
