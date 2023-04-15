@@ -121,10 +121,22 @@ AS_SCRIPT void init()
         renderer.descriptor_layouts_.push_back(new as::DescriptorLayout(bindings[i]));
     }
     renderer.descriptor_pool_ = new as::DescriptorPool(renderer.descriptor_layouts_);
+
+    for (int i = 0; i < 3; i++)
+    {
+        vk::PipelineLayoutCreateInfo create_info{};
+        create_info.pSetLayouts = renderer.descriptor_layouts_[i];
+        create_info.setLayoutCount = 1;
+        renderer.pipeline_layouts_.push_back(engine->device_->createPipelineLayout(create_info));
+    }
 }
 
 AS_SCRIPT void finish()
 {
+    for (int i = 0; i < 3; i++)
+    {
+        engine->device_->destroyPipelineLayout(renderer.pipeline_layouts_[i]);
+    }
     engine->device_->destroyRenderPass(renderer.render_pass_);
 }
 

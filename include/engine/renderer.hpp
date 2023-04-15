@@ -18,9 +18,10 @@ namespace as
         as::Engine* engine;
         std::vector<ImageAttachment*> attachments_{};
         vk::RenderPass render_pass_{};
-        
-        std::vector<DescriptorLayout*> descriptor_layouts_;
-        DescriptorPool* descriptor_pool_;
+
+        std::vector<DescriptorLayout*> descriptor_layouts_{};
+        DescriptorPool* descriptor_pool_{};
+        std::vector<vk::PipelineLayout> pipeline_layouts_{};
     };
 
 }; // namespace as
