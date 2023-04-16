@@ -12,14 +12,8 @@ namespace as
     {
         HINSTANCE dll_libs_;
 
-        DynamicLoader(const std::string& dll_name) { dll_libs_ = LoadLibraryA(dll_name.c_str()); }
-        ~DynamicLoader()
-        {
-            if (dll_libs_ != nullptr)
-            {
-                FreeLibrary(dll_libs_);
-            }
-        }
+        DynamicLoader(const std::string& dll_name);
+        ~DynamicLoader();
 
         template <typename F>
         F get_function(const std::string& func_name)
@@ -49,11 +43,7 @@ namespace as
         std::string name_{};
 
       public:
-        LoadFunc(DynamicLoader& loader, const std::string& func_name)
-        {
-            loader_ = &loader;
-            name_ = func_name;
-        }
+        LoadFunc(DynamicLoader& loader, const std::string& func_name);
 
         template <typename T>
         operator T()
