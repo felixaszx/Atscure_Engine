@@ -4,6 +4,7 @@ as::CmdBuffer::CmdBuffer(const vk::CommandBuffer& buffer, const vk::CommandPool*
     : pool_(pool)
 {
     sset(*this, buffer);
+    release();
 }
 
 as::CmdBuffer::~CmdBuffer()
@@ -19,6 +20,7 @@ as::CmdBuffers::CmdBuffers(const std::vector<vk::CommandBuffer>& buffers, const 
     {
         this->at(i) = buffers[i];
     }
+    release();
 }
 
 as::CmdBuffers::~CmdBuffers()
@@ -59,7 +61,7 @@ as::CmdBuffers* as::CmdPool::alloc_buffers(uint32_t count, vk::CommandBufferLeve
     return new CmdBuffers(device_->allocateCommandBuffers(alloc_info), this);
 }
 
-void as::begin_cmd(vk::CommandBuffer* cmd,                         //
+void as::begin_cmd(vk::CommandBuffer* cmd,                        //
                    vk::CommandBufferInheritanceInfo* inheritance, //
                    vk::CommandBufferUsageFlags flags)
 {
