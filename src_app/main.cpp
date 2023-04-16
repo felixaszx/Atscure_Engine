@@ -39,10 +39,10 @@ int main(int argc, char** argv)
         renderer->wait_idle();
     }
 
-    delete tt;
-    delete mesh;
-    delete renderer;
-    delete engine;
+    ffree(tt);
+    ffree(mesh);
+    ffree(renderer);
+    ffree(engine);
 
     return EXIT_SUCCESS;
 }

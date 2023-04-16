@@ -29,7 +29,6 @@ bool as::CpuSemaphore::try_wait()
 int as::CpuSemaphore::get_value()
 {
     int value;
-    assert(semaphore_ != nullptr);
     sem_getvalue(&semaphore_, &value);
     return value;
 }

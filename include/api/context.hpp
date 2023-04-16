@@ -17,6 +17,12 @@
 #define castf(type, value) (type)(value)
 #define rnew               *new
 #define rdelete            delete&
+#define ffree(ptr) \
+    delete ptr;    \
+    ptr = nullptr
+#define ffree_arr(ptr) \
+    delete[] ptr;      \
+    ptr = nullptr
 
 #define try_log() \
     try           \

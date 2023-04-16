@@ -123,8 +123,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
     memcpy(staging_ptr, mesh->vertices_.data(), mesh->vertex_buffer_->size_);
     mesh->index_buffer_->copy_from(*staging_buffer, *create_info->cmd_pool_);
 
-    staging_ptr = nullptr;
-    delete staging_buffer;
+    ffree(staging_buffer);
     mesh->update();
     catch_error();
 }
