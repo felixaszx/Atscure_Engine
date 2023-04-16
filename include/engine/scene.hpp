@@ -13,6 +13,7 @@ namespace as
 {
     struct Scene
     {
+        entt::registry reg_;
     };
 
 }; // namespace as

@@ -33,6 +33,7 @@ namespace as
         CmdBuffer* main_cmd_{};
 
         AS_SCRIPT_MEM_FUNC void render_scene(const Scene& scene);
+        AS_SCRIPT_MEM_FUNC void wait_idle();
         AS_SCRIPT_MEM_FUNC ~Renderer();
     };
 

@@ -14,7 +14,12 @@ int main(int argc, char** argv)
     as::Script renderer_script(renderer_dll);
     as::Renderer* renderer = renderer_script.create<as::Renderer>(engine);
 
-    renderer->render_scene({});
+    while (!glfwWindowShouldClose(engine->window_->window_))
+    {
+        glfwPollEvents();
+
+        renderer->wait_idle();
+    }
 
     delete renderer;
     delete engine;

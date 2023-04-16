@@ -35,7 +35,10 @@ void as::Renderer::render_scene(const Scene& scene)
     submit_info.pCommandBuffers = main_cmd_;
     engine_->device_->graphics_queue_.submit(submit_info, *frame_fence_);
     engine_->swapchian_->present(image_index, {*submit_sem_});
+}
 
+void as::Renderer::wait_idle()
+{
     engine_->device_->waitIdle();
 }
 
