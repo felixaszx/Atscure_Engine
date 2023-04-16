@@ -93,7 +93,7 @@ as::Swapchain::~Swapchain()
     device_->destroySwapchainKHR(*this);
 }
 
-vk::Result as::Swapchain::present(uint32_t image_index, const std::vector<GpuSemaphore>& wait_sems)
+vk::Result as::Swapchain::present(uint32_t image_index, const std::vector<vk::Semaphore>& wait_sems)
 {
     vk::PresentInfoKHR present_info{};
     present_info.setWaitSemaphores(wait_sems);

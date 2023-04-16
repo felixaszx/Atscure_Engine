@@ -19,7 +19,7 @@ namespace as
         Swapchain(Window& window, Context& context, Device& device);
         ~Swapchain() override;
 
-        vk::Result present(uint32_t image_index, const std::vector<GpuSemaphore>& wait_sems);
+        vk::Result present(uint32_t image_index, const std::vector<vk::Semaphore>& wait_sems);
     };
 
 }; // namespace as

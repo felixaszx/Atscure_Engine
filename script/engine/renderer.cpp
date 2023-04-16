@@ -24,6 +24,18 @@ void as::Renderer::render_scene(const Scene& scene)
 
     main_cmd_->end();
 
+    vk::PipelineStageFlags wait_stages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
+    vk::SubmitInfo submit_info{};
+    submit_info.setWaitDstStageMask(wait_stages);
+    submit_info.waitSemaphoreCount = 1;
+    submit_info.pWaitSemaphores = image_sem_;
+    submit_info.signalSemaphoreCount = 1;
+    submit_info.pSignalSemaphores = submit_sem_;
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers = main_cmd_;
+    engine_->device_->graphics_queue_.submit(submit_info, *frame_fence_);
+    engine_->swapchian_->present(image_index, {*submit_sem_});
+
     engine_->device_->waitIdle();
 }
 
