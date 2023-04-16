@@ -20,6 +20,8 @@ namespace as
         ~Swapchain() override;
 
         vk::Result present(uint32_t image_index, const std::vector<vk::Semaphore>& wait_sems);
+        uint32_t acquire_next_image(uint64_t timeout, vk::Semaphore semaphore, vk::Fence fence = {},
+                                   const vk::DispatchLoaderDynamic& d = ::vk::defaultDispatchLoaderDynamic);
     };
 
 }; // namespace as

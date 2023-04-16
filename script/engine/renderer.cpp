@@ -16,7 +16,7 @@ void as::Renderer::render_scene(const Scene& scene)
     {
         as::Log::error(e.what());
     }
-    uint32_t image_index = engine_->device_->acquireNextImageKHR(*engine_->swapchian_, UINT64_MAX, *image_sem_).value;
+    uint32_t image_index = engine_->swapchian_->acquire_next_image(UINT64_MAX, *image_sem_);
     engine_->device_->resetFences(*frame_fence_);
 
     main_cmd_->reset();

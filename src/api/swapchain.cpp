@@ -103,3 +103,9 @@ vk::Result as::Swapchain::present(uint32_t image_index, const std::vector<vk::Se
 
     return device_->present_queue_.presentKHR(present_info);
 }
+
+uint32_t as::Swapchain::acquire_next_image(uint64_t timeout, vk::Semaphore semaphore, vk::Fence fence,
+                                           const vk::DispatchLoaderDynamic& d)
+{
+    return device_->acquireNextImageKHR(*this, timeout, semaphore, fence, d).value;
+}
