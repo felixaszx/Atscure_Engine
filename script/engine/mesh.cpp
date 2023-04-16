@@ -89,6 +89,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
         index_offset += 3 * mesh_in->mNumFaces;
     }
 
+    try_log();
     vk::BufferCreateInfo buffer_info{};
     buffer_info.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
     buffer_info.size = mesh->vertices_.size() * sizeof(mesh->vertices_[0]);
@@ -125,6 +126,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
     staging_ptr = nullptr;
     delete staging_buffer;
     mesh->update();
+    catch_error();
 }
 
 AS_SCRIPT void* read()

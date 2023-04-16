@@ -21,7 +21,6 @@ int main(int argc, char** argv)
                                              aiProcess_Triangulate |    //
                                                  aiProcess_GenNormals | //
                                                  aiProcess_GenUVCoords);
-
     as::Mesh::CreateInfo mesh_cinfo{};
     mesh_cinfo.cmd_pool_ = renderer->cmd_pool_;
     mesh_cinfo.max_instance_ = 10;

@@ -50,6 +50,10 @@ namespace as
         AS_SCRIPT_MEM_FUNC void draw(vk::CommandBuffer cmd, uint32_t mesh_index);
     };
 
+    struct Material
+    {
+    };
+
 }; // namespace as
 
 #endif // MESH_HPP
