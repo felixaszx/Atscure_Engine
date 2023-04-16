@@ -118,10 +118,8 @@ std::vector<vk::VertexInputAttributeDescription> mesh_attributes()
     return attributes;
 }
 
-AS_SCRIPT void write(void* src)
+AS_SCRIPT void write(as::Renderer::CreateInfo* engine)
 {
-    as::Renderer::CreateInfo* engine = (as::Renderer::CreateInfo*)src;
-
     renderer = new as::Renderer;
     renderer->engine_ = engine;
 

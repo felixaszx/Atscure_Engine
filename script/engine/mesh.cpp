@@ -11,7 +11,7 @@ void as::Mesh::update()
 }
 
 as::Mesh* mesh;
-AS_SCRIPT void write(void* create_info)
+AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
 {
 }
 

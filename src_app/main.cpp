@@ -7,12 +7,12 @@
 int main(int argc, char** argv)
 {
     as::DynamicLoader engine_dll("script/bin/libengine.dll");
-    as::Script engine_script(engine_dll);
-    as::Engine* engine = engine_script.create<as::Engine>();
-
     as::DynamicLoader renderer_dll("script/bin/librenderer.dll");
-    as::Script renderer_script(renderer_dll);
-    as::Renderer* renderer = renderer_script.create<as::Renderer>(engine);
+    as::Script engine_class(engine_dll);
+    as::Script renderer_class(renderer_dll);
+
+    as::Engine* engine = engine_class.create<as::Engine>();
+    as::Renderer* renderer = renderer_class.create<as::Renderer>(engine);
 
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
