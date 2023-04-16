@@ -2,9 +2,9 @@
 
 as::Engine::~Engine()
 {
-    delete device_;
-    delete context_;
-    delete window_;
+    ffree(device_);
+    ffree(context_);
+    ffree(window_);
 }
 
 as::Engine* engine;

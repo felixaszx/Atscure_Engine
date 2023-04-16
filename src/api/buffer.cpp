@@ -36,7 +36,7 @@ void as::Buffer::copy_from(const Buffer& buffer, CmdPool& pool, size_t size)
     device_->graphics_queue_.submit(submit_info);
     device_->graphics_queue_.waitIdle();
 
-    delete cmd;
+    ffree(cmd);
 }
 
 void* as::Buffer::mapping() const

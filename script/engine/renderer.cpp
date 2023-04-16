@@ -52,11 +52,11 @@ as::Renderer::~Renderer()
         engine_->device_->destroyFramebuffer(framebufs_[i]);
     }
 
-    delete main_cmd_;
-    delete cmd_pool_;
-    delete image_sem_;
-    delete submit_sem_;
-    delete frame_fence_;
+    ffree(main_cmd_);
+    ffree(cmd_pool_);
+    ffree(image_sem_);
+    ffree(submit_sem_);
+    ffree(frame_fence_);
 
     for (int i = 0; i < pipelines_.size(); i++)
     {

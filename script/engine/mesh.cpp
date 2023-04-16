@@ -2,9 +2,9 @@
 
 as::Mesh::~Mesh()
 {
-    delete vertex_buffer_;
-    delete index_buffer_;
-    delete model_buffer_;
+    ffree(vertex_buffer_);
+    ffree(index_buffer_);
+    ffree(model_buffer_);
 }
 
 void as::Mesh::update()
