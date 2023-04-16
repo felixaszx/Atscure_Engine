@@ -20,6 +20,9 @@ void as::Renderer::render_scene(const Scene& scene)
     engine_->device_->resetFences(*frame_fence_);
 
     main_cmd_->reset();
+    as::begin_cmd(main_cmd_);
+
+    main_cmd_->end();
 
     engine_->device_->waitIdle();
 }
