@@ -49,6 +49,7 @@ as::Renderer::~Renderer()
         engine_->device_->destroyFramebuffer(framebufs_[i]);
     }
 
+    delete main_cmd_;
     delete cmd_pool_;
     delete image_sem_;
     delete submit_sem_;

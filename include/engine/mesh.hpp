@@ -23,7 +23,6 @@ namespace as
         {
             uint32_t max_instance_;
             const aiScene* scene_;
-            Device* device_;
             CmdPool* cmd_pool_;
         };
 

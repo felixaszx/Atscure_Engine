@@ -20,7 +20,7 @@ namespace as
         Buffer(const vk::BufferCreateInfo& buffer_info, const vma::AllocationCreateInfo& alloc_info);
         ~Buffer() override;
 
-        Buffer& copy_from(const Buffer& buffer, CmdPool& pool, size_t size = 0);
+        void copy_from(const Buffer& buffer, CmdPool& pool, size_t size = 0);
 
         void* mapping() const;
         void* map_memory();
