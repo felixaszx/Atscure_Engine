@@ -21,9 +21,10 @@ namespace as
     {
         struct CreateInfo
         {
-            uint32_t max_instance;
-            const aiScene* scene;
-            Device* device;
+            uint32_t max_instance_;
+            const aiScene* scene_;
+            Device* device_;
+            CmdPool* cmd_pool_;
         };
 
         Buffer* vertex_buffer_{};
@@ -34,7 +35,7 @@ namespace as
         std::vector<uint32_t> indices_{};
 
         std::vector<size_t> vert_buffer_offsets_{};
-        std::vector<size_t> indices_buffer_offsets_{};
+        std::vector<size_t> index_buffer_offsets_{};
         std::vector<uint32_t> mesh_indices_count_{};
 
         void* model_mapping_ = nullptr;
@@ -46,6 +47,8 @@ namespace as
 
         AS_SCRIPT_MEM_FUNC ~Mesh();
         AS_SCRIPT_MEM_FUNC void update();
+        AS_SCRIPT_MEM_FUNC void draw(vk::CommandBuffer cmd);
+        AS_SCRIPT_MEM_FUNC void draw(vk::CommandBuffer cmd, uint32_t mesh_index);
     };
 
 }; // namespace as

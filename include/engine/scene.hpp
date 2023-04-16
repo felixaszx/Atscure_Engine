@@ -16,6 +16,11 @@ namespace as
         entt::registry reg_;
     };
 
+    struct MeshComp
+    {
+        Mesh* mesh_{};
+    };
+
 }; // namespace as
 
 #endif // SCENE_HPP
