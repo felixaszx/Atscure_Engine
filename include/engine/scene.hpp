@@ -60,6 +60,11 @@ namespace as
         }
     };
 
+    struct GameScript
+    {
+        using CreateInfo = Entity;
+    };
+
 }; // namespace as
 
 #endif // SCENE_HPP

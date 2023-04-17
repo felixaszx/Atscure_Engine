@@ -43,10 +43,14 @@ int main(int argc, char** argv)
     render_scene.reg_.emplace<as::TransformComp>(sponza).trans_ = tt2;
     tt->position_ = {0, 10, 0};
 
+    as::DynamicLoader cc_test("script/bin/libcamera_move.dll");
+    as::Script cs_test(cc_test);
+    cs_test.create<as::GameScript>({sponza, &render_scene.reg_});
+
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
-        tt2->scale_ = glm::vec3(0.01 * (sin(glfwGetTime()) + 1));
+        cs_test.update();
         renderer->render_scene(render_scene, engine->swapchian_->acquire_next_image(UINT64_MAX, *renderer->image_sem_));
 
         engine->swapchian_->present({*renderer->submit_sem_});

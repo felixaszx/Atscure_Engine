@@ -9,18 +9,28 @@
 
 #define AS_SCRIPT          extern "C" __declspec(dllexport)
 #define AS_SCRIPT_MEM_FUNC virtual
+#define AS_GAME_SCRIPT(this_entity_name)     \
+    as::Entity this_entity_name;             \
+    AS_SCRIPT void write(as::Entity* entity) \
+    {                                        \
+        this_entity_name = *entity;          \
+    }                                        \
+    AS_SCRIPT void* read()                   \
+    {                                        \
+        return nullptr;                      \
+    }
 
 namespace as
 {
     using init_func = void (*)();
     using finish_func = void (*)();
-    using write_func = void (*)(void*);
+    using write_func = void (*)(const void*);
     using read_func = void* (*)();
 
-    using start_func = void (*)(entt::registry&, const entt::entity);
-    using end_func = void (*)(entt::registry&, const entt::entity);
-    using update_func = void (*)(entt::registry&, const entt::entity);
-    using fixed_func = void (*)(entt::registry&, const entt::entity);
+    using start_func = void (*)();
+    using end_func = void (*)();
+    using update_func = void (*)();
+    using fixed_func = void (*)();
 
     struct Script
     {
@@ -51,6 +61,13 @@ namespace as
         T* create(C* create_info)
         {
             write(create_info);
+            return (T*)read();
+        }
+
+        template <typename T, typename C = typename T::CreateInfo>
+        T* create(const C& create_info)
+        {
+            write(&create_info);
             return (T*)read();
         }
 
