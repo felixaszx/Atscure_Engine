@@ -60,9 +60,10 @@ namespace as
         }
     };
 
-    struct GameScript
+    struct GameScriptComps
     {
         using CreateInfo = Entity;
+        std::vector<as::Script*> scripts_{};
     };
 
 }; // namespace as

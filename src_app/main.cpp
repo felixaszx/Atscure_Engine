@@ -35,27 +35,31 @@ int main(int argc, char** argv)
     as::Scene render_scene;
 
     auto camera_e = render_scene.reg_.create();
-    render_scene.reg_.emplace<as::CameraComp>(camera_e);
-    render_scene.reg_.emplace<as::TransformComp>(camera_e).trans_ = tt;
-
-    auto sponza = render_scene.reg_.create();
-    render_scene.reg_.emplace<as::MeshComp>(sponza).mesh_ = mesh;
-    render_scene.reg_.emplace<as::TransformComp>(sponza).trans_ = tt2;
-
-    as::DynamicLoader sponza_test("script/bin/game/game_script_sponza_scale.dll");
-    as::Script sponza_script(sponza_test);
-    sponza_script.create<as::GameScript>({sponza, &render_scene.reg_});
-
     as::DynamicLoader camear_test("script/bin/game/game_script_camera_move.dll");
     as::Script camera_script(camear_test);
-    camera_script.create<as::GameScript>({camera_e, &render_scene.reg_});
+    camera_script.create<as::GameScriptComps>({camera_e, &render_scene.reg_});
+    render_scene.reg_.emplace<as::CameraComp>(camera_e);
+    render_scene.reg_.emplace<as::TransformComp>(camera_e).trans_ = tt;
+    render_scene.reg_.emplace<as::GameScriptComps>(camera_e).scripts_.push_back(&camera_script);
+
+    auto sponza = render_scene.reg_.create();
+    as::DynamicLoader sponza_test("script/bin/game/game_script_sponza_scale.dll");
+    as::Script sponza_script(sponza_test);
+    sponza_script.create<as::GameScriptComps>({sponza, &render_scene.reg_});
+    render_scene.reg_.emplace<as::MeshComp>(sponza).mesh_ = mesh;
+    render_scene.reg_.emplace<as::TransformComp>(sponza).trans_ = tt2;
+    render_scene.reg_.emplace<as::GameScriptComps>(sponza).scripts_.push_back(&sponza_script);
 
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
 
-        sponza_script.funcs[as::Script::UPDATE](nullptr);
-        camera_script.funcs[as::Script::UPDATE](nullptr);
+        auto view = render_scene.reg_.view<as::GameScriptComps>();
+        for (auto entity : view)
+        {
+            auto script_comp = view.get<as::GameScriptComps>(entity).scripts_[0];
+            script_comp->funcs[as::Script::UPDATE](nullptr);
+        }
 
         renderer->render_scene(render_scene, engine->swapchian_->acquire_next_image(UINT64_MAX, *renderer->image_sem_));
         engine->swapchian_->present({*renderer->submit_sem_});

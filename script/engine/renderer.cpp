@@ -53,8 +53,8 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
         auto camera_view = scene.reg_.view<CameraComp, TransformComp>();
         for (auto camera : camera_view)
         {
-            CameraComp& camera_data = scene.reg_.get<CameraComp>(camera);
-            TransformComp& camera_trans = scene.reg_.get<TransformComp>(camera);
+            CameraComp& camera_data = camera_view.get<CameraComp>(camera);
+            TransformComp& camera_trans = camera_view.get<TransformComp>(camera);
 
             glm::vec3 front = {sin(glm::radians(camera_data.yaw_)) * cos(glm::radians(camera_data.pitch_)), //
                                sin(glm::radians(camera_data.pitch_)),                                       //
@@ -72,8 +72,8 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
             auto entity_view = scene.reg_.view<TransformComp, MeshComp>();
             for (auto entity : entity_view)
             {
-                TransformComp& trans = scene.reg_.get<TransformComp>(entity);
-                MeshComp& mesh = scene.reg_.get<MeshComp>(entity);
+                TransformComp& trans = entity_view.get<TransformComp>(entity);
+                MeshComp& mesh = entity_view.get<MeshComp>(entity);
 
                 mesh.mesh_->models_matrics_[0] = trans.trans_->matrix();
                 mesh.mesh_->update();
