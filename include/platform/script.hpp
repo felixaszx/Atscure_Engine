@@ -15,7 +15,7 @@
     {                                        \
         this_entity_name = *entity;          \
     }                                        \
-    AS_SCRIPT void* read()                   \
+    AS_SCRIPT void* read(void* data)         \
     {                                        \
         return nullptr;                      \
     }
@@ -32,49 +32,58 @@ namespace as
     using update_func = void (*)();
     using fixed_func = void (*)();
 
+    using FUNC_SIG = void* (*)(const void*);
+
     struct Script
     {
-        init_func init{};
-        finish_func finish{};
-        write_func write{};
-        read_func read{};
+        inline static const uint32_t FUNC_COUNTS = 8;
+        enum Func
+        {
+            INIT = 0,
+            FINISH,
+            WRITE,
+            READ,
 
-        start_func start{};
-        end_func end{};
-        update_func update{};
-        fixed_func fixed{};
+            START,
+            END,
+            UPDATE,
+            FIXED
+        };
+        inline static const char* FUNC_NAMES[FUNC_COUNTS] = {"init",  "finish", "write",  "read",
+                                                             "start", "end",    "update", "fixed"};
+        FUNC_SIG funcs[FUNC_COUNTS]{};
 
         Script(DynamicLoader& loader)
         {
-            init = LoadFunc(loader, "init");
-            fixed = LoadFunc(loader, "fixed");
-            write = LoadFunc(loader, "write");
-            read = LoadFunc(loader, "read");
+            funcs[INIT] = LoadFunc(loader, FUNC_NAMES[INIT]);
+            funcs[FINISH] = LoadFunc(loader, FUNC_NAMES[FINISH]);
+            funcs[WRITE] = LoadFunc(loader, FUNC_NAMES[WRITE]);
+            funcs[READ] = LoadFunc(loader, FUNC_NAMES[READ]);
 
-            start = LoadFunc(loader, "start");
-            end = LoadFunc(loader, "end");
-            finish = LoadFunc(loader, "finish");
-            update = LoadFunc(loader, "update");
+            funcs[START] = LoadFunc(loader, FUNC_NAMES[START]);
+            funcs[END] = LoadFunc(loader, FUNC_NAMES[END]);
+            funcs[UPDATE] = LoadFunc(loader, FUNC_NAMES[UPDATE]);
+            funcs[FIXED] = LoadFunc(loader, FUNC_NAMES[FIXED]);
         }
 
         template <typename T, typename C = typename T::CreateInfo>
         T* create(C* create_info)
         {
-            write(create_info);
-            return (T*)read();
+            funcs[WRITE](create_info);
+            return (T*)funcs[READ](nullptr);
         }
 
         template <typename T, typename C = typename T::CreateInfo>
         T* create(const C& create_info)
         {
-            write(&create_info);
-            return (T*)read();
+            funcs[WRITE](&create_info);
+            return (T*)funcs[READ](nullptr);
         }
 
         template <typename T>
         T* create()
         {
-            return (T*)read();
+            return (T*)funcs[READ](nullptr);
         }
     };
 

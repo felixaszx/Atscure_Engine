@@ -9,7 +9,7 @@ as::Engine::~Engine()
 
 as::Engine* engine;
 
-AS_SCRIPT void* read()
+AS_SCRIPT void* read(void* data)
 {
     engine = new as::Engine;
 

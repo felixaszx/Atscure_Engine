@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
-        cs_test.update();
+        cs_test.funcs[as::Script::UPDATE](nullptr);
         renderer->render_scene(render_scene, engine->swapchian_->acquire_next_image(UINT64_MAX, *renderer->image_sem_));
 
         engine->swapchian_->present({*renderer->submit_sem_});

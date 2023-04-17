@@ -150,7 +150,7 @@ as::Renderer::~Renderer()
  */
 as::Renderer* renderer{};
 
-AS_SCRIPT void* read()
+AS_SCRIPT void* read(void* data)
 {
     return renderer;
 }

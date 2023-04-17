@@ -128,7 +128,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
     catch_error();
 }
 
-AS_SCRIPT void* read()
+AS_SCRIPT void* read(void* data)
 {
     return mesh;
 }
