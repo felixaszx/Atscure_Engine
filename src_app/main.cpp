@@ -37,27 +37,27 @@ int main(int argc, char** argv)
     auto camera_e = render_scene.reg_.create();
     as::DynamicLoader camear_test("script/bin/game/game_script_camera_move.dll");
     as::Script camera_script(camear_test);
-    camera_script.create<as::GameScriptComps>({camera_e, &render_scene.reg_});
+    camera_script.create<as::GameScriptsComp>({camera_e, &render_scene.reg_});
     render_scene.reg_.emplace<as::CameraComp>(camera_e);
     render_scene.reg_.emplace<as::TransformComp>(camera_e).trans_ = tt;
-    render_scene.reg_.emplace<as::GameScriptComps>(camera_e).scripts_.push_back(&camera_script);
+    render_scene.reg_.emplace<as::GameScriptsComp>(camera_e).scripts_.push_back(&camera_script);
 
     auto sponza = render_scene.reg_.create();
     as::DynamicLoader sponza_test("script/bin/game/game_script_sponza_scale.dll");
     as::Script sponza_script(sponza_test);
-    sponza_script.create<as::GameScriptComps>({sponza, &render_scene.reg_});
+    sponza_script.create<as::GameScriptsComp>({sponza, &render_scene.reg_});
     render_scene.reg_.emplace<as::MeshComp>(sponza).mesh_ = mesh;
     render_scene.reg_.emplace<as::TransformComp>(sponza).trans_ = tt2;
-    render_scene.reg_.emplace<as::GameScriptComps>(sponza).scripts_.push_back(&sponza_script);
+    render_scene.reg_.emplace<as::GameScriptsComp>(sponza).scripts_.push_back(&sponza_script);
 
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
 
-        auto view = render_scene.reg_.view<as::GameScriptComps>();
+        auto view = render_scene.reg_.view<as::GameScriptsComp>();
         for (auto entity : view)
         {
-            auto script_comp = view.get<as::GameScriptComps>(entity).scripts_[0];
+            auto script_comp = view.get<as::GameScriptsComp>(entity).scripts_[0];
             script_comp->funcs[as::Script::UPDATE](nullptr);
         }
 
