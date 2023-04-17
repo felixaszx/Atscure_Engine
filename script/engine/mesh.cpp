@@ -1,7 +1,12 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "engine/mesh.hpp"
 
 as::Mesh::~Mesh()
 {
+    for (Material*& material : materials_)
+    {
+        ffree(material);
+    }
     ffree(vertex_buffer_);
     ffree(index_buffer_);
     ffree(model_buffer_);
@@ -29,6 +34,10 @@ void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t mesh_index)
     cmd.bindIndexBuffer(*index_buffer_, index_buffer_offsets_[mesh_index] * sizeof(indices_[0]),
                         vk::IndexType::eUint32);
     cmd.drawIndexed(mesh_indices_count_[mesh_index], update_size_, 0, 0, 0);
+}
+
+as::Mesh::Material::~Material()
+{
 }
 
 as::Mesh* mesh;
@@ -87,6 +96,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
         mesh->index_buffer_offsets_.push_back(index_offset);
         mesh->mesh_indices_count_.push_back(3 * mesh_in->mNumFaces);
         index_offset += 3 * mesh_in->mNumFaces;
+        mesh->material_index_.push_back(mesh_in->mMaterialIndex);
     }
 
     try_log();
@@ -126,6 +136,11 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
     ffree(staging_buffer);
     mesh->update();
     catch_error();
+
+    for (int i = 0; i < create_info->scene_->mNumMaterials; i++)
+    {
+        
+    }
 }
 
 AS_SCRIPT void* read(void* data)

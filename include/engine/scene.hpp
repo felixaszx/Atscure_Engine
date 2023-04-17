@@ -31,17 +31,11 @@ namespace as
     struct MeshComp
     {
         Mesh* mesh_ = nullptr;
-        Material* material_ = nullptr;
     };
 
     struct TransformComp
     {
         Transform* trans_ = nullptr;
-    };
-
-    struct ScriptComp
-    {
-        std::vector<Script*> scripts_{};
     };
 
     struct Entity
