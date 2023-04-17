@@ -50,7 +50,7 @@ namespace as
         entt::registry* reg_{};
 
         template <typename Component>
-        Component* get_component()
+        Component* get()
         {
             if (reg_->valid(e_))
             {

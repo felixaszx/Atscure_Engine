@@ -49,22 +49,11 @@ namespace as
             UPDATE,
             FIXED
         };
-        inline static const char* FUNC_NAMES[FUNC_COUNTS] = {"init",  "finish", "write",  "read",
+        inline static const char* FUNC_NAMES[FUNC_COUNTS] = {"init",  "finish", "write",  "read", //
                                                              "start", "end",    "update", "fixed"};
         FUNC_SIG funcs[FUNC_COUNTS]{};
 
-        Script(DynamicLoader& loader)
-        {
-            funcs[INIT] = LoadFunc(loader, FUNC_NAMES[INIT]);
-            funcs[FINISH] = LoadFunc(loader, FUNC_NAMES[FINISH]);
-            funcs[WRITE] = LoadFunc(loader, FUNC_NAMES[WRITE]);
-            funcs[READ] = LoadFunc(loader, FUNC_NAMES[READ]);
-
-            funcs[START] = LoadFunc(loader, FUNC_NAMES[START]);
-            funcs[END] = LoadFunc(loader, FUNC_NAMES[END]);
-            funcs[UPDATE] = LoadFunc(loader, FUNC_NAMES[UPDATE]);
-            funcs[FIXED] = LoadFunc(loader, FUNC_NAMES[FIXED]);
-        }
+        Script(DynamicLoader& loader);
 
         template <typename T, typename C = typename T::CreateInfo>
         T* create(C* create_info)

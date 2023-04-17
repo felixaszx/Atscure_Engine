@@ -2,6 +2,7 @@
 
 as::Engine::~Engine()
 {
+    ffree(swapchian_);
     ffree(device_);
     ffree(context_);
     ffree(window_);

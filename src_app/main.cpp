@@ -6,10 +6,10 @@
 
 int main(int argc, char** argv)
 {
-    as::DynamicLoader engine_dll("script/bin/libengine.dll");
-    as::DynamicLoader renderer_dll("script/bin/librenderer.dll");
-    as::DynamicLoader mesh_dll("script/bin/libmesh.dll");
-    as::DynamicLoader transfrom_dll("script/bin/libtransform.dll");
+    as::DynamicLoader engine_dll("script/bin/engine/engine_script_engine.dll");
+    as::DynamicLoader renderer_dll("script/bin/engine/engine_script_renderer.dll");
+    as::DynamicLoader mesh_dll("script/bin/engine/engine_script_mesh.dll");
+    as::DynamicLoader transfrom_dll("script/bin/engine/engine_script_transform.dll");
     as::Script engine_class(engine_dll);
     as::Script renderer_class(renderer_dll);
     as::Script mesh_class(mesh_dll);
@@ -35,25 +35,31 @@ int main(int argc, char** argv)
     as::Scene render_scene;
 
     auto camera_e = render_scene.reg_.create();
-    render_scene.reg_.emplace<as::CameraComp>(camera_e).pitch_ = -79.0f;
+    render_scene.reg_.emplace<as::CameraComp>(camera_e);
     render_scene.reg_.emplace<as::TransformComp>(camera_e).trans_ = tt;
 
     auto sponza = render_scene.reg_.create();
     render_scene.reg_.emplace<as::MeshComp>(sponza).mesh_ = mesh;
     render_scene.reg_.emplace<as::TransformComp>(sponza).trans_ = tt2;
-    tt->position_ = {0, 10, 0};
 
-    as::DynamicLoader cc_test("script/bin/libcamera_move.dll");
-    as::Script cs_test(cc_test);
-    cs_test.create<as::GameScript>({sponza, &render_scene.reg_});
+    as::DynamicLoader sponza_test("script/bin/game/game_script_sponza_scale.dll");
+    as::Script sponza_script(sponza_test);
+    sponza_script.create<as::GameScript>({sponza, &render_scene.reg_});
+
+    as::DynamicLoader camear_test("script/bin/game/game_script_camera_move.dll");
+    as::Script camera_script(camear_test);
+    camera_script.create<as::GameScript>({camera_e, &render_scene.reg_});
 
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
-        cs_test.funcs[as::Script::UPDATE](nullptr);
-        renderer->render_scene(render_scene, engine->swapchian_->acquire_next_image(UINT64_MAX, *renderer->image_sem_));
 
+        sponza_script.funcs[as::Script::UPDATE](nullptr);
+        camera_script.funcs[as::Script::UPDATE](nullptr);
+
+        renderer->render_scene(render_scene, engine->swapchian_->acquire_next_image(UINT64_MAX, *renderer->image_sem_));
         engine->swapchian_->present({*renderer->submit_sem_});
+
         renderer->wait_idle();
     }
 
