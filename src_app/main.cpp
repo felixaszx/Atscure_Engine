@@ -30,12 +30,26 @@ int main(int argc, char** argv)
     as::Mesh* mesh = mesh_class.create<as::Mesh>(&mesh_cinfo);
 
     as::Transform* tt = transfrom_class.create<as::Transform>();
-    tt->right();
+    as::Transform* tt2 = transfrom_class.create<as::Transform>();
+
+    as::Scene render_scene;
+
+    auto camera_e = render_scene.reg_.create();
+    render_scene.reg_.emplace<as::CameraComp>(camera_e).pitch_ = -79.0f;
+    render_scene.reg_.emplace<as::TransformComp>(camera_e).trans_ = tt;
+
+    auto sponza = render_scene.reg_.create();
+    render_scene.reg_.emplace<as::MeshComp>(sponza).mesh_ = mesh;
+    render_scene.reg_.emplace<as::TransformComp>(sponza).trans_ = tt2;
+    tt->position_ = {0, 10, 0};
 
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
+        tt2->scale_ = glm::vec3(0.01 * (sin(glfwGetTime()) + 1));
+        renderer->render_scene(render_scene, engine->swapchian_->acquire_next_image(UINT64_MAX, *renderer->image_sem_));
 
+        engine->swapchian_->present({*renderer->submit_sem_});
         renderer->wait_idle();
     }
 

@@ -15,13 +15,14 @@ namespace as
         vk::Format format_{};
         vk::AttachmentDescription attachment_details_;
         std::vector<SwapchainImage*> images_{};
+        uint32_t image_index_ = 0;
 
         Swapchain(Window& window, Context& context, Device& device);
         ~Swapchain() override;
 
-        vk::Result present(uint32_t image_index, const std::vector<vk::Semaphore>& wait_sems);
+        vk::Result present(const std::vector<vk::Semaphore>& wait_sems);
         uint32_t acquire_next_image(uint64_t timeout, vk::Semaphore semaphore, vk::Fence fence = {},
-                                   const vk::DispatchLoaderDynamic& d = ::vk::defaultDispatchLoaderDynamic);
+                                    const vk::DispatchLoaderDynamic& d = ::vk::defaultDispatchLoaderDynamic);
     };
 
 }; // namespace as

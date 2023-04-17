@@ -17,17 +17,47 @@ namespace as
         entt::registry reg_;
     };
 
+    struct CameraComp
+    {
+        float yaw_ = 0.0f;
+        float pitch_ = 0.0f;
+        float fov_ = 45.0f;
+
+        float near_ = 0.5f;
+        float far_ = 1000.0f;
+        float aspect_ = 1920.0f / 1080.0f;
+    };
+
     struct MeshComp
     {
         Mesh* mesh_ = nullptr;
         Material* material_ = nullptr;
     };
 
-    using TransformComp = Transform*;
+    struct TransformComp
+    {
+        Transform* trans_ = nullptr;
+    };
 
     struct ScriptComp
     {
         std::vector<Script*> scripts_{};
+    };
+
+    struct Entity
+    {
+        entt::entity e_{};
+        entt::registry* reg_{};
+
+        template <typename Component>
+        Component* get_component()
+        {
+            if (reg_->valid(e_))
+            {
+                return reg_->try_get<Component>(e_);
+            }
+            return nullptr;
+        }
     };
 
 }; // namespace as

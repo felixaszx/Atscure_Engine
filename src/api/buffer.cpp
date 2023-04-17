@@ -46,7 +46,11 @@ void* as::Buffer::mapping() const
 
 void* as::Buffer::map_memory()
 {
-    mapping_ = device_->allocator_.mapMemory(*this);
+    if (mapping_ == nullptr)
+    {
+        mapping_ = device_->allocator_.mapMemory(*this);
+        return mapping_;
+    }
     return mapping_;
 }
 

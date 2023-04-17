@@ -93,13 +93,13 @@ as::Swapchain::~Swapchain()
     device_->destroySwapchainKHR(*this);
 }
 
-vk::Result as::Swapchain::present(uint32_t image_index, const std::vector<vk::Semaphore>& wait_sems)
+vk::Result as::Swapchain::present(const std::vector<vk::Semaphore>& wait_sems)
 {
     vk::PresentInfoKHR present_info{};
     present_info.setWaitSemaphores(wait_sems);
     present_info.swapchainCount = 1;
     present_info.pSwapchains = this;
-    present_info.pImageIndices = &image_index;
+    present_info.pImageIndices = &image_index_;
 
     return device_->present_queue_.presentKHR(present_info);
 }
@@ -107,5 +107,6 @@ vk::Result as::Swapchain::present(uint32_t image_index, const std::vector<vk::Se
 uint32_t as::Swapchain::acquire_next_image(uint64_t timeout, vk::Semaphore semaphore, vk::Fence fence,
                                            const vk::DispatchLoaderDynamic& d)
 {
-    return device_->acquireNextImageKHR(*this, timeout, semaphore, fence, d).value;
+    image_index_ = device_->acquireNextImageKHR(*this, timeout, semaphore, fence, d).value;
+    return image_index_;
 }

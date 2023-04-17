@@ -10,7 +10,7 @@ as::Mesh::~Mesh()
 void as::Mesh::update()
 {
     update_size_ = std::clamp(instance_count_, 0u, max_instance_);
-    memcpy(model_mapping_, models_matrics_.data(), update_size_ * sizeof(models_matrics_[0]));
+    memcpy(model_buffer_->mapping(), models_matrics_.data(), update_size_ * sizeof(models_matrics_[0]));
 }
 
 void as::Mesh::draw(vk::CommandBuffer cmd)
@@ -107,7 +107,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
     alloc_info.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
     alloc_info.preferredFlags = vk::MemoryPropertyFlagBits::eHostCoherent;
     mesh->model_buffer_ = new as::Buffer(buffer_info, alloc_info);
-    mesh->model_mapping_ = mesh->model_buffer_->map_memory();
+    mesh->model_buffer_->map_memory();
 
     void* staging_ptr = nullptr;
     buffer_info.usage = vk::BufferUsageFlagBits::eTransferSrc;
@@ -120,7 +120,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
     memcpy(staging_ptr, mesh->vertices_.data(), mesh->vertex_buffer_->size_);
     mesh->vertex_buffer_->copy_from(*staging_buffer, *create_info->cmd_pool_);
 
-    memcpy(staging_ptr, mesh->vertices_.data(), mesh->vertex_buffer_->size_);
+    memcpy(staging_ptr, mesh->indices_.data(), mesh->index_buffer_->size_);
     mesh->index_buffer_->copy_from(*staging_buffer, *create_info->cmd_pool_);
 
     ffree(staging_buffer);

@@ -88,7 +88,18 @@ as::DescriptorPool::~DescriptorPool()
     device_->destroyDescriptorPool(*this);
 }
 
-void as::DescriptorPool::update_sets(const std::vector<vk::WriteDescriptorSet>& write)
+vk::DescriptorSet as::DescriptorPool::get_set(uint32_t index)
 {
+    return this->std::vector<vk::DescriptorSet>::at(index);
+}
+
+std::vector<vk::DescriptorSet> as::DescriptorPool::get_sets()
+{
+    return *this;
+}
+
+void as::DescriptorPool::update_sets(vk::WriteDescriptorSet& write, uint32_t set)
+{
+    write.dstSet = this->std::vector<vk::DescriptorSet>::at(set);
     device_->updateDescriptorSets(write, {});
 }

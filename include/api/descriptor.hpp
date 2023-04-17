@@ -6,10 +6,14 @@
 
 namespace as
 {
-    struct DescriptorLayout : vk::DescriptorSetLayout, //
-                              std::unordered_map<vk::DescriptorType, uint32_t>,
-                              public DeviceRAII
+    class DescriptorPool;
+    class DescriptorLayout : public vk::DescriptorSetLayout, //
+                             std::unordered_map<vk::DescriptorType, uint32_t>,
+                             public DeviceRAII
     {
+        friend DescriptorPool;
+
+      public:
         using std::unordered_map<vk::DescriptorType, uint32_t>::find;
         using std::unordered_map<vk::DescriptorType, uint32_t>::begin;
         using std::unordered_map<vk::DescriptorType, uint32_t>::end;
@@ -27,21 +31,22 @@ namespace as
         ~DescriptorLayout() override;
     };
 
-    struct DescriptorPool : vk::DescriptorPool, //
-                            std::unordered_map<vk::DescriptorType, uint32_t>,
-                            std::vector<vk::DescriptorSet>,
-                            public DeviceRAII
+    class DescriptorPool : public vk::DescriptorPool, //
+                           std::unordered_map<vk::DescriptorType, uint32_t>,
+                           public std::vector<vk::DescriptorSet>,
+                           public DeviceRAII
     {
+      public:
         using std::unordered_map<vk::DescriptorType, uint32_t>::find;
         using std::unordered_map<vk::DescriptorType, uint32_t>::begin;
         using std::unordered_map<vk::DescriptorType, uint32_t>::end;
-        using std::vector<vk::DescriptorSet>::size;
-        using std::vector<vk::DescriptorSet>::operator[];
 
         DescriptorPool(const std::vector<DescriptorLayout*>& layouts);
         ~DescriptorPool() override;
 
-        void update_sets(const std::vector<vk::WriteDescriptorSet>& write);
+        vk::DescriptorSet get_set(uint32_t index);
+        std::vector<vk::DescriptorSet> get_sets();
+        void update_sets(vk::WriteDescriptorSet& write, uint32_t set);
     };
 
 }; // namespace as

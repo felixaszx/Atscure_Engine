@@ -37,9 +37,7 @@ namespace as
         std::vector<size_t> index_buffer_offsets_{};
         std::vector<uint32_t> mesh_indices_count_{};
 
-        void* model_mapping_ = nullptr;
         uint32_t update_size_ = 1;
-
         uint32_t max_instance_ = 0;
         uint32_t instance_count_ = 1;
         std::vector<glm::mat4> models_matrics_{};

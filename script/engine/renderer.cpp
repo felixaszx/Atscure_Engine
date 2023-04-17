@@ -6,7 +6,7 @@
  *
  */
 
-void as::Renderer::render_scene(const Scene& scene)
+void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
 {
     try
     {
@@ -16,12 +16,89 @@ void as::Renderer::render_scene(const Scene& scene)
     {
         as::Log::error(e.what());
     }
-    uint32_t image_index = engine_->swapchian_->acquire_next_image(UINT64_MAX, *image_sem_);
     engine_->device_->resetFences(*frame_fence_);
+
+    vk::ClearValue clear_value[7];
+    clear_value[0] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[1] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[2] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[3] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[4] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[5].setDepthStencil({1.0f, 0});
+    clear_value[6] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    vk::RenderPassBeginInfo render_pass_info{};
+    render_pass_info.renderPass = render_pass_;
+    render_pass_info.framebuffer = framebufs_[image_index];
+    render_pass_info.renderArea.extent = engine_->swapchian_->extend_;
+    render_pass_info.setClearValues(clear_value);
+
+    vk::Viewport viewport{};
+    viewport.width = engine_->swapchian_->extend_.width;
+    viewport.height = engine_->swapchian_->extend_.height;
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vk::Rect2D scissor{};
+    scissor.extent = engine_->swapchian_->extend_;
 
     main_cmd_->reset();
     as::begin_cmd(main_cmd_);
+    {
+        main_cmd_->beginRenderPass(render_pass_info, vk::SubpassContents::eInline);
+        main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, pipelines_[0]);
+        main_cmd_->setScissor(0, scissor);
+        main_cmd_->setViewport(0, viewport);
+        main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[0], 0,
+                                      descriptor_pool_->get_set(0), {});
 
+        auto camera_view = scene.reg_.view<CameraComp, TransformComp>();
+        for (auto camera : camera_view)
+        {
+            CameraComp& camera_data = scene.reg_.get<CameraComp>(camera);
+            TransformComp& camera_trans = scene.reg_.get<TransformComp>(camera);
+
+            glm::vec3 front = {sin(glm::radians(camera_data.yaw_)) * cos(glm::radians(camera_data.pitch_)), //
+                               sin(glm::radians(camera_data.pitch_)),                                       //
+                               cos(glm::radians(camera_data.yaw_)) * cos(glm::radians(camera_data.pitch_))};
+            front = glm::normalize(front);
+            ubo_.view_ = glm::lookAt(camera_trans.trans_->position_,         //
+                                     camera_trans.trans_->position_ + front, //
+                                     Y_AXIS);
+            ubo_.proj_ = glms::perspective(glm::radians(camera_data.fov_), //
+                                           camera_data.aspect_,            //
+                                           camera_data.near_, camera_data.far_);
+            memcpy(uniform_buffer_->mapping(), &ubo_, sizeof(ubo_));
+            descriptor_pool_->update_sets(ubo_write_, 0);
+
+            auto entity_view = scene.reg_.view<TransformComp, MeshComp>();
+            for (auto entity : entity_view)
+            {
+                TransformComp& trans = scene.reg_.get<TransformComp>(entity);
+                MeshComp& mesh = scene.reg_.get<MeshComp>(entity);
+
+                mesh.mesh_->models_matrics_[0] = trans.trans_->matrix();
+                mesh.mesh_->update();
+                mesh.mesh_->draw(*main_cmd_);
+            }
+        }
+
+        main_cmd_->nextSubpass(vk::SubpassContents::eInline);
+        main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, pipelines_[1]);
+        main_cmd_->setScissor(0, scissor);
+        main_cmd_->setViewport(0, viewport);
+        main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[1], 0,
+                                      descriptor_pool_->get_set(1), {});
+        main_cmd_->draw(6, 1, 0, 0);
+
+        main_cmd_->nextSubpass(vk::SubpassContents::eInline);
+        main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, pipelines_[2]);
+        main_cmd_->setScissor(0, scissor);
+        main_cmd_->setViewport(0, viewport);
+        main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[2], 0,
+                                      descriptor_pool_->get_set(2), {});
+        main_cmd_->draw(6, 1, 0, 0);
+
+        main_cmd_->endRenderPass();
+    }
     main_cmd_->end();
 
     vk::PipelineStageFlags wait_stages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
@@ -34,10 +111,6 @@ void as::Renderer::render_scene(const Scene& scene)
     submit_info.commandBufferCount = 1;
     submit_info.pCommandBuffers = main_cmd_;
     engine_->device_->graphics_queue_.submit(submit_info, *frame_fence_);
-
-    try_log();
-    engine_->swapchian_->present(image_index, {*submit_sem_});
-    catch_error();
 }
 
 void as::Renderer::wait_idle()
@@ -52,6 +125,7 @@ as::Renderer::~Renderer()
         engine_->device_->destroyFramebuffer(framebufs_[i]);
     }
 
+    ffree(uniform_buffer_);
     ffree(main_cmd_);
     ffree(cmd_pool_);
     ffree(image_sem_);
@@ -231,7 +305,6 @@ AS_SCRIPT void write(as::Renderer::CreateInfo* engine)
 
     std::vector<as::DescriptorLayout::Binding> bindings[3]{};
     bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
-    bindings[0].push_back({1, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment});
     for (uint32_t i = 0; i < 4; i++)
     {
         bindings[1].push_back({i, 1, vk::DescriptorType::eInputAttachment, vk::ShaderStageFlagBits::eFragment});
@@ -444,4 +517,42 @@ AS_SCRIPT void write(as::Renderer::CreateInfo* engine)
         fcreate_info.layers = 1;
         renderer->framebufs_[i] = engine->device_->createFramebuffer(fcreate_info);
     }
+
+    vk::DescriptorImageInfo descriptor_image_infos[5]{};
+    for (int i = 0; i < 5; i++)
+    {
+        descriptor_image_infos[i].imageView = *renderer->attachments_[i];
+        descriptor_image_infos[i].imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+    }
+
+    vk::WriteDescriptorSet image_write0{};
+    image_write0.dstBinding = 0;
+    image_write0.descriptorType = vk::DescriptorType::eInputAttachment;
+    image_write0.descriptorCount = 4;
+    image_write0.pImageInfo = descriptor_image_infos;
+
+    vk::WriteDescriptorSet image_write1{};
+    image_write1.dstBinding = 0;
+    image_write1.descriptorType = vk::DescriptorType::eInputAttachment;
+    image_write1.descriptorCount = 1;
+    image_write1.pImageInfo = descriptor_image_infos + 4;
+
+    renderer->descriptor_pool_->update_sets(image_write0, 1);
+    renderer->descriptor_pool_->update_sets(image_write1, 2);
+
+    vk::BufferCreateInfo buffer_info{};
+    vma::AllocationCreateInfo alloc_info{};
+    buffer_info.usage = vk::BufferUsageFlagBits::eUniformBuffer;
+    buffer_info.size = sizeof(as::UniformBlock);
+    alloc_info.usage = vma::MemoryUsage::eAutoPreferHost;
+    alloc_info.preferredFlags = vk::MemoryPropertyFlagBits::eHostCoherent;
+    alloc_info.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+    renderer->uniform_buffer_ = new as::Buffer(buffer_info, alloc_info);
+    renderer->uniform_buffer_->map_memory();
+    renderer->ubo_info_.buffer = *renderer->uniform_buffer_;
+    renderer->ubo_info_.range = VK_WHOLE_SIZE;
+    renderer->ubo_write_.dstBinding = 0;
+    renderer->ubo_write_.descriptorType = vk::DescriptorType::eUniformBuffer;
+    renderer->ubo_write_.descriptorCount = 1;
+    renderer->ubo_write_.pBufferInfo = &renderer->ubo_info_;
 }
