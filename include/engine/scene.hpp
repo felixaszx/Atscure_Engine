@@ -12,6 +12,22 @@
 
 namespace as
 {
+    struct Entity
+    {
+        entt::entity e_{};
+        entt::registry* reg_{};
+
+        template <typename Component>
+        Component* get()
+        {
+            if (reg_->valid(e_))
+            {
+                return reg_->try_get<Component>(e_);
+            }
+            return nullptr;
+        }
+    };
+
     struct Scene
     {
         entt::registry reg_;
@@ -38,26 +54,11 @@ namespace as
         Transform* trans_ = nullptr;
     };
 
-    struct Entity
-    {
-        entt::entity e_{};
-        entt::registry* reg_{};
-
-        template <typename Component>
-        Component* get()
-        {
-            if (reg_->valid(e_))
-            {
-                return reg_->try_get<Component>(e_);
-            }
-            return nullptr;
-        }
-    };
-
+#define AS_SCRIPT_MAX_ORDER 20
     struct GameScriptsComp
     {
-        using CreateInfo = Entity;
-        std::vector<as::Script*> scripts_{};
+        Entity this_e_{};
+        std::array<as::Script*, AS_SCRIPT_MAX_ORDER> scripts_{};
     };
 
 }; // namespace as

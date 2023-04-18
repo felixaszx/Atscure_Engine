@@ -22,16 +22,6 @@
 
 namespace as
 {
-    using init_func = void (*)();
-    using finish_func = void (*)();
-    using write_func = void (*)(const void*);
-    using read_func = void* (*)();
-
-    using start_func = void (*)();
-    using end_func = void (*)();
-    using update_func = void (*)();
-    using fixed_func = void (*)();
-
     using FUNC_SIG = void* (*)(const void*);
 
     struct Script
@@ -59,13 +49,6 @@ namespace as
         T* create(C* create_info)
         {
             funcs[WRITE](create_info);
-            return (T*)funcs[READ](nullptr);
-        }
-
-        template <typename T, typename C = typename T::CreateInfo>
-        T* create(const C& create_info)
-        {
-            funcs[WRITE](&create_info);
             return (T*)funcs[READ](nullptr);
         }
 

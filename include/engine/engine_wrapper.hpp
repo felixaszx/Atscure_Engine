@@ -5,5 +5,6 @@
 #include "renderer.hpp"
 #include "mesh.hpp"
 #include "scene.hpp"
+#include "script_process.hpp"
 
 #endif // ENGINE_WRAPPER_HPP
