@@ -54,7 +54,6 @@ int main(int argc, char** argv)
 
     sprocessor->check_scene(render_scene);
 
-    sprocessor->call_func(as::Script::START);
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
