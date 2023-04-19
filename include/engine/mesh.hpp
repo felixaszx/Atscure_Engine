@@ -9,14 +9,6 @@
 
 namespace as
 {
-    struct Vertex
-    {
-        glm::vec3 positon_{};
-        glm::vec3 normal_{};
-        glm::vec3 uv_{};
-        glm::vec3 color_{1.0f, 1.0f, 1.0f};
-    };
-
     struct Mesh
     {
         struct CreateInfo
@@ -26,14 +18,22 @@ namespace as
             CmdPool* cmd_pool_ = nullptr;
         };
 
+        struct Vertex
+        {
+            glm::vec3 positon_{};
+            glm::vec3 normal_{};
+            glm::vec3 uv_{};
+            glm::vec3 color_{1.0f, 1.0f, 1.0f};
+        };
+
         struct Material
         {
+            inline static Image* blank_tex_ = nullptr;
             std::unordered_map<std::string, Image*> loaded_image_{};
             std::vector<Image*> albedo_{};
             std::vector<Image*> spec_{};
             std::vector<Image*> opacity_{};
-
-            AS_SCRIPT_MEM_FUNC ~Material();
+            glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
         };
 
         Buffer* vertex_buffer_ = nullptr;

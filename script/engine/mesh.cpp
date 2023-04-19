@@ -36,10 +36,6 @@ void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t mesh_index)
     cmd.drawIndexed(mesh_indices_count_[mesh_index], update_size_, 0, 0, 0);
 }
 
-as::Mesh::Material::~Material()
-{
-}
-
 as::Mesh* mesh;
 AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
 {
@@ -56,7 +52,7 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
 
         for (size_t v = 0; v < mesh_in->mNumVertices; v++)
         {
-            as::Vertex vertex{};
+            as::Mesh::Vertex vertex{};
             vertex.positon_ = glm::vec3(mesh_in->mVertices[v].x, mesh_in->mVertices[v].y, mesh_in->mVertices[v].z);
             vertex.normal_ = glm::vec3(mesh_in->mNormals[v].x, mesh_in->mNormals[v].y, mesh_in->mNormals[v].z);
 

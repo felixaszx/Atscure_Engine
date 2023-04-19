@@ -160,7 +160,7 @@ std::vector<vk::VertexInputBindingDescription> mesh_bindings()
     std::vector<vk::VertexInputBindingDescription> binding(2);
 
     binding[0].binding = 0;
-    binding[0].stride = sizeof(as::Vertex);
+    binding[0].stride = sizeof(as::Mesh::Vertex);
     binding[0].inputRate = vk::VertexInputRate::eVertex;
 
     binding[1].binding = 1;
@@ -180,10 +180,10 @@ std::vector<vk::VertexInputAttributeDescription> mesh_attributes()
         attributes[i].format = vk::Format::eR32G32B32Sfloat;
     }
 
-    attributes[0].offset = offsetof(as::Vertex, positon_);
-    attributes[1].offset = offsetof(as::Vertex, normal_);
-    attributes[2].offset = offsetof(as::Vertex, uv_);
-    attributes[3].offset = offsetof(as::Vertex, color_);
+    attributes[0].offset = offsetof(as::Mesh::Vertex, positon_);
+    attributes[1].offset = offsetof(as::Mesh::Vertex, normal_);
+    attributes[2].offset = offsetof(as::Mesh::Vertex, uv_);
+    attributes[3].offset = offsetof(as::Mesh::Vertex, color_);
 
     for (uint32_t i = 4; i < 8; i++)
     {
