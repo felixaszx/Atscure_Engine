@@ -21,11 +21,8 @@ namespace as
     {
         struct CreateInfo
         {
-            uint32_t max_instance_ = 10;
-            std::string file_path_ = "";
-            std::string default_tex_ = "res/textures/blank.png";
             const aiScene* scene_ = nullptr;
-
+            uint32_t max_instance_ = 10;
             CmdPool* cmd_pool_ = nullptr;
         };
 

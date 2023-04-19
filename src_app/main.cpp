@@ -30,7 +30,6 @@ int main(int argc, char** argv)
     as::Mesh::CreateInfo mesh_cinfo{};
     mesh_cinfo.cmd_pool_ = renderer->cmd_pool_;
     mesh_cinfo.scene_ = scene;
-    mesh_cinfo.file_path_ = "res/model/sponza";
     as::Mesh* mesh = mesh_class.create<as::Mesh>(&mesh_cinfo);
 
     as::Transform* tt = transfrom_class.create<as::Transform>();
