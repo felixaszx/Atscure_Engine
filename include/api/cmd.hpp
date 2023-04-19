@@ -42,6 +42,9 @@ namespace as
 
         CmdBuffer* alloc_buffer(vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
         CmdBuffers* alloc_buffers(uint32_t count, vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
+
+        void submit_onetime(CmdBuffer* buffer);
+        void submit_onetime(CmdBuffers* buffer);
     };
 
 }; // namespace as

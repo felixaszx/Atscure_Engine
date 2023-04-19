@@ -8,11 +8,9 @@ as::Engine::~Engine()
     ffree(window_);
 }
 
-as::Engine* engine;
-
-AS_SCRIPT void* read(void* data)
+AS_SCRIPT as::Engine* write(void* data)
 {
-    engine = new as::Engine;
+    as::Engine* engine = new as::Engine;
 
     try_log();
     engine->window_ = new as::Window(1920, 1080);

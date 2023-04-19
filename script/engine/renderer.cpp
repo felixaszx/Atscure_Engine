@@ -148,12 +148,6 @@ as::Renderer::~Renderer()
  * SCRIPT PART
  *
  */
-as::Renderer* renderer{};
-
-AS_SCRIPT void* read(void* data)
-{
-    return renderer;
-}
 
 std::vector<vk::VertexInputBindingDescription> mesh_bindings()
 {
@@ -196,9 +190,9 @@ std::vector<vk::VertexInputAttributeDescription> mesh_attributes()
     return attributes;
 }
 
-AS_SCRIPT void write(as::Renderer::CreateInfo* engine)
+AS_SCRIPT as::Renderer* write(as::Renderer::CreateInfo* engine)
 {
-    renderer = new as::Renderer;
+    as::Renderer* renderer = new as::Renderer;
     renderer->engine_ = engine;
 
     std::vector<vk::Extent2D> extends(6, engine->swapchian_->extend_);
@@ -555,4 +549,6 @@ AS_SCRIPT void write(as::Renderer::CreateInfo* engine)
     renderer->ubo_write_.descriptorType = vk::DescriptorType::eUniformBuffer;
     renderer->ubo_write_.descriptorCount = 1;
     renderer->ubo_write_.pBufferInfo = &renderer->ubo_info_;
+
+    return renderer;
 }

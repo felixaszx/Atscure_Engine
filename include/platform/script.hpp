@@ -48,14 +48,13 @@ namespace as
         template <typename T, typename C = typename T::CreateInfo>
         T* create(C* create_info)
         {
-            funcs[WRITE](create_info);
-            return (T*)funcs[READ](nullptr);
+            return (T*)funcs[WRITE](create_info);
         }
 
         template <typename T>
-        T* create()
+        T* load()
         {
-            return (T*)funcs[READ](nullptr);
+            return (T*)funcs[WRITE](nullptr);
         }
     };
 

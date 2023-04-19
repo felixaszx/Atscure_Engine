@@ -31,7 +31,7 @@ void as::Transform::set_relative_to(const Transform* trans)
     position_ += trans->position_;
 }
 
-AS_SCRIPT as::Transform* read(void* data)
+AS_SCRIPT as::Transform* write(void* data)
 {
     return new as::Transform;
 }

@@ -61,6 +61,25 @@ as::CmdBuffers* as::CmdPool::alloc_buffers(uint32_t count, vk::CommandBufferLeve
     return new CmdBuffers(device_->allocateCommandBuffers(alloc_info), this);
 }
 
+void as::CmdPool::submit_onetime(CmdBuffer* buffer)
+{
+    vk::SubmitInfo submit_info{};
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers = buffer;
+
+    device_->graphics_queue_.submit(submit_info);
+    device_->graphics_queue_.waitIdle();
+}
+
+void as::CmdPool::submit_onetime(CmdBuffers* buffer)
+{
+    vk::SubmitInfo submit_info{};
+    submit_info.setCommandBuffers(*buffer);
+
+    device_->graphics_queue_.submit(submit_info);
+    device_->graphics_queue_.waitIdle();
+}
+
 void as::begin_cmd(vk::CommandBuffer* cmd,            //
                    vk::CommandBufferUsageFlags flags, //
                    vk::CommandBufferInheritanceInfo* inheritance)

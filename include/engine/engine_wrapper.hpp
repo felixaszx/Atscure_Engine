@@ -6,5 +6,6 @@
 #include "mesh.hpp"
 #include "scene.hpp"
 #include "script_process.hpp"
+#include "texture.hpp"
 
 #endif // ENGINE_WRAPPER_HPP

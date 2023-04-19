@@ -41,7 +41,7 @@ void as::ScriptProcessor::check_scene(Scene& scene)
     }
 }
 
-AS_SCRIPT void* read(void* data)
+AS_SCRIPT as::ScriptProcessor* write(void* data)
 {
     return new as::ScriptProcessor;
 }

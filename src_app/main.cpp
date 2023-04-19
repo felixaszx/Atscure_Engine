@@ -11,15 +11,17 @@ int main(int argc, char** argv)
     as::DynamicLoader mesh_dll("script/bin/engine/engine_script_mesh.dll");
     as::DynamicLoader transfrom_dll("script/bin/engine/engine_script_transform.dll");
     as::DynamicLoader script_process_dll("script/bin/engine/engine_script_script_process.dll");
+    as::DynamicLoader texture_dll("script/bin/engine/engine_script_texture.dll");
     as::Script engine_class(engine_dll);
     as::Script renderer_class(renderer_dll);
     as::Script mesh_class(mesh_dll);
     as::Script transfrom_class(transfrom_dll);
     as::Script script_processor_class(script_process_dll);
+    as::Script texture_class(texture_dll);
 
-    as::Engine* engine = engine_class.create<as::Engine>();
+    as::Engine* engine = engine_class.load<as::Engine>();
     as::Renderer* renderer = renderer_class.create<as::Renderer>(engine);
-    as::ScriptProcessor* sprocessor = script_processor_class.create<as::ScriptProcessor>();
+    as::ScriptProcessor* sprocessor = script_processor_class.load<as::ScriptProcessor>();
 
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile("res/model/sponza/sponza.obj",
@@ -32,8 +34,8 @@ int main(int argc, char** argv)
     mesh_cinfo.scene_ = scene;
     as::Mesh* mesh = mesh_class.create<as::Mesh>(&mesh_cinfo);
 
-    as::Transform* tt = transfrom_class.create<as::Transform>();
-    as::Transform* tt2 = transfrom_class.create<as::Transform>();
+    as::Transform* tt = transfrom_class.load<as::Transform>();
+    as::Transform* tt2 = transfrom_class.load<as::Transform>();
 
     as::Scene render_scene;
 
@@ -52,6 +54,11 @@ int main(int argc, char** argv)
     render_scene.reg_.emplace<as::GameScriptsComp>(sponza) = {{sponza, &render_scene.reg_}, {nullptr, &sponza_script}};
 
     sprocessor->check_scene(render_scene);
+
+    as::Texture::CreateInfo tex_info{};
+    tex_info.cmd_pool_ = renderer->cmd_pool_;
+    tex_info.file_name_ = "res/textures/ayaka.png";
+    as::Texture* tex = texture_class.create<as::Texture>(&tex_info);
 
     while (!glfwWindowShouldClose(engine->window_->window_))
     {

@@ -1,7 +1,6 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include <stb/stb_image.h>
 #include "../api/api_wrapper.hpp"
 #include "../platform/script.hpp"
 #include "../third_party/glms.hpp"

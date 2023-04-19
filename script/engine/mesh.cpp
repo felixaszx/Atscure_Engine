@@ -1,4 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION
 #include "engine/mesh.hpp"
 
 as::Mesh::~Mesh()
@@ -36,10 +35,9 @@ void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t mesh_index)
     cmd.drawIndexed(mesh_indices_count_[mesh_index], update_size_, 0, 0, 0);
 }
 
-as::Mesh* mesh;
-AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
+AS_SCRIPT as::Mesh* write(as::Mesh::CreateInfo* create_info)
 {
-    mesh = new as::Mesh;
+    as::Mesh* mesh = new as::Mesh;
     mesh->max_instance_ = create_info->max_instance_;
     mesh->models_matrics_.resize(create_info->max_instance_);
 
@@ -135,11 +133,6 @@ AS_SCRIPT void write(as::Mesh::CreateInfo* create_info)
 
     for (int i = 0; i < create_info->scene_->mNumMaterials; i++)
     {
-        
     }
-}
-
-AS_SCRIPT void* read(void* data)
-{
     return mesh;
 }
