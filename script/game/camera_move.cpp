@@ -41,11 +41,16 @@ AS_SCRIPT void update(as::Entity* camera)
     }
     if (glfwGetKey(hw->base_, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        trans->trans_->position_ += Y_AXIS;
+        trans->trans_->position_.y += speed * hw->delta_s_;
     }
     if (glfwGetKey(hw->base_, GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS)
     {
-        trans->trans_->position_ -= Y_AXIS;
+        trans->trans_->position_.y -= speed * hw->delta_s_;
+    }
+    
+    if (glfwGetKey(hw->base_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    {
+        speed *= 2;
     }
     if (glfwGetKey(hw->base_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {

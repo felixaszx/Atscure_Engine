@@ -54,12 +54,8 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
             CameraComp& camera_data = camera_view.get<CameraComp>(camera);
             TransformComp& camera_trans = camera_view.get<TransformComp>(camera);
 
-            glm::vec3 front = {sin(glm::radians(camera_data.yaw_)) * cos(glm::radians(camera_data.pitch_)), //
-                               sin(glm::radians(camera_data.pitch_)),                                       //
-                               cos(glm::radians(camera_data.yaw_)) * cos(glm::radians(camera_data.pitch_))};
-            front = glm::normalize(front);
-            ubo_.view_ = glm::lookAt(camera_trans.trans_->position_,         //
-                                     camera_trans.trans_->position_ + front, //
+            ubo_.view_ = glm::lookAt(camera_trans.trans_->position_,                                               //
+                                     camera_trans.trans_->position_ + glm::normalize(camera_trans.trans_->front_), //
                                      Y_AXIS);
             ubo_.proj_ = glms::perspective(glm::radians(camera_data.fov_), //
                                            camera_data.aspect_,            //
@@ -79,9 +75,9 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
                 for (int m = 0; m < mesh.mesh_->vert_buffer_offsets_.size(); m++)
                 {
                     Mesh::Material& mat = mesh.mesh_->materials_[mesh.mesh_->material_index_[m]];
-                    vk::DescriptorImageInfo image_infos[] = {mat.albedo_->des_info_, //
+                    vk::DescriptorImageInfo image_infos[] = {mat.albedo_->des_info_,   //
                                                              mat.specular_->des_info_, //
-                                                             mat.opacity_->des_info_, //
+                                                             mat.opacity_->des_info_,  //
                                                              mat.ambient_->des_info_};
 
                     vk::WriteDescriptorSet texture_write{};
