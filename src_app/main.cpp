@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
     as::Texture::CreateInfo tex_info{};
     tex_info.cmd_pool_ = renderer->cmd_pool_;
-    tex_info.file_name_ = "res/textures/ayaka.png";
+    tex_info.file_name_ = "res/textures/elysia.png";
     tex_info.sampler_ = sampelr;
     as::Texture* tex = texture_class.create<as::Texture>(&tex_info);
     mesh->materials_.push_back({});

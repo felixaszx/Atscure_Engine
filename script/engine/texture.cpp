@@ -11,6 +11,7 @@ AS_SCRIPT as::Texture* write(as::Texture::CreateInfo* create_info)
         return nullptr;
     }
 
+    chan = 4;
     as::Texture* tex = new as::Texture;
     tex->format_.width = w;
     tex->format_.height = h;
