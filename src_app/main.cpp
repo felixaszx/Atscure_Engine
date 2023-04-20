@@ -23,7 +23,7 @@ int main(int argc, char** argv)
     as::Renderer* renderer = renderer_class.create<as::Renderer>(engine);
     as::ScriptProcessor* sprocessor = script_processor_class.load<as::ScriptProcessor>();
 
-    vk::Sampler sampelr;
+    vk::Sampler sampler;
     vk::SamplerCreateInfo sampler_info{};
     sampler_info.mipmapMode = vk::SamplerMipmapMode::eLinear;
     sampler_info.anisotropyEnable = true;
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     sampler_info.borderColor = vk::BorderColor::eFloatOpaqueBlack;
     sampler_info.minFilter = vk::Filter::eLinear;
     sampler_info.magFilter = vk::Filter::eLinear;
-    sampelr = engine->device_->createSampler(sampler_info);
+    sampler = engine->device_->createSampler(sampler_info);
 
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile("res/model/sponza/sponza.obj",
@@ -42,6 +42,9 @@ int main(int argc, char** argv)
     as::Mesh::CreateInfo mesh_cinfo{};
     mesh_cinfo.cmd_pool_ = renderer->cmd_pool_;
     mesh_cinfo.scene_ = scene;
+    mesh_cinfo.texture_class_ = &texture_class;
+    mesh_cinfo.path_ = "res/model/sponza";
+    mesh_cinfo.sampler_ = sampler;
     as::Mesh* mesh = mesh_class.create<as::Mesh>(&mesh_cinfo);
 
     as::Transform* tt = transfrom_class.load<as::Transform>();
@@ -65,14 +68,6 @@ int main(int argc, char** argv)
 
     sprocessor->check_scene(render_scene);
 
-    as::Texture::CreateInfo tex_info{};
-    tex_info.cmd_pool_ = renderer->cmd_pool_;
-    tex_info.file_name_ = "res/textures/elysia.png";
-    tex_info.sampler_ = sampelr;
-    as::Texture* tex = texture_class.create<as::Texture>(&tex_info);
-    mesh->materials_.push_back({});
-    mesh->materials_[0].albedo_ = tex;
-
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
         glfwPollEvents();
@@ -86,7 +81,7 @@ int main(int argc, char** argv)
         renderer->wait_idle();
     }
 
-    engine->device_->destroySampler(sampelr);
+    engine->device_->destroySampler(sampler);
     ffree(tt);
     ffree(mesh);
     ffree(renderer);

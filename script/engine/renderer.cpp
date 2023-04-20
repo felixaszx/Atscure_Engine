@@ -78,10 +78,15 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
                 mesh.mesh_->update();
                 for (int m = 0; m < mesh.mesh_->vert_buffer_offsets_.size(); m++)
                 {
+                    Mesh::Material& mat = mesh.mesh_->materials_[mesh.mesh_->material_index_[m]];
+                    vk::DescriptorImageInfo image_infos[] = {mat.albedo_->des_info_, //
+                                                             mat.specular_->des_info_, //
+                                                             mat.opacity_->des_info_, //
+                                                             mat.ambient_->des_info_};
+
                     vk::WriteDescriptorSet texture_write{};
                     texture_write.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-                    texture_write.pImageInfo = &mesh.mesh_->materials_[0].albedo_->des_info_;
-                    texture_write.descriptorCount = 1;
+                    texture_write.setImageInfo(image_infos);
                     texture_write.dstBinding = 1;
                     main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[0], //
                                                     0, texture_write);
@@ -308,7 +313,7 @@ AS_SCRIPT as::Renderer* write(as::Renderer::CreateInfo* engine)
 
     std::vector<as::DescriptorLayout::Binding> bindings[3]{};
     bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
-    for (uint32_t i = 1; i < 4; i++)
+    for (uint32_t i = 1; i < 7; i++)
     {
         bindings[0].push_back({i, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment});
     }

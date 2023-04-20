@@ -19,6 +19,8 @@ namespace as
         vk::DescriptorImageInfo des_info_{};
         vk::Extent3D format_{};
         as::Image* image_{};
+
+        AS_SCRIPT_MEM_FUNC ~Texture();
     };
 
 }; // namespace as

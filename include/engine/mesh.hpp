@@ -16,6 +16,9 @@ namespace as
             const aiScene* scene_ = nullptr;
             uint32_t max_instance_ = 10;
             CmdPool* cmd_pool_ = nullptr;
+            Script* texture_class_ = nullptr;
+            std::string path_ = "";
+            vk::Sampler sampler_{};
         };
 
         struct Vertex
@@ -28,11 +31,12 @@ namespace as
 
         struct Material
         {
-            inline static Texture* blank_tex_ = nullptr;
-            std::unordered_map<std::string, Texture*> loaded_image_{};
             Texture* albedo_{};
-            Texture* spec_{};
+            Texture* specular_{};
             Texture* opacity_{};
+            Texture* ambient_{};
+            Texture* normal_{};
+            Texture* emissive_{};
             glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
         };
 
@@ -47,6 +51,7 @@ namespace as
         std::vector<size_t> index_buffer_offsets_{};
         std::vector<uint32_t> mesh_indices_count_{};
 
+        std::unordered_map<std::string, Texture*> loaded_textures_{};
         std::vector<uint32_t> material_index_{};
         std::vector<Material> materials_{};
 

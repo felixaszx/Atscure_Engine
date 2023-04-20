@@ -2,6 +2,11 @@
 
 as::Mesh::~Mesh()
 {
+    while (!loaded_textures_.empty())
+    {
+        ffree(loaded_textures_.begin()->second);
+        loaded_textures_.erase(loaded_textures_.begin());
+    }
     ffree(vertex_buffer_);
     ffree(index_buffer_);
     ffree(model_buffer_);
@@ -86,7 +91,6 @@ AS_SCRIPT as::Mesh* write(as::Mesh::CreateInfo* create_info)
         mesh->index_buffer_offsets_.push_back(index_offset);
         mesh->mesh_indices_count_.push_back(3 * mesh_in->mNumFaces);
         index_offset += 3 * mesh_in->mNumFaces;
-        mesh->material_index_.push_back(mesh_in->mMaterialIndex);
     }
 
     try_log();
@@ -127,8 +131,48 @@ AS_SCRIPT as::Mesh* write(as::Mesh::CreateInfo* create_info)
     mesh->update();
     catch_error();
 
+    mesh->material_index_.reserve(create_info->scene_->mNumMeshes);
+    for (int i = 0; i < create_info->scene_->mNumMeshes; i++)
+    {
+        mesh->material_index_.push_back(create_info->scene_->mMeshes[i]->mMaterialIndex);
+    }
+
+    auto texture_loading = [&](aiTextureType type, int index, as::Texture*& target)
+    {
+        aiString file;
+        as::Texture::CreateInfo tex_info{};
+        tex_info.cmd_pool_ = create_info->cmd_pool_;
+        tex_info.sampler_ = create_info->sampler_;
+        create_info->scene_->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &file);
+        if (file.length == 0)
+        {
+            tex_info.file_name_ = "res/textures/blank.png";
+        }
+        else
+        {
+            tex_info.file_name_ = create_info->path_ + "/" + file.C_Str();
+        }
+
+        auto find_result = mesh->loaded_textures_.find(tex_info.file_name_);
+        if (find_result == mesh->loaded_textures_.end())
+        {
+            target = create_info->texture_class_->create<as::Texture>(&tex_info);
+            mesh->loaded_textures_.insert({tex_info.file_name_, target});
+        }
+        else
+        {
+            target = find_result->second;
+        }
+    };
+
+    mesh->materials_.resize(create_info->scene_->mNumMaterials);
     for (int i = 0; i < create_info->scene_->mNumMaterials; i++)
     {
+        texture_loading(aiTextureType_DIFFUSE, i, mesh->materials_[i].albedo_);
+        texture_loading(aiTextureType_SPECULAR, i, mesh->materials_[i].specular_);
+        texture_loading(aiTextureType_OPACITY, i, mesh->materials_[i].opacity_);
+        texture_loading(aiTextureType_AMBIENT, i, mesh->materials_[i].ambient_);
     }
+
     return mesh;
 }

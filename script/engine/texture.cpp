@@ -1,6 +1,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "engine/texture.hpp"
 
+as::Texture::~Texture()
+{
+    ffree(image_);
+}
+
 AS_SCRIPT as::Texture* write(as::Texture::CreateInfo* create_info)
 {
     int w, h, chan;
@@ -75,7 +80,8 @@ AS_SCRIPT as::Texture* write(as::Texture::CreateInfo* create_info)
                          {}, {}, {}, barrier);
     cmd->end();
     create_info->cmd_pool_->submit_onetime(cmd);
-    delete cmd;
+    ffree(cmd);
+    ffree(stage_buffer);
 
     vk::ImageViewCreateInfo view_info{};
     view_info.viewType = vk::ImageViewType::e2D;

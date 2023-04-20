@@ -17,6 +17,9 @@ layout(location = 0) in struct
 layout(binding = 1) uniform sampler2D albe_tex;
 layout(binding = 2) uniform sampler2D spec_tex;
 layout(binding = 3) uniform sampler2D opac_tex;
+layout(binding = 4) uniform sampler2D ambi_tex;
+layout(binding = 5) uniform sampler2D norm_tex;
+layout(binding = 7) uniform sampler2D emis_tex;
 
 void main()
 {
