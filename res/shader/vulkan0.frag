@@ -14,6 +14,10 @@ layout(location = 0) in struct
     vec3 specular;
 } frag_data;
 
+layout(binding = 1) uniform sampler2D albe_tex;
+layout(binding = 2) uniform sampler2D spec_tex;
+layout(binding = 3) uniform sampler2D opac_tex;
+
 void main()
 {
     albedo = vec4(frag_data.color, 1.0);

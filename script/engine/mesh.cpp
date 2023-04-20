@@ -2,10 +2,6 @@
 
 as::Mesh::~Mesh()
 {
-    for (Material*& material : materials_)
-    {
-        ffree(material);
-    }
     ffree(vertex_buffer_);
     ffree(index_buffer_);
     ffree(model_buffer_);

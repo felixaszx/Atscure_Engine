@@ -1,6 +1,7 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
+#include "texture.hpp"
 #include "../api/api_wrapper.hpp"
 #include "../platform/script.hpp"
 #include "../third_party/glms.hpp"
@@ -27,11 +28,11 @@ namespace as
 
         struct Material
         {
-            inline static Image* blank_tex_ = nullptr;
-            std::unordered_map<std::string, Image*> loaded_image_{};
-            std::vector<Image*> albedo_{};
-            std::vector<Image*> spec_{};
-            std::vector<Image*> opacity_{};
+            inline static Texture* blank_tex_ = nullptr;
+            std::unordered_map<std::string, Texture*> loaded_image_{};
+            Texture* albedo_{};
+            Texture* spec_{};
+            Texture* opacity_{};
             glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
         };
 
@@ -47,7 +48,7 @@ namespace as
         std::vector<uint32_t> mesh_indices_count_{};
 
         std::vector<uint32_t> material_index_{};
-        std::vector<Material*> materials_{};
+        std::vector<Material> materials_{};
 
         uint32_t update_size_ = 1;
         uint32_t max_instance_ = 0;

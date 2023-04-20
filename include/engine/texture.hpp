@@ -13,8 +13,10 @@ namespace as
         {
             std::string file_name_ = "";
             as::CmdPool* cmd_pool_ = nullptr;
+            vk::Sampler sampler_{};
         };
 
+        vk::DescriptorImageInfo des_info_{};
         vk::Extent3D format_{};
         as::Image* image_{};
     };

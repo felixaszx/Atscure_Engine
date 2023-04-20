@@ -85,5 +85,9 @@ AS_SCRIPT as::Texture* write(as::Texture::CreateInfo* create_info)
     view_info.subresourceRange.layerCount = 1;
     tex->image_->create_image_view(view_info);
 
+    tex->des_info_.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+    tex->des_info_.imageView = *tex->image_;
+    tex->des_info_.sampler = create_info->sampler_;
+
     return tex;
 }

@@ -47,8 +47,6 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
         main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, pipelines_[0]);
         main_cmd_->setScissor(0, scissor);
         main_cmd_->setViewport(0, viewport);
-        main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[0], 0,
-                                      descriptor_pool_->get_set(0), {});
 
         auto camera_view = scene.reg_.view<CameraComp, TransformComp>();
         for (auto camera : camera_view)
@@ -67,7 +65,8 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
                                            camera_data.aspect_,            //
                                            camera_data.near_, camera_data.far_);
             memcpy(uniform_buffer_->mapping(), &ubo_, sizeof(ubo_));
-            descriptor_pool_->update_sets(ubo_write_, 0);
+            main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[0], //
+                                            0, ubo_write_);
 
             auto entity_view = scene.reg_.view<TransformComp, MeshComp>();
             for (auto entity : entity_view)
@@ -77,7 +76,17 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
 
                 mesh.mesh_->models_matrics_[0] = trans.trans_->matrix();
                 mesh.mesh_->update();
-                mesh.mesh_->draw(*main_cmd_);
+                for (int m = 0; m < mesh.mesh_->vert_buffer_offsets_.size(); m++)
+                {
+                    vk::WriteDescriptorSet texture_write{};
+                    texture_write.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+                    texture_write.pImageInfo = &mesh.mesh_->materials_[0].albedo_->des_info_;
+                    texture_write.descriptorCount = 1;
+                    texture_write.dstBinding = 1;
+                    main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[0], //
+                                                    0, texture_write);
+                    mesh.mesh_->draw(*main_cmd_, m);
+                }
             }
         }
 
@@ -86,7 +95,7 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
         main_cmd_->setScissor(0, scissor);
         main_cmd_->setViewport(0, viewport);
         main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[1], 0,
-                                      descriptor_pool_->get_set(1), {});
+                                      descriptor_pool_->get_set(0), {});
         main_cmd_->draw(6, 1, 0, 0);
 
         main_cmd_->nextSubpass(vk::SubpassContents::eInline);
@@ -94,7 +103,7 @@ void as::Renderer::render_scene(Scene& scene, uint32_t image_index)
         main_cmd_->setScissor(0, scissor);
         main_cmd_->setViewport(0, viewport);
         main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pipeline_layouts_[2], 0,
-                                      descriptor_pool_->get_set(2), {});
+                                      descriptor_pool_->get_set(1), {});
         main_cmd_->draw(6, 1, 0, 0);
 
         main_cmd_->endRenderPass();
@@ -299,17 +308,23 @@ AS_SCRIPT as::Renderer* write(as::Renderer::CreateInfo* engine)
 
     std::vector<as::DescriptorLayout::Binding> bindings[3]{};
     bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
+    for (uint32_t i = 1; i < 4; i++)
+    {
+        bindings[0].push_back({i, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment});
+    }
     for (uint32_t i = 0; i < 4; i++)
     {
         bindings[1].push_back({i, 1, vk::DescriptorType::eInputAttachment, vk::ShaderStageFlagBits::eFragment});
     }
     bindings[2].push_back({0, 1, vk::DescriptorType::eInputAttachment, vk::ShaderStageFlagBits::eFragment});
 
-    for (int i = 0; i < 3; i++)
-    {
-        renderer->descriptor_layouts_.push_back(new as::DescriptorLayout(bindings[i]));
-    }
-    renderer->descriptor_pool_ = new as::DescriptorPool(renderer->descriptor_layouts_);
+    renderer->descriptor_layouts_.push_back(
+        new as::DescriptorLayout(bindings[0], vk::DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR));
+    renderer->descriptor_layouts_.push_back(new as::DescriptorLayout(bindings[1]));
+    renderer->descriptor_layouts_.push_back(new as::DescriptorLayout(bindings[2]));
+
+    renderer->descriptor_pool_ = new as::DescriptorPool({renderer->descriptor_layouts_.begin() + 1, //
+                                                         renderer->descriptor_layouts_.end()});
 
     for (int i = 0; i < 3; i++)
     {
@@ -531,8 +546,8 @@ AS_SCRIPT as::Renderer* write(as::Renderer::CreateInfo* engine)
     image_write1.descriptorCount = 1;
     image_write1.pImageInfo = descriptor_image_infos + 4;
 
-    renderer->descriptor_pool_->update_sets(image_write0, 1);
-    renderer->descriptor_pool_->update_sets(image_write1, 2);
+    renderer->descriptor_pool_->update_sets(image_write0, 0);
+    renderer->descriptor_pool_->update_sets(image_write1, 1);
 
     vk::BufferCreateInfo buffer_info{};
     vma::AllocationCreateInfo alloc_info{};

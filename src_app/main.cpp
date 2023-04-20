@@ -23,6 +23,16 @@ int main(int argc, char** argv)
     as::Renderer* renderer = renderer_class.create<as::Renderer>(engine);
     as::ScriptProcessor* sprocessor = script_processor_class.load<as::ScriptProcessor>();
 
+    vk::Sampler sampelr;
+    vk::SamplerCreateInfo sampler_info{};
+    sampler_info.mipmapMode = vk::SamplerMipmapMode::eLinear;
+    sampler_info.anisotropyEnable = true;
+    sampler_info.maxAnisotropy = 4.0f;
+    sampler_info.borderColor = vk::BorderColor::eFloatOpaqueBlack;
+    sampler_info.minFilter = vk::Filter::eLinear;
+    sampler_info.magFilter = vk::Filter::eLinear;
+    sampelr = engine->device_->createSampler(sampler_info);
+
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile("res/model/sponza/sponza.obj",
                                              aiProcess_Triangulate |    //
@@ -58,7 +68,10 @@ int main(int argc, char** argv)
     as::Texture::CreateInfo tex_info{};
     tex_info.cmd_pool_ = renderer->cmd_pool_;
     tex_info.file_name_ = "res/textures/ayaka.png";
+    tex_info.sampler_ = sampelr;
     as::Texture* tex = texture_class.create<as::Texture>(&tex_info);
+    mesh->materials_.push_back({});
+    mesh->materials_[0].albedo_ = tex;
 
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
@@ -73,6 +86,7 @@ int main(int argc, char** argv)
         renderer->wait_idle();
     }
 
+    engine->device_->destroySampler(sampelr);
     ffree(tt);
     ffree(mesh);
     ffree(renderer);
