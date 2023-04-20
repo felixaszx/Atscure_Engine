@@ -23,6 +23,11 @@ layout(binding = 6) uniform sampler2D emis_tex;
 
 void main()
 {
+    if (texture(opac_tex, frag_data.uv.xy).x == 0)
+    {
+        discard;
+    }
+
     albedo = vec4(frag_data.color, 1.0) * texture(albe_tex, frag_data.uv.xy);
     specular = vec4(frag_data.specular, 1.0) * texture(spec_tex, frag_data.uv.xy);
     position = vec4(frag_data.position, 1.0);
