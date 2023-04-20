@@ -53,25 +53,44 @@ int main(int argc, char** argv)
 
     as::Scene render_scene;
 
+    as::CpuTimer timer;
+    as::HardwareInfo hw_info{};
+    hw_info.base_ = engine->window_->window_;
+    glfwGetCursorPos(engine->window_->window_, &hw_info.mouse_.curr_x_, &hw_info.mouse_.curr_y_);
+    glfwGetWindowSize(engine->window_->window_, &hw_info.window_.w_, &hw_info.window_.h_);
+
     auto camera_e = render_scene.reg_.create();
     as::DynamicLoader camear_test("script/bin/game/game_script_camera_move.dll");
     as::Script camera_script(camear_test);
     render_scene.reg_.emplace<as::CameraComp>(camera_e);
     render_scene.reg_.emplace<as::TransformComp>(camera_e) = {tt};
-    render_scene.reg_.emplace<as::GameScriptsComp>(camera_e) = {{camera_e, &render_scene.reg_}, {&camera_script}};
+    render_scene.reg_.emplace<as::GameScriptsComp>(camera_e) = {{camera_e, &render_scene.reg_}, //
+                                                                {&camera_script},
+                                                                &hw_info};
 
     auto sponza = render_scene.reg_.create();
     as::DynamicLoader sponza_test("script/bin/game/game_script_sponza_scale.dll");
     as::Script sponza_script(sponza_test);
     render_scene.reg_.emplace<as::MeshComp>(sponza) = {mesh};
     render_scene.reg_.emplace<as::TransformComp>(sponza) = {tt2};
-    render_scene.reg_.emplace<as::GameScriptsComp>(sponza) = {{sponza, &render_scene.reg_}, {nullptr, &sponza_script}};
+    render_scene.reg_.emplace<as::GameScriptsComp>(sponza) = {{sponza, &render_scene.reg_}, //
+                                                              {nullptr, &sponza_script},
+                                                              &hw_info};
 
     sprocessor->check_scene(render_scene);
 
+    sprocessor->call_func(as::Script::START);
     while (!glfwWindowShouldClose(engine->window_->window_))
     {
+        timer.start();
         glfwPollEvents();
+
+        hw_info.mouse_.prev_x_ = hw_info.mouse_.curr_x_;
+        hw_info.mouse_.prev_y_ = hw_info.mouse_.curr_y_;
+        glfwGetCursorPos(engine->window_->window_, &hw_info.mouse_.curr_x_, &hw_info.mouse_.curr_y_);
+        hw_info.mouse_.delta_x_ = hw_info.mouse_.curr_x_ - hw_info.mouse_.prev_x_;
+        hw_info.mouse_.delta_y_ = hw_info.mouse_.curr_y_ - hw_info.mouse_.prev_y_;
+        glfwGetWindowSize(engine->window_->window_, &hw_info.window_.w_, &hw_info.window_.h_);
 
         sprocessor->check_scene(render_scene);
         sprocessor->call_func(as::Script::UPDATE);
@@ -80,7 +99,12 @@ int main(int argc, char** argv)
         engine->swapchian_->present({*renderer->submit_sem_});
 
         renderer->wait_idle();
+
+        timer.finish();
+        hw_info.delta_s_ = timer.get_duration_second();
+        hw_info.delta_ms_ = timer.get_duration_ms();
     }
+    sprocessor->call_func(as::Script::END);
 
     engine->device_->destroySampler(sampler);
     ffree(tt);

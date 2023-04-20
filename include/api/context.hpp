@@ -110,6 +110,25 @@ namespace as
         return max;
     }
 
+    class CpuTimer
+    {
+      private:
+        std::chrono::system_clock::time_point init;
+        std::chrono::system_clock::time_point begin;
+        std::chrono::system_clock::time_point end;
+
+      public:
+        CpuTimer();
+        float since_init_second();
+        uint32_t since_init_ms();
+
+        void start();
+        void finish();
+
+        float get_duration_second();
+        uint32_t get_duration_ms();
+    };
+
 }; // namespace as
 
 #endif // CONTEXT_HPP

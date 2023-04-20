@@ -54,11 +54,36 @@ namespace as
         Transform* trans_ = nullptr;
     };
 
+    struct HardwareInfo
+    {
+        GLFWwindow* base_;
+        struct
+        {
+            double prev_x_ = 0;
+            double prev_y_ = 0;
+            double curr_x_ = 0;
+            double curr_y_ = 0;
+            float delta_x_ = 0;
+            float delta_y_ = 0;
+        } mouse_;
+
+        struct
+        {
+            int w_ = 0;
+            int h_ = 0;
+        } window_;
+
+        float delta_s_ = 0;
+        uint32_t delta_ms_ = 0;
+    };
+
 #define AS_SCRIPT_MAX_ORDER 20
     struct GameScriptsComp
     {
         Entity this_e_{};
         std::array<as::Script*, AS_SCRIPT_MAX_ORDER> scripts_{};
+        HardwareInfo* hardware_info_ = nullptr;
+        void* storage_ = nullptr;
     };
 
 }; // namespace as

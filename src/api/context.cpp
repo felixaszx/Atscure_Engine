@@ -134,3 +134,40 @@ void as::Window::create_surface(Context& context)
     glfwCreateWindowSurface(context, window_, nullptr, &surface_);
     context.surface_ = surface_;
 }
+
+as::CpuTimer::CpuTimer()
+{
+    init = std::chrono::high_resolution_clock::now();
+}
+
+float as::CpuTimer::since_init_second()
+{
+    return std::chrono::duration<float, std::chrono::seconds::period> //
+        (std::chrono::high_resolution_clock::now() - init).count();
+}
+
+uint32_t as::CpuTimer::since_init_ms()
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds> //
+        (std::chrono::high_resolution_clock::now() - init).count();
+}
+
+void as::CpuTimer::start()
+{
+    begin = std::chrono::high_resolution_clock::now();
+}
+
+void as::CpuTimer::finish()
+{
+    end = std::chrono::high_resolution_clock::now();
+}
+
+float as::CpuTimer::get_duration_second()
+{
+    return std::chrono::duration<float, std::chrono::seconds::period>(end - begin).count();
+}
+
+uint32_t as::CpuTimer::get_duration_ms()
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+}
