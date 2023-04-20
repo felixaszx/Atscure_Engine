@@ -12,6 +12,7 @@ int main(int argc, char** argv)
     as::DynamicLoader transfrom_dll("script/bin/engine/engine_script_transform.dll");
     as::DynamicLoader script_process_dll("script/bin/engine/engine_script_script_process.dll");
     as::DynamicLoader texture_dll("script/bin/engine/engine_script_texture.dll");
+
     as::Script engine_class(engine_dll);
     as::Script renderer_class(renderer_dll);
     as::Script mesh_class(mesh_dll);
@@ -35,10 +36,8 @@ int main(int argc, char** argv)
     sampler = engine->device_->createSampler(sampler_info);
 
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile("res/model/sponza/sponza.obj",
-                                             aiProcess_Triangulate |    //
-                                                 aiProcess_GenNormals | //
-                                                 aiProcess_GenUVCoords);
+    const aiScene* scene = importer.ReadFile("res/model/sponza/sponza.obj", //
+                                             aiProcess_Triangulate | aiProcess_GenNormals);
 
     as::Mesh::CreateInfo mesh_cinfo{};
     mesh_cinfo.cmd_pool_ = renderer->cmd_pool_;
@@ -109,6 +108,7 @@ int main(int argc, char** argv)
 
     engine->device_->destroySampler(sampler);
     ffree(tt);
+    ffree(tt2);
     ffree(mesh);
     ffree(renderer);
     ffree(engine);
