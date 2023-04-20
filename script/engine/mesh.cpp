@@ -143,7 +143,7 @@ AS_SCRIPT as::Mesh* write(as::Mesh::CreateInfo* create_info)
         as::Texture::CreateInfo tex_info{};
         tex_info.cmd_pool_ = create_info->cmd_pool_;
         tex_info.sampler_ = create_info->sampler_;
-        create_info->scene_->mMaterials[index]->GetTexture(aiTextureType_DIFFUSE, 0, &file);
+        create_info->scene_->mMaterials[index]->GetTexture(type, 0, &file);
         if (file.length == 0)
         {
             tex_info.file_name_ = "res/textures/blank.png";

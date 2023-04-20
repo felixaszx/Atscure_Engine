@@ -8,6 +8,7 @@ as::Texture::~Texture()
 
 AS_SCRIPT as::Texture* write(as::Texture::CreateInfo* create_info)
 {
+    stbi_set_flip_vertically_on_load(true);
     int w, h, chan;
     stbi_uc* pixels = stbi_load(create_info->file_name_.c_str(), &w, &h, &chan, STBI_rgb_alpha);
     if (pixels == nullptr)
