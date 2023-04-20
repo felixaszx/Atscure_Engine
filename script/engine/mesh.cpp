@@ -137,12 +137,13 @@ AS_SCRIPT as::Mesh* write(as::Mesh::CreateInfo* create_info)
         mesh->material_index_.push_back(create_info->scene_->mMeshes[i]->mMaterialIndex);
     }
 
-    auto texture_loading = [&](aiTextureType type, int index, as::Texture*& target)
+    auto texture_loading = [&](aiTextureType type, int index, as::Texture*& target, bool disable_mip = false)
     {
         aiString file;
         as::Texture::CreateInfo tex_info{};
         tex_info.cmd_pool_ = create_info->cmd_pool_;
         tex_info.sampler_ = create_info->sampler_;
+        tex_info.disable_mip_ = disable_mip;
         create_info->scene_->mMaterials[index]->GetTexture(type, 0, &file);
         if (file.length == 0)
         {
@@ -170,7 +171,7 @@ AS_SCRIPT as::Mesh* write(as::Mesh::CreateInfo* create_info)
     {
         texture_loading(aiTextureType_DIFFUSE, i, mesh->materials_[i].albedo_);
         texture_loading(aiTextureType_SPECULAR, i, mesh->materials_[i].specular_);
-        texture_loading(aiTextureType_OPACITY, i, mesh->materials_[i].opacity_);
+        texture_loading(aiTextureType_OPACITY, i, mesh->materials_[i].opacity_, true);
         texture_loading(aiTextureType_AMBIENT, i, mesh->materials_[i].ambient_);
     }
 

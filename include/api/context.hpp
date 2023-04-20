@@ -23,6 +23,7 @@
 #define ffree_arr(ptr) \
     delete[] ptr;      \
     ptr = nullptr
+#define yes_no(statement, yes, no) statement ? yes : no
 
 #define try_log() \
     try           \

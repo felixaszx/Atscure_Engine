@@ -31,6 +31,7 @@ int main(int argc, char** argv)
     sampler_info.borderColor = vk::BorderColor::eFloatOpaqueBlack;
     sampler_info.minFilter = vk::Filter::eLinear;
     sampler_info.magFilter = vk::Filter::eLinear;
+    sampler_info.maxLod = 1000.0f;
     sampler = engine->device_->createSampler(sampler_info);
 
     Assimp::Importer importer;

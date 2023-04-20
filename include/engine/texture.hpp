@@ -11,11 +11,13 @@ namespace as
     {
         struct CreateInfo
         {
+            bool disable_mip_ = false;
             std::string file_name_ = "";
             as::CmdPool* cmd_pool_ = nullptr;
             vk::Sampler sampler_{};
         };
 
+        uint32_t mip_levels_ = 1;
         vk::DescriptorImageInfo des_info_{};
         vk::Extent3D format_{};
         as::Image* image_{};
