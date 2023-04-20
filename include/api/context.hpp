@@ -11,6 +11,31 @@
 #include "logging.hpp"
 #include "third_party/vma_hpp/vk_mem_alloc.hpp"
 
+#define class_has_(func_name)                          \
+    template <typename T>                              \
+    class class_has_##func_name##_c                    \
+    {                                                  \
+      private:                                         \
+        using yes = char;                              \
+        struct no                                      \
+        {                                              \
+            char x[2];                                 \
+        };                                             \
+                                                       \
+        template <typename C>                          \
+        static yes test(decltype(&C::func_name));      \
+        template <typename C>                          \
+        static no test(...);                           \
+                                                       \
+      public:                                          \
+        enum                                           \
+        {                                              \
+            value = sizeof(test<T>(0)) == sizeof(char) \
+        };                                             \
+    };                                                 \
+    template <typename T>                              \
+    inline constexpr bool class_has_##func_name = class_has_##func_name##_c<T>::value;
+
 #define casts(type, value) static_cast<type>(value)
 #define castr(type, value) reinterpret_cast<type>(value)
 #define castc(type, value) const_cast<type>(value)
