@@ -104,8 +104,8 @@
             "command": "",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "CMake: configure",
                 "glslc",
+                "CMake: configure",
                 "CMake: build",
                 "add dlls info",
                 "copy dlls"
@@ -118,8 +118,8 @@
             "command": "",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "CMake: configure",
                 "glslc",
+                "CMake: configure",
                 "CMake: build"
             ]
         }

@@ -59,12 +59,13 @@ AS_SCRIPT as::Texture* write(as::Texture::CreateInfo* create_info)
     region.imageSubresource.mipLevel = 0;
     region.imageSubresource.baseArrayLayer = 0;
     region.imageSubresource.layerCount = 1;
-    region.imageExtent = vk::Extent3D(tex->format_.width, tex->format_.height);
+    region.imageExtent = vk::Extent3D(tex->format_.width, tex->format_.height, 1);
 
     as::CmdBuffer* cmd = create_info->cmd_pool_->alloc_buffer();
     as::begin_cmd(cmd, vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
     cmd->pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eTransfer, //
                          {}, {}, {}, barrier);
+    cmd->copyBufferToImage(*stage_buffer, *tex->image_, vk::ImageLayout::eTransferDstOptimal, region);
     barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
     barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
     barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
