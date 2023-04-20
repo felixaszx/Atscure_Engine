@@ -2,6 +2,7 @@
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
 
 as::Context::Context(bool validation)
+    : validation(validation)
 {
     vk::ApplicationInfo app_info{};
     app_info.pApplicationName = "Atscure Engine";
@@ -62,7 +63,10 @@ as::Context::~Context()
     {
         this->destroySurfaceKHR(surface_);
     }
-    this->destroyDebugUtilsMessengerEXT(messenger_);
+    if (validation)
+    {
+        this->destroyDebugUtilsMessengerEXT(messenger_);
+    }
     this->destroy();
 }
 

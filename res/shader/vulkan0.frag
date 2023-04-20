@@ -19,12 +19,14 @@ layout(binding = 2) uniform sampler2D spec_tex;
 layout(binding = 3) uniform sampler2D opac_tex;
 layout(binding = 4) uniform sampler2D ambi_tex;
 layout(binding = 5) uniform sampler2D norm_tex;
-layout(binding = 7) uniform sampler2D emis_tex;
+layout(binding = 6) uniform sampler2D emis_tex;
 
 void main()
 {
+    vec3 opac = texture(opac_tex, frag_data.uv.xy).xyz;
+
     albedo = vec4(frag_data.color, 1.0) * texture(albe_tex, frag_data.uv.xy);
-    specular = vec4(frag_data.specular, 1.0);
+    specular = vec4(frag_data.specular, 1.0) * texture(spec_tex, frag_data.uv.xy);
     position = vec4(frag_data.position, 1.0);
     normal = vec4(frag_data.normal, 1.0);
 }

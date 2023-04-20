@@ -53,6 +53,7 @@ namespace as
 
     struct Context : public vk::Instance
     {
+        bool validation = false;
         vk::SurfaceKHR surface_{};
         vk::DebugUtilsMessengerEXT messenger_{};
         const std::vector<const char*> VALIDATION_LAYERS = {"VK_LAYER_KHRONOS_validation"};
