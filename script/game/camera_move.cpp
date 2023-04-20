@@ -7,7 +7,7 @@ AS_SCRIPT void update(as::Entity* camera)
     auto trans = camera->get<as::TransformComp>();
     auto hw = camera->get<as::GameScriptsComp>()->hardware_info_;
 
-    float camera_speed = 15.0f;
+    float camera_speed = 20.0f;
     camera_data->pitch_ = std::clamp(camera_data->pitch_ - hw->mouse_.delta_y_ //
                                                                * camera_speed  //
                                                                * hw->delta_s_, //
@@ -23,6 +23,10 @@ AS_SCRIPT void update(as::Entity* camera)
     trans->trans_->front_ = front;
 
     glm::vec3 move_direction = glm::vec3(0.0f);
+    if (glfwGetKey(hw->base_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    {
+        speed *= 2;
+    }
     if (glfwGetKey(hw->base_, GLFW_KEY_W) == GLFW_PRESS)
     {
         move_direction += front;
@@ -47,11 +51,7 @@ AS_SCRIPT void update(as::Entity* camera)
     {
         trans->trans_->position_.y -= speed * hw->delta_s_;
     }
-    
-    if (glfwGetKey(hw->base_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-    {
-        speed *= 2;
-    }
+
     if (glfwGetKey(hw->base_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(hw->base_, true);

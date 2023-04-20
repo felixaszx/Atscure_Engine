@@ -14,7 +14,7 @@ AS_SCRIPT as::Engine* write(void* data)
 
     try_log();
     engine->window_ = new as::Window(1920, 1080);
-    engine->context_ = new as::Context(true);
+    engine->context_ = new as::Context(false);
     engine->window_->create_surface(*engine->context_);
 
     engine->device_ = new as::Device(*engine->context_, engine->context_->VALIDATION_LAYERS);

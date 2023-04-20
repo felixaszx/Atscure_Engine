@@ -58,6 +58,7 @@ int main(int argc, char** argv)
     hw_info.base_ = engine->window_->window_;
     glfwGetCursorPos(engine->window_->window_, &hw_info.mouse_.curr_x_, &hw_info.mouse_.curr_y_);
     glfwGetWindowSize(engine->window_->window_, &hw_info.window_.w_, &hw_info.window_.h_);
+    glfwSetInputMode(engine->window_->window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     auto camera_e = render_scene.reg_.create();
     as::DynamicLoader camear_test("script/bin/game/game_script_camera_move.dll");
