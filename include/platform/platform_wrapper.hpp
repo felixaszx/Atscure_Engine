@@ -3,5 +3,6 @@
 
 #include "loader.hpp"
 #include "script.hpp"
+#include "module.hpp"
 
 #endif // PLATFORM_WRAPPER_HPP
