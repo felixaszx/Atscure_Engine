@@ -65,6 +65,9 @@ namespace as
 
         void update();
         void draw(vk::CommandBuffer cmd, uint32_t index);
+
+        static std::vector<vk::VertexInputBindingDescription> mesh_bindings();
+        static std::vector<vk::VertexInputAttributeDescription> mesh_attributes();
     };
 }; // namespace as
 

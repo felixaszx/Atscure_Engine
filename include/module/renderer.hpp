@@ -8,10 +8,11 @@
 
 namespace as
 {
-    class RendererModuleSingleton
+    struct RendererModuleSingleton
     {
-      private:
-        BaseModuleSingleton* base_ = nullptr;
+        using CreateInfo = BaseModuleSingleton;
+
+        const BaseModuleSingleton* base_ = nullptr;
         vk::RenderPass render_pass_{};
         std::vector<ImageAttachment*> attachments_{};
         std::vector<vk::Framebuffer> framebufs_{};
@@ -36,9 +37,6 @@ namespace as
         vk::DescriptorBufferInfo ubo_info_{};
         vk::WriteDescriptorSet ubo_write_{};
         Buffer* uniform_buffer_;
-
-      public:
-        using CreateInfo = BaseModuleSingleton;
 
         void (*render_scene)() = nullptr;
         void (*wait_idle)() = nullptr;

@@ -165,3 +165,44 @@ void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t index)
     cmd.bindIndexBuffer(*index_buffer_, index_buffer_offsets_[index] * sizeof(indices_[0]), vk::IndexType::eUint32);
     cmd.drawIndexed(mesh_indices_count_[index], update_size_, 0, 0, 0);
 }
+
+std::vector<vk::VertexInputBindingDescription> as::Mesh::mesh_bindings()
+{
+    std::vector<vk::VertexInputBindingDescription> binding(2);
+
+    binding[0].binding = 0;
+    binding[0].stride = sizeof(as::Mesh::Vertex);
+    binding[0].inputRate = vk::VertexInputRate::eVertex;
+
+    binding[1].binding = 1;
+    binding[1].stride = sizeof(glm::mat4);
+    binding[1].inputRate = vk::VertexInputRate::eInstance;
+
+    return binding;
+}
+
+std::vector<vk::VertexInputAttributeDescription> as::Mesh::mesh_attributes()
+{
+    std::vector<vk::VertexInputAttributeDescription> attributes(8);
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        attributes[i].binding = 0;
+        attributes[i].location = i;
+        attributes[i].format = vk::Format::eR32G32B32Sfloat;
+    }
+
+    attributes[0].offset = offsetof(as::Mesh::Vertex, positon_);
+    attributes[1].offset = offsetof(as::Mesh::Vertex, normal_);
+    attributes[2].offset = offsetof(as::Mesh::Vertex, uv_);
+    attributes[3].offset = offsetof(as::Mesh::Vertex, color_);
+
+    for (uint32_t i = 4; i < 8; i++)
+    {
+        attributes[i].binding = 1;
+        attributes[i].location = i;
+        attributes[i].format = vk::Format::eR32G32B32A32Sfloat;
+        attributes[i].offset = (i - 4) * sizeof(glm::vec4);
+    }
+
+    return attributes;
+}

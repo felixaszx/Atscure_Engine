@@ -10,6 +10,9 @@ int main(int argc, char** argv)
     as::DynamicLoader base_dll("module/bin/m_base.dll");
     as::ModuleSingleton<as::BaseModuleSingleton> base(base_dll, true);
 
+    as::DynamicLoader renderer_dll("module/bin/m_renderer.dll");
+    as::ModuleSingleton<as::RendererModuleSingleton> renderer(renderer_dll, base);
+
     vk::Sampler sampler;
     vk::SamplerCreateInfo sampler_cinfo{};
     sampler_cinfo.anisotropyEnable = true;
@@ -20,7 +23,6 @@ int main(int argc, char** argv)
     sampler_cinfo.magFilter = vk::Filter::eLinear;
     sampler_cinfo.minFilter = vk::Filter::eLinear;
     sampler = base.device_->createSampler(sampler_cinfo);
-    base.test();
 
     Assimp::Importer importer;
     as::Mesh::CreateInfo mesh_cinfo;
