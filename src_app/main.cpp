@@ -33,6 +33,8 @@ int main(int argc, char** argv)
                                           aiProcess_Triangulate | aiProcess_GenNormals);
     as::Mesh* mm = new as::Mesh(mesh_cinfo);
 
+    as::TransformComp sss;
+
     ffree(mm);
 
     return EXIT_SUCCESS;

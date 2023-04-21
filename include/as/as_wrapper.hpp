@@ -3,5 +3,7 @@
 
 #include "mesh.hpp"
 #include "texture.hpp"
+#include "transform.hpp"
+#include "scene.hpp"
 
 #endif // AS_WRAPPER_HPP

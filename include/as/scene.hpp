@@ -3,6 +3,7 @@
 
 #include <entt/entt.hpp>
 #include "mesh.hpp"
+#include "transform.hpp"
 
 namespace as
 {
@@ -35,6 +36,7 @@ namespace as
 
     struct TransformComp
     {
+        Transform trans_{};
     };
 
     struct ScriptComp
