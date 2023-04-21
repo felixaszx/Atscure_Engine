@@ -50,6 +50,7 @@ target_link_libraries(atscure_testing atscure_engine)
 # script
 # script
 add_subdirectory(script)
+add_subdirectory(module)
 
 
 
