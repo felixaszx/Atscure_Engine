@@ -14,6 +14,8 @@ namespace as
         Context* context_{};
         Device* device_{};
         Swapchain* swapchian_{};
+
+        CmdPool* master_cmd_pool_ = nullptr;
     };
 
 }; // namespace as

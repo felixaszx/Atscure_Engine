@@ -30,6 +30,26 @@ namespace as
             glm::vec3 color_{1.0f, 1.0f, 1.0f};
         };
 
+        Buffer* vertex_buffer_ = nullptr;
+        Buffer* index_buffer_ = nullptr;
+        Buffer* model_buffer_ = nullptr;
+
+        std::vector<Vertex> vertices_{};
+        std::vector<uint32_t> indices_{};
+
+        std::vector<size_t> vert_buffer_offsets_{};
+        std::vector<size_t> index_buffer_offsets_{};
+        std::vector<uint32_t> mesh_indices_count_{};
+
+        std::unordered_map<std::string, Texture*> loaded_textures_{};
+        std::vector<uint32_t> material_index_{};
+        std::vector<Material> materials_{};
+
+        uint32_t update_size_ = 1;
+        uint32_t max_instance_ = 0;
+        uint32_t instance_count_ = 1;
+        std::vector<glm::mat4> models_matrics_{};
+
       public:
         struct CreateInfo
         {
@@ -43,6 +63,7 @@ namespace as
         Mesh(const CreateInfo& create_info);
         ~Mesh();
 
+        void update();
         void draw(vk::CommandBuffer cmd, uint32_t index);
     };
 }; // namespace as

@@ -9,10 +9,13 @@ MODULE_EXPORT void create_module_single(as::BaseModuleSingleton* obj, const as::
 
     obj->device_ = new as::Device(*obj->context_, obj->context_->VALIDATION_LAYERS);
     obj->swapchian_ = new as::Swapchain(*obj->window_, *obj->context_, *obj->device_);
+
+    obj->master_cmd_pool_ = new as::CmdPool;
 }
 
 MODULE_EXPORT void destroy_module_single(as::BaseModuleSingleton* obj)
 {
+    ffree(obj->master_cmd_pool_);
     ffree(obj->swapchian_);
     ffree(obj->device_);
     ffree(obj->context_);
