@@ -92,7 +92,7 @@ as::Mesh::Mesh(const CreateInfo& create_info)
 
     ffree(staging_buffer);
     catch_error();
-    update();
+    update({});
 
     material_index_.reserve(create_info.scene_->mNumMeshes);
     for (int i = 0; i < create_info.scene_->mNumMeshes; i++)
@@ -135,7 +135,6 @@ as::Mesh::Mesh(const CreateInfo& create_info)
         texture_loading(aiTextureType_DIFFUSE, i, materials_[i].albedo_);
         texture_loading(aiTextureType_SPECULAR, i, materials_[i].specular_);
         texture_loading(aiTextureType_OPACITY, i, materials_[i].opacity_, true);
-        texture_loading(aiTextureType_AMBIENT, i, materials_[i].ambient_);
     }
 }
 
@@ -151,19 +150,29 @@ as::Mesh::~Mesh()
     ffree(model_buffer_);
 }
 
-void as::Mesh::update()
+void as::Mesh::update(const std::vector<Transform>& trans)
 {
-    update_size_ = std::clamp(instance_count_, 0u, max_instance_);
+    update_size_ = std::clamp(casts(uint32_t, trans.size()), 0u, max_instance_);
+    instance_count_ = update_size_;
+
+    for (int i = 0; i < update_size_; i++)
+    {
+        models_matrics_[i] = trans[i].matrix();
+    }
+
     memcpy(model_buffer_->mapping(), models_matrics_.data(), update_size_ * sizeof(models_matrics_[0]));
 }
 
 void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t index)
 {
-    vk::Buffer vertex_buffers[2] = {*vertex_buffer_, *model_buffer_};
-    VkDeviceSize vert_offsets[2] = {vert_buffer_offsets_[index] * sizeof(vertices_[0]), 0};
-    cmd.bindVertexBuffers(0, vertex_buffers, vert_offsets);
-    cmd.bindIndexBuffer(*index_buffer_, index_buffer_offsets_[index] * sizeof(indices_[0]), vk::IndexType::eUint32);
-    cmd.drawIndexed(mesh_indices_count_[index], update_size_, 0, 0, 0);
+    if (update_size_ > 0)
+    {
+        vk::Buffer vertex_buffers[2] = {*vertex_buffer_, *model_buffer_};
+        VkDeviceSize vert_offsets[2] = {vert_buffer_offsets_[index] * sizeof(vertices_[0]), 0};
+        cmd.bindVertexBuffers(0, vertex_buffers, vert_offsets);
+        cmd.bindIndexBuffer(*index_buffer_, index_buffer_offsets_[index] * sizeof(indices_[0]), vk::IndexType::eUint32);
+        cmd.drawIndexed(mesh_indices_count_[index], update_size_, 0, 0, 0);
+    }
 }
 
 const as::Mesh::Material& as::Mesh::get_material(uint32_t mesh_index)

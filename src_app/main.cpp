@@ -33,8 +33,26 @@ int main(int argc, char** argv)
                                           aiProcess_Triangulate | aiProcess_GenNormals);
     as::Mesh* mm = new as::Mesh(mesh_cinfo);
 
-    as::TransformComp sss;
+    as::Scene scene;
+    as::Entity sponza = scene.add_entity();
+    sponza.add<as::MeshComp>().mesh_ = mm;
+    sponza.add<as::TransformComp>().trans_.push_back({});
 
+    as::Entity camera = scene.add_entity();
+    camera.add<as::CameraComp>();
+    camera.add<as::TransformComp>().trans_.push_back({});
+
+    while (!glfwWindowShouldClose(base.window_->window_))
+    {
+        glfwPollEvents();
+
+        renderer.render_scene(&scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
+        base.swapchian_->present({renderer.submit_sem_});
+
+        base.device_->waitIdle();
+    }
+
+    base.device_->destroySampler(sampler);
     ffree(mm);
 
     return EXIT_SUCCESS;

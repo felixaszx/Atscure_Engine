@@ -16,9 +16,9 @@ namespace as
         glm::vec3 scale_ = {1.0f, 1.0f, 1.0f};
         glm::vec3 front_ = {1.0f, 0.0f, 0.0f};
 
-        glm::vec3 right();
-        glm::vec3 up();
-        glm::mat4 matrix();
+        glm::vec3 right() const;
+        glm::vec3 up() const;
+        glm::mat4 matrix() const;
         void set_relative_to(const Transform* trans);
     };
 }; // namespace as

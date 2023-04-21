@@ -54,9 +54,11 @@ void render_scene(as::Scene* scene, uint32_t image_index)
             as::CameraComp& camera_data = camera_view.get<as::CameraComp>(camera);
             as::TransformComp& camera_trans = camera_view.get<as::TransformComp>(camera);
 
+            camera_trans.trans_[0].front_ = camera_data.get_front();
+
             renderer->ubo_.view_ =
-                glm::lookAt(camera_trans.trans_.position_,                                              //
-                            camera_trans.trans_.position_ + glm::normalize(camera_trans.trans_.front_), //
+                glm::lookAt(camera_trans.trans_[0].position_,                                                 //
+                            camera_trans.trans_[0].position_ + glm::normalize(camera_trans.trans_[0].front_), //
                             Y_AXIS);
             renderer->ubo_.proj_ = glms::perspective(glm::radians(camera_data.fov_), //
                                                      camera_data.aspect_,            //
@@ -72,27 +74,46 @@ void render_scene(as::Scene* scene, uint32_t image_index)
                 as::TransformComp& trans = entity_view.get<as::TransformComp>(entity);
                 as::MeshComp& mesh = entity_view.get<as::MeshComp>(entity);
 
-                mesh.mesh_->models_matrics_[0] = trans.trans_.matrix();
-                mesh.mesh_->update();
+                mesh.mesh_->update(trans.trans_);
+
                 for (int m = 0; m < mesh.mesh_->mesh_size(); m++)
                 {
                     const as::Mesh::Material& mat = mesh.mesh_->get_material(m);
                     vk::DescriptorImageInfo image_infos[] = {mat.albedo_->des_info_,   //
                                                              mat.specular_->des_info_, //
-                                                             mat.opacity_->des_info_,  //
-                                                             mat.ambient_->des_info_};
+                                                             mat.opacity_->des_info_};
 
                     vk::WriteDescriptorSet texture_write{};
                     texture_write.descriptorType = vk::DescriptorType::eCombinedImageSampler;
                     texture_write.setImageInfo(image_infos);
                     texture_write.dstBinding = 1;
                     renderer->main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, //
-                                                              renderer->pipeline_layouts_[0],   //
+                                                              renderer->pipeline_layouts_[0],   ///
                                                               0, texture_write);
                     mesh.mesh_->draw(*renderer->main_cmd_, m);
                 }
             }
         }
+
+        renderer->main_cmd_->nextSubpass(vk::SubpassContents::eInline);
+        renderer->main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, renderer->pipelines_[1]);
+        renderer->main_cmd_->setScissor(0, scissor);
+        renderer->main_cmd_->setViewport(0, viewport);
+        renderer->main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics,  //
+                                                renderer->pipeline_layouts_[1], 0, //
+                                                renderer->descriptor_pool_->get_set(0), {});
+        renderer->main_cmd_->draw(6, 1, 0, 0);
+
+        renderer->main_cmd_->nextSubpass(vk::SubpassContents::eInline);
+        renderer->main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, renderer->pipelines_[2]);
+        renderer->main_cmd_->setScissor(0, scissor);
+        renderer->main_cmd_->setViewport(0, viewport);
+        renderer->main_cmd_->bindDescriptorSets(vk::PipelineBindPoint::eGraphics,  //
+                                                renderer->pipeline_layouts_[2], 0, //
+                                                renderer->descriptor_pool_->get_set(1), {});
+        renderer->main_cmd_->draw(6, 1, 0, 0);
+
+        renderer->main_cmd_->endRenderPass();
     }
     renderer->main_cmd_->end();
 

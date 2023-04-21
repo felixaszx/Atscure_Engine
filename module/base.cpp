@@ -4,7 +4,7 @@
 MODULE_EXPORT void create_module_single(as::BaseModuleSingleton* obj, const as::BaseModuleSingleton::CreateInfo* info)
 {
     obj->window_ = new as::Window(1920, 1080);
-    obj->context_ = new as::Context(false);
+    obj->context_ = new as::Context(*info);
     obj->window_->create_surface(*obj->context_);
 
     obj->device_ = new as::Device(*obj->context_, obj->context_->VALIDATION_LAYERS);

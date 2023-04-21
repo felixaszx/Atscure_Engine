@@ -14,6 +14,8 @@ namespace as
         entt::registry* reg_{};
 
       public:
+        Entity(entt::entity e, entt::registry* reg);
+
         template <typename Component>
         Component* get()
         {
@@ -23,11 +25,19 @@ namespace as
             }
             return nullptr;
         }
+
+        template <typename Component>
+        Component& add()
+        {
+            return reg_->emplace_or_replace<Component>(e_);
+        }
     };
 
     struct Scene
     {
         entt::registry reg_{};
+
+        Entity add_entity();
     };
 
     struct CameraComp
@@ -39,11 +49,13 @@ namespace as
         float near_ = 0.5f;
         float far_ = 1000.0f;
         float aspect_ = 1920.0f / 1080.0f;
+
+        glm::vec3 get_front();
     };
 
     struct TransformComp
     {
-        Transform trans_{};
+        std::vector<Transform> trans_{};
     };
 
     struct ScriptComp

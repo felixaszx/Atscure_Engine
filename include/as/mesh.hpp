@@ -5,6 +5,7 @@
 #include "../third_party/ass.hpp"
 #include "../third_party/glms.hpp"
 #include "texture.hpp"
+#include "transform.hpp"
 
 namespace as
 {
@@ -67,7 +68,7 @@ namespace as
         Mesh(const CreateInfo& create_info);
         ~Mesh();
 
-        void update();
+        void update(const std::vector<Transform>& trans);
         void draw(vk::CommandBuffer cmd, uint32_t index);
         uint32_t mesh_size();
         const Material& get_material(uint32_t mesh_index);
