@@ -3,19 +3,100 @@
 #include "as/mesh.hpp"
 
 as::RendererModuleSingleton* renderer = nullptr;
+const as::BaseModuleSingleton* base = nullptr;
 
-void render_scene()
+void render_scene(as::Scene* scene, uint32_t image_index)
 {
+    try
+    {
+        auto result = base->device_->waitForFences(renderer->frame_fence_, true, UINT64_MAX);
+    }
+    catch (const std::exception& e)
+    {
+        as::Log::error(e.what());
+    }
+    base->device_->resetFences(renderer->frame_fence_);
+
+    vk::ClearValue clear_value[7];
+    clear_value[0] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[1] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[2] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[3] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[4] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    clear_value[5].setDepthStencil({1.0f, 0});
+    clear_value[6] = {{0.0f, 0.0f, 0.0f, 1.0f}};
+    vk::RenderPassBeginInfo render_pass_info{};
+    render_pass_info.renderPass = renderer->render_pass_;
+    render_pass_info.framebuffer = renderer->framebufs_[image_index];
+    render_pass_info.renderArea.extent = base->swapchian_->extend_;
+    render_pass_info.setClearValues(clear_value);
+
+    vk::Viewport viewport{};
+    viewport.width = base->swapchian_->extend_.width;
+    viewport.height = base->swapchian_->extend_.height;
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vk::Rect2D scissor{};
+    scissor.extent = base->swapchian_->extend_;
+
+    renderer->main_cmd_->reset();
+
+    as::begin_cmd(renderer->main_cmd_);
+    {
+        renderer->main_cmd_->beginRenderPass(render_pass_info, vk::SubpassContents::eInline);
+        renderer->main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, renderer->pipelines_[0]);
+        renderer->main_cmd_->setScissor(0, scissor);
+        renderer->main_cmd_->setViewport(0, viewport);
+
+        auto camera_view = scene->reg_.view<as::CameraComp, as::TransformComp>();
+        for (auto camera : camera_view)
+        {
+            as::CameraComp& camera_data = camera_view.get<as::CameraComp>(camera);
+            as::TransformComp& camera_trans = camera_view.get<as::TransformComp>(camera);
+
+            renderer->ubo_.view_ =
+                glm::lookAt(camera_trans.trans_.position_,                                              //
+                            camera_trans.trans_.position_ + glm::normalize(camera_trans.trans_.front_), //
+                            Y_AXIS);
+            renderer->ubo_.proj_ = glms::perspective(glm::radians(camera_data.fov_), //
+                                                     camera_data.aspect_,            //
+                                                     camera_data.near_, camera_data.far_);
+            memcpy(renderer->uniform_buffer_->mapping(), &renderer->ubo_, sizeof(renderer->ubo_));
+            renderer->main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, //
+                                                      renderer->pipeline_layouts_[0],   //
+                                                      0, renderer->ubo_write_);
+
+            auto entity_view = scene->reg_.view<as::TransformComp, as::MeshComp>();
+            for (auto entity : entity_view)
+            {
+               
+            }
+        }
+    }
+    renderer->main_cmd_->end();
+
+    vk::PipelineStageFlags wait_stages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
+    vk::SubmitInfo submit_info{};
+    submit_info.setWaitDstStageMask(wait_stages);
+    submit_info.waitSemaphoreCount = 1;
+    submit_info.pWaitSemaphores = &renderer->image_sem_;
+    submit_info.signalSemaphoreCount = 1;
+    submit_info.pSignalSemaphores = &renderer->submit_sem_;
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers = renderer->main_cmd_;
+    base->device_->graphics_queue_.submit(submit_info, renderer->frame_fence_);
 }
 
 void wait_idle()
 {
+    base->device_->waitIdle();
 }
 
 MODULE_EXPORT void create_module_single(as::RendererModuleSingleton* obj,
                                         const as::RendererModuleSingleton::CreateInfo* info)
 {
     renderer = obj;
+    base = info;
     obj->base_ = info;
     obj->render_scene = render_scene;
     obj->wait_idle = wait_idle;

@@ -32,6 +32,13 @@ namespace as
 
     struct CameraComp
     {
+        float yaw_ = 0.0f;
+        float pitch_ = 0.0f;
+        float fov_ = 45.0f;
+
+        float near_ = 0.5f;
+        float far_ = 1000.0f;
+        float aspect_ = 1920.0f / 1080.0f;
     };
 
     struct TransformComp
