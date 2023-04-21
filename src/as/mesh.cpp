@@ -166,6 +166,16 @@ void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t index)
     cmd.drawIndexed(mesh_indices_count_[index], update_size_, 0, 0, 0);
 }
 
+const as::Mesh::Material& as::Mesh::get_material(uint32_t mesh_index)
+{
+    return materials_[material_index_[mesh_index]];
+}
+
+uint32_t as::Mesh::mesh_size()
+{
+    return vert_buffer_offsets_.size();
+}
+
 std::vector<vk::VertexInputBindingDescription> as::Mesh::mesh_bindings()
 {
     std::vector<vk::VertexInputBindingDescription> binding(2);

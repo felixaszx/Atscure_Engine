@@ -69,7 +69,28 @@ void render_scene(as::Scene* scene, uint32_t image_index)
             auto entity_view = scene->reg_.view<as::TransformComp, as::MeshComp>();
             for (auto entity : entity_view)
             {
-               
+                as::TransformComp& trans = entity_view.get<as::TransformComp>(entity);
+                as::MeshComp& mesh = entity_view.get<as::MeshComp>(entity);
+
+                mesh.mesh_->models_matrics_[0] = trans.trans_.matrix();
+                mesh.mesh_->update();
+                for (int m = 0; m < mesh.mesh_->mesh_size(); m++)
+                {
+                    const as::Mesh::Material& mat = mesh.mesh_->get_material(m);
+                    vk::DescriptorImageInfo image_infos[] = {mat.albedo_->des_info_,   //
+                                                             mat.specular_->des_info_, //
+                                                             mat.opacity_->des_info_,  //
+                                                             mat.ambient_->des_info_};
+
+                    vk::WriteDescriptorSet texture_write{};
+                    texture_write.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+                    texture_write.setImageInfo(image_infos);
+                    texture_write.dstBinding = 1;
+                    renderer->main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, //
+                                                              renderer->pipeline_layouts_[0],   //
+                                                              0, texture_write);
+                    mesh.mesh_->draw(*renderer->main_cmd_, m);
+                }
             }
         }
     }

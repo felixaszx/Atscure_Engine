@@ -10,18 +10,10 @@ namespace as
 {
     class Mesh
     {
-      private:
-        struct Material
-        {
-            Texture* albedo_{};
-            Texture* specular_{};
-            Texture* opacity_{};
-            Texture* ambient_{};
-            Texture* normal_{};
-            Texture* emissive_{};
-            glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
-        };
+      public:
+        struct Material;
 
+      private:
         struct Vertex
         {
             glm::vec3 positon_{};
@@ -46,9 +38,6 @@ namespace as
         std::vector<Material> materials_{};
 
         uint32_t update_size_ = 1;
-        uint32_t max_instance_ = 0;
-        uint32_t instance_count_ = 1;
-        std::vector<glm::mat4> models_matrics_{};
 
       public:
         struct CreateInfo
@@ -60,11 +49,28 @@ namespace as
             CmdPool* cmd_pool_ = nullptr;
         };
 
+        struct Material
+        {
+            Texture* albedo_{};
+            Texture* specular_{};
+            Texture* opacity_{};
+            Texture* ambient_{};
+            Texture* normal_{};
+            Texture* emissive_{};
+            glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
+        };
+
+        uint32_t max_instance_ = 10;
+        uint32_t instance_count_ = 1;
+        std::vector<glm::mat4> models_matrics_{};
+
         Mesh(const CreateInfo& create_info);
         ~Mesh();
 
         void update();
         void draw(vk::CommandBuffer cmd, uint32_t index);
+        uint32_t mesh_size();
+        const Material& get_material(uint32_t mesh_index);
 
         static std::vector<vk::VertexInputBindingDescription> mesh_bindings();
         static std::vector<vk::VertexInputAttributeDescription> mesh_attributes();
