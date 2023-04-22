@@ -30,7 +30,9 @@ as::Scene* load_scene()
 
     as::Entity sponza = scene.add_entity();
     sponza.add<as::MeshComp>().mesh_ = mm;
-    sponza.add<as::TransformComp>().trans_.push_back({});
+    auto& sponza_trans = sponza.add<as::TransformComp>().trans_;
+    sponza_trans.push_back({});
+    sponza_trans[0].scale_ = {0.1, 0.1, 0.1};
 
     as::Entity camera = scene.add_entity();
     camera.add<as::CameraComp>();

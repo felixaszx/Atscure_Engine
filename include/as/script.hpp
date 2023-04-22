@@ -1,11 +1,53 @@
 #ifndef SCRIPT_HPP
 #define SCRIPT_HPP
 
-#include "../module/base.hpp"
 #include "scene.hpp"
 
 namespace as
 {
+    template <typename T>
+    struct XY
+    {
+        T x_{};
+        T y_{};
+    };
+
+    enum class Action
+    {
+        RELEASE = GLFW_RELEASE,
+        PRESS = GLFW_PRESS,
+        HOLD = GLFW_REPEAT
+    };
+    enum class ModKey
+    {
+        SHIFT,
+        CTRL,
+        ALT,
+    };
+
+    struct DeviceI
+    {
+        GLFWwindow* window_ = nullptr;
+
+        Action mod_key_[3]{Action::RELEASE};
+        Action keys_[350]{Action::RELEASE};
+
+        using MousePos = XY<double>;
+        MousePos prev_mouse_{};
+        MousePos curr_mouse_{};
+        MousePos delta_mouse_{};
+        Action mouse_press_[8]{};
+
+        using ScrollOffset = XY<double>;
+        ScrollOffset scroll_{};
+
+        using MiliSecond = uint32_t;
+        MiliSecond frame_time_ = 0;
+
+        void close_window() const;
+        void set_cursor_state(bool enable) const;
+    };
+
     class_has_(update);
     class_has_(fix_update);
     class_has_(start);

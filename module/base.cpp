@@ -6,7 +6,6 @@ namespace as
 {
     MODULE_EXPORT void create_module_single(BaseModuleSingleton* obj, const BaseModuleSingleton::CreateInfo* info)
     {
-        devicei = info->devicei_;
         obj->window_ = new Window(1920, 1080);
         obj->context_ = new Context(info->enable_validation_);
         obj->window_->create_surface(*obj->context_);
@@ -15,6 +14,9 @@ namespace as
         obj->swapchian_ = new Swapchain(*obj->window_, *obj->context_, *obj->device_);
 
         obj->master_cmd_pool_ = new CmdPool;
+
+        devicei = info->devicei_;
+        devicei->window_ = obj->window_->window_;
 
         glfwSetKeyCallback(obj->window_->window_,
                            [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -26,8 +28,7 @@ namespace as
                                }
                            });
         glfwSetCursorPosCallback(obj->window_->window_,
-                                 [](GLFWwindow* window, double xpos, double ypos)
-                                 {
+                                 [](GLFWwindow* window, double xpos, double ypos) {
                                      devicei->curr_mouse_ = {xpos, ypos};
                                  });
         glfwSetScrollCallback(obj->window_->window_,

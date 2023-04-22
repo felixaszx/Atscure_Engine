@@ -141,6 +141,8 @@ void as::Window::create_surface(Context& context)
 as::CpuTimer::CpuTimer()
 {
     init = std::chrono::high_resolution_clock::now();
+    begin = init;
+    end = init;
 }
 
 float as::CpuTimer::since_init_second()
