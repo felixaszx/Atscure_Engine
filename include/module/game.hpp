@@ -15,7 +15,7 @@ struct GameModuleSingleton
         as::DeviceI* devicei_;
     };
 
-    as::Scene* (*load_scene)();
+    as::Scene* (*load_scene)(uint32_t);
 };
 
 #endif // GAME_HPP

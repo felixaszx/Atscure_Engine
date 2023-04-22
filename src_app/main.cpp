@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
     as::DeviceI devicei{};
     as::DynamicLoader base_dll("module/bin/m_base.dll");
-    as::ModuleSingleton<as::BaseModuleSingleton> base(base_dll, {true, &devicei});
+    as::ModuleSingleton<as::BaseModuleSingleton> base(base_dll, {false, &devicei});
 
     as::DynamicLoader renderer_dll("module/bin/m_renderer.dll");
     as::ModuleSingleton<as::RendererModuleSingleton> renderer(renderer_dll, base);
@@ -17,13 +17,12 @@ int main(int argc, char** argv)
     as::DynamicLoader game_dll("module/bin/m_game.dll");
     as::ModuleSingleton<GameModuleSingleton> game(game_dll, {&base, &devicei});
 
-    as::Scene* scene = game.load_scene();
     as::CpuTimer timer;
 
-    scene->start();
     float delta_s = 0;
     float delta_ms = 0;
 
+    as::Scene* scene = game.load_scene(0);
     while (!glfwWindowShouldClose(base.window_->window_))
     {
         timer.start();

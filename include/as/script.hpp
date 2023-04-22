@@ -2,6 +2,7 @@
 #define SCRIPT_HPP
 
 #include "scene.hpp"
+#include "key_bits.hpp"
 
 namespace as
 {
@@ -32,9 +33,10 @@ namespace as
         Action curr_ = Action::RELEASE;
 
         bool order_check(Action first, Action second) const { return (prev_ == first) && (curr_ == second); }
-        bool operator=(const Action& action) const { return curr_ == action; }
+        bool operator==(const Action& action) const { return curr_ == action; }
         bool operator>=(const Action& action) const { return curr_ >= action; }
         bool operator<=(const Action& action) const { return curr_ <= action; }
+        operator bool() const { return curr_ >= Action::PRESS; }
     };
 
     struct DeviceI
