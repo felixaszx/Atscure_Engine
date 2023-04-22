@@ -21,14 +21,15 @@ namespace as
         glfwSetKeyCallback(obj->window_->window_,
                            [](GLFWwindow* window, int key, int scancode, int action, int mods)
                            {
-                               devicei->mod_key_[mods / GLFW_MOD_CONTROL] = casts(Action, action);
                                if (key > 0)
                                {
-                                   devicei->keys_[key] = casts(as::Action, action);
+                                   devicei->keys_[key].prev_ = devicei->keys_[key].curr_;
+                                   devicei->keys_[key].curr_ = casts(as::Action, action);
                                }
                            });
         glfwSetCursorPosCallback(obj->window_->window_,
-                                 [](GLFWwindow* window, double xpos, double ypos) {
+                                 [](GLFWwindow* window, double xpos, double ypos) //
+                                 {
                                      devicei->curr_mouse_ = {xpos, ypos};
                                  });
         glfwSetScrollCallback(obj->window_->window_,
@@ -36,8 +37,12 @@ namespace as
                               {
                                   devicei->scroll_ = {xoffset, yoffset};
                               });
-        glfwSetMouseButtonCallback(obj->window_->window_, [](GLFWwindow* window, int button, int action, int mods)
-                                   { devicei->mouse_press_[button] = casts(Action, action); });
+        glfwSetMouseButtonCallback(obj->window_->window_,
+                                   [](GLFWwindow* window, int button, int action, int mods)
+                                   {
+                                       devicei->mouse_press_[button].prev_ = devicei->mouse_press_[button].curr_;
+                                       devicei->mouse_press_[button].curr_ = casts(Action, action);
+                                   });
     }
 
     MODULE_EXPORT void destroy_module_single(BaseModuleSingleton* obj)

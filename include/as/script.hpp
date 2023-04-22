@@ -18,6 +18,7 @@ namespace as
         PRESS = GLFW_PRESS,
         HOLD = GLFW_REPEAT
     };
+
     enum class ModKey
     {
         SHIFT,
@@ -25,18 +26,29 @@ namespace as
         ALT,
     };
 
+    struct KeyCode
+    {
+        Action prev_ = Action::RELEASE;
+        Action curr_ = Action::RELEASE;
+
+        bool order_check(Action first, Action second) const { return (prev_ == first) && (curr_ == second); }
+        bool operator=(const Action& action) const { return curr_ == action; }
+        bool operator>=(const Action& action) const { return curr_ >= action; }
+        bool operator<=(const Action& action) const { return curr_ <= action; }
+    };
+
     struct DeviceI
     {
         GLFWwindow* window_ = nullptr;
 
-        Action mod_key_[3]{Action::RELEASE};
-        Action keys_[350]{Action::RELEASE};
+        KeyCode keys_[350]{};
 
         using MousePos = XY<double>;
+        using MouseCode = KeyCode;
         MousePos prev_mouse_{};
         MousePos curr_mouse_{};
         MousePos delta_mouse_{};
-        Action mouse_press_[8]{};
+        MouseCode mouse_press_[8]{};
 
         using ScrollOffset = XY<double>;
         ScrollOffset scroll_{};

@@ -8,8 +8,10 @@ class CameraControl : public as::ScriptBase
 
     void update(float delta_t)
     {
-        as::TransformComp* trans = e_.get<as::TransformComp>();
-        as::CameraComp* camera = e_.get<as::CameraComp>();
+        using namespace as;
+
+        TransformComp* trans = e_.get<TransformComp>();
+        CameraComp* camera = e_.get<CameraComp>();
 
         {
             float speed = 20.0f * delta_t;
@@ -22,37 +24,38 @@ class CameraControl : public as::ScriptBase
             trans->trans_[0].front_ = camera->get_front();
             glm::vec3 move(0.0f);
 
-            if (devicei->keys_[GLFW_KEY_LEFT_SHIFT] >= as::Action::PRESS)
+            if (devicei->keys_[GLFW_KEY_LEFT_SHIFT] >= Action::PRESS)
             {
                 speed *= 2;
             }
 
-            if (devicei->keys_[GLFW_KEY_W] >= as::Action::PRESS)
+            if (devicei->keys_[GLFW_KEY_W] >= Action::PRESS)
             {
                 move += trans->trans_[0].front_;
             }
-            if (devicei->keys_[GLFW_KEY_S] >= as::Action::PRESS)
+            if (devicei->keys_[GLFW_KEY_S] >= Action::PRESS)
             {
                 move += -trans->trans_[0].front_;
             }
-            if (devicei->keys_[GLFW_KEY_D] >= as::Action::PRESS)
+            if (devicei->keys_[GLFW_KEY_D] >= Action::PRESS)
             {
                 move += trans->trans_[0].right();
             }
-            if (devicei->keys_[GLFW_KEY_A] >= as::Action::PRESS)
+            if (devicei->keys_[GLFW_KEY_A] >= Action::PRESS)
             {
                 move += -trans->trans_[0].right();
             }
 
-            if (devicei->keys_[GLFW_KEY_SPACE] >= as::Action::PRESS)
+            if (devicei->keys_[GLFW_KEY_SPACE] >= Action::PRESS)
             {
-                trans->trans_[0].position_ += speed * as::Y_AXIS;
+                trans->trans_[0].position_ += speed * Y_AXIS;
             }
-            if (devicei->keys_[GLFW_KEY_GRAVE_ACCENT] >= as::Action::PRESS)
+            if (devicei->keys_[GLFW_KEY_GRAVE_ACCENT] >= Action::PRESS)
             {
-                trans->trans_[0].position_ -= speed * as::Y_AXIS;
+                trans->trans_[0].position_ -= speed * Y_AXIS;
             }
-            if (devicei->keys_[GLFW_KEY_ESCAPE] == as::Action::PRESS)
+
+            if (devicei->keys_[GLFW_KEY_ESCAPE].order_check(Action::PRESS, Action::RELEASE))
             {
                 devicei->close_window();
             }
