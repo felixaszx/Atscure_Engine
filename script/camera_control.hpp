@@ -14,5 +14,6 @@ class CameraControl : public as::ScriptBase
         {
             trans->trans_[0].position_ += as::Y_AXIS;
         }
+        std::cout << devicei->delta_mouse_.x_ << std::endl;
     }
 };

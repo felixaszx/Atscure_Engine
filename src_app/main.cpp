@@ -22,7 +22,10 @@ int main(int argc, char** argv)
     scene->start();
     while (!glfwWindowShouldClose(base.window_->window_))
     {
+        devicei.prev_mouse_ = devicei.curr_mouse_;
         glfwPollEvents();
+        devicei.delta_mouse_ = {devicei.curr_mouse_.x_ - devicei.prev_mouse_.x_, //
+                                devicei.curr_mouse_.y_ - devicei.prev_mouse_.y_};
 
         scene->update(10);
         renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));

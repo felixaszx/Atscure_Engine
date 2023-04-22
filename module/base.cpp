@@ -28,11 +28,7 @@ namespace as
         glfwSetCursorPosCallback(obj->window_->window_,
                                  [](GLFWwindow* window, double xpos, double ypos)
                                  {
-                                     devicei->prev_mouse_ = devicei->curr_mouse_;
                                      devicei->curr_mouse_ = {xpos, ypos};
-                                     devicei->delta_mouse_ =                                 //
-                                         {devicei->curr_mouse_.x_ - devicei->prev_mouse_.x_, //
-                                          devicei->curr_mouse_.y_ - devicei->prev_mouse_.y_};
                                  });
         glfwSetScrollCallback(obj->window_->window_,
                               [](GLFWwindow* window, double xoffset, double yoffset) //
