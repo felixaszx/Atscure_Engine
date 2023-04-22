@@ -32,6 +32,14 @@ namespace as
         {
             return reg_->emplace_or_replace<Component>(e_);
         }
+
+        template <typename Component>
+        void remove()
+        {
+            reg_->remove<Component>(e_);
+        }
+
+        void self_destroy() { reg_->destroy(e_); }
     };
 
 #define SCRIPT_FUNC_CALLER(func_name, ...)          \
