@@ -14,6 +14,7 @@ namespace as
         entt::registry* reg_{};
 
       public:
+        Entity();
         Entity(entt::entity e, entt::registry* reg);
 
         template <typename Component>
@@ -38,6 +39,10 @@ namespace as
         entt::registry reg_{};
 
         Entity add_entity();
+        void start();
+        void finish();
+        void update(float delta_t);
+        void fix_update();
     };
 
     struct CameraComp
@@ -58,15 +63,10 @@ namespace as
         std::vector<Transform> trans_{};
     };
 
-    struct ScriptComp
-    {
-    };
-
     struct MeshComp
     {
         Mesh* mesh_ = nullptr;
     };
-
 }; // namespace as
 
 #endif // SCENE_HPP

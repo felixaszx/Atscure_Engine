@@ -1,23 +1,26 @@
 #include "platform/platform_wrapper.hpp"
 #include "module/base.hpp"
 
-MODULE_EXPORT void create_module_single(as::BaseModuleSingleton* obj, const as::BaseModuleSingleton::CreateInfo* info)
+namespace as
 {
-    obj->window_ = new as::Window(1920, 1080);
-    obj->context_ = new as::Context(*info);
-    obj->window_->create_surface(*obj->context_);
+    MODULE_EXPORT void create_module_single(BaseModuleSingleton* obj, const BaseModuleSingleton::CreateInfo* info)
+    {
+        obj->window_ = new Window(1920, 1080);
+        obj->context_ = new Context(*info);
+        obj->window_->create_surface(*obj->context_);
 
-    obj->device_ = new as::Device(*obj->context_, obj->context_->VALIDATION_LAYERS);
-    obj->swapchian_ = new as::Swapchain(*obj->window_, *obj->context_, *obj->device_);
+        obj->device_ = new Device(*obj->context_, obj->context_->VALIDATION_LAYERS);
+        obj->swapchian_ = new Swapchain(*obj->window_, *obj->context_, *obj->device_);
 
-    obj->master_cmd_pool_ = new as::CmdPool;
-}
+        obj->master_cmd_pool_ = new CmdPool;
+    }
 
-MODULE_EXPORT void destroy_module_single(as::BaseModuleSingleton* obj)
-{
-    ffree(obj->master_cmd_pool_);
-    ffree(obj->swapchian_);
-    ffree(obj->device_);
-    ffree(obj->context_);
-    ffree(obj->window_);
-}
+    MODULE_EXPORT void destroy_module_single(BaseModuleSingleton* obj)
+    {
+        ffree(obj->master_cmd_pool_);
+        ffree(obj->swapchian_);
+        ffree(obj->device_);
+        ffree(obj->context_);
+        ffree(obj->window_);
+    }
+} // namespace as

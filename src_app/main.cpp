@@ -5,6 +5,20 @@
 #include "module/module_wrapper.hpp"
 #include "as/as_wrapper.hpp"
 
+class CameraControl : public as::ScriptBase
+{
+  private:
+  public:
+    void update(float delta_t)
+    {
+        as::TransformComp* trans = e_.get<as::TransformComp>();
+        if (glfwGetKey(window_, GLFW_KEY_SPACE) == GLFW_PRESS)
+        {
+            trans->trans_[0].position_ += as::Y_AXIS;
+        }
+    }
+};
+
 int main(int argc, char** argv)
 {
     as::DynamicLoader base_dll("module/bin/m_base.dll");
@@ -12,6 +26,7 @@ int main(int argc, char** argv)
 
     as::DynamicLoader renderer_dll("module/bin/m_renderer.dll");
     as::ModuleSingleton<as::RendererModuleSingleton> renderer(renderer_dll, base);
+    as::ScriptBase::window_ = base.window_->window_;
 
     vk::Sampler sampler;
     vk::SamplerCreateInfo sampler_cinfo{};
@@ -41,16 +56,20 @@ int main(int argc, char** argv)
     as::Entity camera = scene.add_entity();
     camera.add<as::CameraComp>();
     camera.add<as::TransformComp>().trans_.push_back({});
+    camera.add<as::ScriptComp>().set<CameraControl>(camera);
 
+    scene.start();
     while (!glfwWindowShouldClose(base.window_->window_))
     {
         glfwPollEvents();
 
+        scene.update(10);
         renderer.render_scene(&scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
         base.swapchian_->present({renderer.submit_sem_});
 
         base.device_->waitIdle();
     }
+    scene.finish();
 
     base.device_->destroySampler(sampler);
     ffree(mm);
