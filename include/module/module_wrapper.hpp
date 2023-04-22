@@ -3,5 +3,6 @@
 
 #include "base.hpp"
 #include "renderer.hpp"
+#include "game.hpp"
 
 #endif // MODULE_WRAPPER_HPP
