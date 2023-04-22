@@ -34,6 +34,17 @@ namespace as
         }
     };
 
+#define SCRIPT_FUNC_CALLER(func_name, ...)          \
+    auto view = reg_.view<ScriptComp>();            \
+    for (auto e : view)                             \
+    {                                               \
+        ScriptComp& comp = view.get<ScriptComp>(e); \
+        if (comp.func_name != nullptr)              \
+        {                                           \
+            comp.func_name(__VA_ARGS__);            \
+        }                                           \
+    }
+
     struct Scene
     {
         entt::registry reg_{};

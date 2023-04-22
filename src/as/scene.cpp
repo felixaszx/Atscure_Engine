@@ -1,9 +1,7 @@
 #include "as/scene.hpp"
 #include "as/script.hpp"
 
-as::Entity::Entity()
-{
-}
+as::Entity::Entity() {}
 
 as::Entity::Entity(entt::entity e, entt::registry* reg)
     : e_(e),
@@ -19,54 +17,19 @@ as::Entity as::Scene::add_entity()
 
 void as::Scene::start()
 {
-    auto view = reg_.view<ScriptComp>();
-    for (auto e : view)
-    {
-        ScriptComp& comp = view.get<ScriptComp>(e);
-        if (comp.start != nullptr)
-        {
-            comp.start(comp.class_);
-        }
-    }
+    SCRIPT_FUNC_CALLER(start, comp.class_);
 }
-
 void as::Scene::update(float delta_t)
 {
-    auto view = reg_.view<ScriptComp>();
-    for (auto e : view)
-    {
-        ScriptComp& comp = view.get<ScriptComp>(e);
-        if (comp.update != nullptr)
-        {
-            comp.update(comp.class_, delta_t);
-        }
-    }
+    SCRIPT_FUNC_CALLER(update, comp.class_, delta_t);
 }
-
 void as::Scene::fix_update()
 {
-    auto view = reg_.view<ScriptComp>();
-    for (auto e : view)
-    {
-        ScriptComp& comp = view.get<ScriptComp>(e);
-        if (comp.fix_update != nullptr)
-        {
-            comp.fix_update(comp.class_);
-        }
-    }
+    SCRIPT_FUNC_CALLER(fix_update, comp.class_);
 }
-
 void as::Scene::finish()
 {
-    auto view = reg_.view<ScriptComp>();
-    for (auto e : view)
-    {
-        ScriptComp& comp = view.get<ScriptComp>(e);
-        if (comp.finish != nullptr)
-        {
-            comp.finish(comp.class_);
-        }
-    }
+    SCRIPT_FUNC_CALLER(finish, comp.class_);
 }
 
 glm::vec3 as::CameraComp::get_front()

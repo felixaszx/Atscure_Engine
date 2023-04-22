@@ -8,6 +8,8 @@
 class CameraControl : public as::ScriptBase
 {
   private:
+    int aaa;
+
   public:
     void update(float delta_t)
     {
