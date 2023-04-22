@@ -1,18 +1,46 @@
 #include "platform/platform_wrapper.hpp"
 #include "module/base.hpp"
 
+as::DeviceI* devicei;
 namespace as
 {
     MODULE_EXPORT void create_module_single(BaseModuleSingleton* obj, const BaseModuleSingleton::CreateInfo* info)
     {
+        devicei = info->devicei_;
         obj->window_ = new Window(1920, 1080);
-        obj->context_ = new Context(*info);
+        obj->context_ = new Context(info->enable_validation_);
         obj->window_->create_surface(*obj->context_);
 
         obj->device_ = new Device(*obj->context_, obj->context_->VALIDATION_LAYERS);
         obj->swapchian_ = new Swapchain(*obj->window_, *obj->context_, *obj->device_);
 
         obj->master_cmd_pool_ = new CmdPool;
+
+        glfwSetKeyCallback(obj->window_->window_,
+                           [](GLFWwindow* window, int key, int scancode, int action, int mods)
+                           {
+                               devicei->mod_key_[mods / GLFW_MOD_CONTROL] = casts(Action, action);
+                               if (key > 0)
+                               {
+                                   devicei->keys_[key] = casts(as::Action, action);
+                               }
+                           });
+        glfwSetCursorPosCallback(obj->window_->window_,
+                                 [](GLFWwindow* window, double xpos, double ypos)
+                                 {
+                                     devicei->prev_mouse_ = devicei->curr_mouse_;
+                                     devicei->curr_mouse_ = {xpos, ypos};
+                                     devicei->delta_mouse_ =                                 //
+                                         {devicei->curr_mouse_.x_ - devicei->prev_mouse_.x_, //
+                                          devicei->curr_mouse_.y_ - devicei->prev_mouse_.y_};
+                                 });
+        glfwSetScrollCallback(obj->window_->window_,
+                              [](GLFWwindow* window, double xoffset, double yoffset) //
+                              {
+                                  devicei->scroll_ = {xoffset, yoffset};
+                              });
+        glfwSetMouseButtonCallback(obj->window_->window_, [](GLFWwindow* window, int button, int action, int mods)
+                                   { devicei->mouse_press_[button] = casts(Action, action); });
     }
 
     MODULE_EXPORT void destroy_module_single(BaseModuleSingleton* obj)

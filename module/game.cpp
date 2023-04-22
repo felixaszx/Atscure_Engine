@@ -1,20 +1,6 @@
 #include "module/module_wrapper.hpp"
-
-class CameraControl : public as::ScriptBase
-{
-  private:
-    int aaa;
-
-  public:
-    void update(float delta_t)
-    {
-        as::TransformComp* trans = e_.get<as::TransformComp>();
-        if (glfwGetKey(window_, GLFW_KEY_SPACE) == GLFW_PRESS)
-        {
-            trans->trans_[0].position_ += as::Y_AXIS;
-        }
-    }
-};
+#include "as/as_wrapper.hpp"
+#include "../script/camera_control.hpp"
 
 as::Scene scene{};
 vk::Sampler sampler{};
@@ -59,9 +45,9 @@ MODULE_EXPORT void destroy_module_single(GameModuleSingleton* obj)
     base_in->device_->destroySampler(sampler);
     ffree(mm);
 }
-
-MODULE_EXPORT void create_module_single(GameModuleSingleton* obj, const as::BaseModuleSingleton* base)
+MODULE_EXPORT void create_module_single(GameModuleSingleton* obj, const GameModuleSingleton::CreateInfo* base)
 {
-    base_in = base;
+    base_in = base->base_;
+    devicei = base->devicei_;
     obj->load_scene = load_scene;
 }

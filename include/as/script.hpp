@@ -1,6 +1,7 @@
 #ifndef SCRIPT_HPP
 #define SCRIPT_HPP
 
+#include "../module/base.hpp"
 #include "scene.hpp"
 
 namespace as
@@ -12,7 +13,6 @@ namespace as
 
     struct ScriptBase
     {
-        inline static GLFWwindow* window_ = nullptr;
         Entity e_;
     };
 

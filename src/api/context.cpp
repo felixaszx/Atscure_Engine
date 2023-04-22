@@ -1,4 +1,6 @@
 #include "api/context.hpp"
+#include "module/base.hpp"
+#include "as/script.hpp"
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
 
 as::Context::Context(bool validation)
@@ -120,6 +122,7 @@ as::Window::Window(uint32_t width, uint32_t height)
         Log::error("Do not create glfw window");
         throw;
     }
+
 }
 
 as::Window::~Window()

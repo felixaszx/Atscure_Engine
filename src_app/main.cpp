@@ -7,15 +7,15 @@
 
 int main(int argc, char** argv)
 {
+    as::DeviceI devicei{};
     as::DynamicLoader base_dll("module/bin/m_base.dll");
-    as::ModuleSingleton<as::BaseModuleSingleton> base(base_dll, true);
+    as::ModuleSingleton<as::BaseModuleSingleton> base(base_dll, {true, &devicei});
 
     as::DynamicLoader renderer_dll("module/bin/m_renderer.dll");
     as::ModuleSingleton<as::RendererModuleSingleton> renderer(renderer_dll, base);
-    as::ScriptBase::window_ = base.window_->window_;
 
     as::DynamicLoader game_dll("module/bin/m_game.dll");
-    as::ModuleSingleton<GameModuleSingleton> game(game_dll, base);
+    as::ModuleSingleton<GameModuleSingleton> game(game_dll, {&base, &devicei});
 
     as::Scene* scene = game.load_scene();
 
