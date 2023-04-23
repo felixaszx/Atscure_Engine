@@ -6,7 +6,5 @@
 int main(int argc, char** argv)
 {
 
-    JPH::AllocateFunction sss;
-
     return 0;
 }

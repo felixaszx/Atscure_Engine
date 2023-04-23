@@ -27,13 +27,11 @@ target_include_directories(atscure_engine PUBLIC ${FMT_INCLUDE_DIRS})
 target_include_directories(atscure_engine PUBLIC ${LUA_INCLUDE_DIRS})
 
 # libraries-cpp
-target_link_directories(atscure_engine PUBLIC libs)
 target_link_libraries(atscure_engine ${VULKAN_LIBRARIES})
 target_link_libraries(atscure_engine ${ASSIMP_LIBRARIES})
 target_link_libraries(atscure_engine ${GLFW3_LIBRARIES})
 target_link_libraries(atscure_engine ${FMT_LIBRARIES})
 target_link_libraries(atscure_engine ${LUA_LIBRARIES})
-target_link_libraries(atscure_engine Jolt)
 
 # example app
 # example app
