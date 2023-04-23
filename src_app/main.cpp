@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     as::ModuleSingleton<as::RendererModuleSingleton> renderer(renderer_dll, base);
 
     as::DynamicLoader game_dll("module/bin/m_game.dll");
-    as::ModuleSingleton<GameModuleSingleton> game(game_dll, {&base, &devicei});
+    as::ModuleSingleton<as::GameModuleSingleton> game(game_dll, {&base, &devicei});
 
     as::CpuTimer timer;
 

@@ -4,10 +4,7 @@
 
 int prev_scene_index = -1;
 std::array<as::Scene, 1> scene{};
-vk::Sampler sampler{};
-as::Mesh* mm = nullptr;
 const as::BaseModuleSingleton* base_in = nullptr;
-
 as::Scene* load_scene(uint32_t scene_index)
 {
     if (prev_scene_index >= 0)
@@ -21,15 +18,12 @@ as::Scene* load_scene(uint32_t scene_index)
     return &scene[scene_index];
 }
 
-MODULE_EXPORT void destroy_module_single(GameModuleSingleton* obj)
-{
-    base_in->device_->destroySampler(sampler);
-    ffree(mm);
-}
-MODULE_EXPORT void create_module_single(GameModuleSingleton* obj, const GameModuleSingleton::CreateInfo* base)
+vk::Sampler sampler{};
+as::Mesh* mm = nullptr;
+MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::GameModuleSingleton::CreateInfo* base)
 {
     base_in = base->base_;
-    devicei = base->devicei_;
+    as::devicei = base->devicei_;
     obj->load_scene = load_scene;
 
     vk::SamplerCreateInfo sampler_cinfo{};
@@ -61,4 +55,10 @@ MODULE_EXPORT void create_module_single(GameModuleSingleton* obj, const GameModu
     camera.add<as::CameraComp>();
     camera.add<as::TransformComp>().trans_.push_back({});
     camera.add<as::ScriptComp>().set<CameraControl>(camera);
+}
+
+MODULE_EXPORT void destroy_module_single(as::GameModuleSingleton* obj)
+{
+    base_in->device_->destroySampler(sampler);
+    ffree(mm);
 }

@@ -4,7 +4,7 @@
 class CameraControl : public as::ScriptBase
 {
   public:
-    void start() { devicei->set_cursor_state(false); }
+    void start() { as::devicei->set_cursor_state(false); }
 
     void update(float delta_t)
     {
