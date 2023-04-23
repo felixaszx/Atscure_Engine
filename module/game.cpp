@@ -51,13 +51,13 @@ MODULE_EXPORT void create_module_single(GameModuleSingleton* obj, const GameModu
                                           aiProcess_Triangulate | aiProcess_GenNormals);
     mm = new as::Mesh(mesh_cinfo);
 
-    as::Entity sponza = scene[0].add_entity("sponza");
+    as::Entity sponza = scene[0].add_entity();
     sponza.add<as::MeshComp>().mesh_ = mm;
     auto& sponza_trans = sponza.add<as::TransformComp>().trans_;
     sponza_trans.push_back({});
     sponza_trans[0].scale_ = {0.1, 0.1, 0.1};
 
-    as::Entity camera = scene[0].add_entity("camera");
+    as::Entity camera = scene[0].add_entity();
     camera.add<as::CameraComp>();
     camera.add<as::TransformComp>().trans_.push_back({});
     camera.add<as::ScriptComp>().set<CameraControl>(camera);
