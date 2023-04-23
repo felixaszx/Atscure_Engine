@@ -27,11 +27,13 @@ target_include_directories(atscure_engine PUBLIC ${FMT_INCLUDE_DIRS})
 target_include_directories(atscure_engine PUBLIC ${LUA_INCLUDE_DIRS})
 
 # libraries-cpp
+target_link_directories(atscure_engine PUBLIC libs)
 target_link_libraries(atscure_engine ${VULKAN_LIBRARIES})
 target_link_libraries(atscure_engine ${ASSIMP_LIBRARIES})
 target_link_libraries(atscure_engine ${GLFW3_LIBRARIES})
 target_link_libraries(atscure_engine ${FMT_LIBRARIES})
 target_link_libraries(atscure_engine ${LUA_LIBRARIES})
+target_link_libraries(atscure_engine Jolt)
 
 # example app
 # example app
@@ -52,7 +54,7 @@ target_link_libraries(atscure_testing atscure_engine)
 add_subdirectory(module)
 
 file(GLOB_RECURSE SRC_TEST src_test/*.cpp)
-add_library(test2 SHARED ${SRC_TEST})
+add_executable(test2 ${SRC_TEST})
 target_include_directories(test2 PUBLIC include)
 target_include_directories(test2 PUBLIC include_app)
 target_link_libraries(test2 atscure_engine)
