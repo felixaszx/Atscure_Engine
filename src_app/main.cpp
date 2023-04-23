@@ -5,6 +5,8 @@
 #include "module/module_wrapper.hpp"
 #include "as/as_wrapper.hpp"
 
+#include <ode/ode.h>
+
 int main(int argc, char** argv)
 {
     as::DeviceI devicei{};

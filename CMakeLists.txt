@@ -51,5 +51,12 @@ target_link_libraries(atscure_testing atscure_engine)
 # script
 add_subdirectory(module)
 
+file(GLOB_RECURSE SRC_TEST src_test/*.cpp)
+add_library(test2 SHARED ${SRC_TEST})
+target_include_directories(test2 PUBLIC include)
+target_include_directories(test2 PUBLIC include_app)
+target_link_libraries(test2 atscure_engine)
+
+
 
 
