@@ -11,7 +11,6 @@ pkg_check_modules(ASSIMP REQUIRED assimp)
 pkg_check_modules(GLFW3 REQUIRED glfw3)
 pkg_check_modules(FMT REQUIRED fmt)
 pkg_check_modules(LUA REQUIRED lua)
-pkg_check_modules(BULLET REQUIRED bullet)
 
 # engine
 # engine
@@ -26,7 +25,6 @@ target_include_directories(atscure_engine PUBLIC ${ASSIMP_INCLUDE_DIRS})
 target_include_directories(atscure_engine PUBLIC ${GLFW3_INCLUDE_DIRS})
 target_include_directories(atscure_engine PUBLIC ${FMT_INCLUDE_DIRS})
 target_include_directories(atscure_engine PUBLIC ${LUA_INCLUDE_DIRS})
-target_include_directories(atscure_engine PUBLIC ${BULLET_INCLUDE_DIRS})
 
 # libraries-cpp
 target_link_libraries(atscure_engine ${VULKAN_LIBRARIES})
@@ -34,7 +32,6 @@ target_link_libraries(atscure_engine ${ASSIMP_LIBRARIES})
 target_link_libraries(atscure_engine ${GLFW3_LIBRARIES})
 target_link_libraries(atscure_engine ${FMT_LIBRARIES})
 target_link_libraries(atscure_engine ${LUA_LIBRARIES})
-target_link_libraries(atscure_engine ${BULLET_LIBRARIES})
 
 # example app
 # example app
