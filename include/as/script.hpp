@@ -81,6 +81,8 @@ namespace as
         void (*start)(ScriptBase* base) = nullptr;
         void (*finish)(ScriptBase* base) = nullptr;
 
+        void (*collided)(ScriptBase* base, std::vector<Entity>) = nullptr;
+
         template <typename S>
         void set(const Entity& e)
         {

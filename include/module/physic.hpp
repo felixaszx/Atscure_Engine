@@ -2,11 +2,15 @@
 #define PHYSIC_HPP
 
 #include <btBulletDynamicsCommon.h>
-#include <MultiThreadedDemo/CommonRigidBodyMTBase.h>
 #include "../as/as_wrapper.hpp"
 
 namespace as
 {
+    struct PhysicScriptBase
+    {
+        btDiscreteDynamicsWorld* world_ = nullptr;
+    };
+
     struct PhysicMouleSingleton
     {
         inline static const float SIM_STEP = 1.0f / 60.0f;
@@ -16,11 +20,11 @@ namespace as
             glm::vec3 gravity_ = {0.0f, -9.8f, 0.0f};
         };
 
-        btDefaultCollisionConfiguration* col_config = nullptr;
-        btCollisionDispatcher* col_dispatcher = nullptr;
-        btBroadphaseInterface* overlap_cache = nullptr;
-        btSequentialImpulseConstraintSolver* solver = nullptr;
-        btDiscreteDynamicsWorld* world = nullptr;
+        btDefaultCollisionConfiguration* col_config_ = nullptr;
+        btCollisionDispatcher* col_dispatcher_ = nullptr;
+        btBroadphaseInterface* overlap_cache_ = nullptr;
+        btSequentialImpulseConstraintSolver* solver_ = nullptr;
+        btDiscreteDynamicsWorld* world_ = nullptr;
 
         void (*check_scene)(Scene*);
     };

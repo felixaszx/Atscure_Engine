@@ -1,6 +1,7 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
+#include <btBulletDynamicsCommon.h>
 #include <entt/entt.hpp>
 #include "mesh.hpp"
 #include "transform.hpp"
@@ -14,6 +15,8 @@ namespace as
         entt::registry* reg_{};
 
       public:
+        std::string id_ = "";
+
         Entity();
         Entity(entt::entity e, entt::registry* reg);
 
@@ -56,12 +59,15 @@ namespace as
     struct Scene
     {
         entt::registry reg_{};
+        btDiscreteDynamicsWorld* world = nullptr;
 
-        Entity add_entity();
+        Entity add_entity(const std::string& id = "");
         void start();
         void finish();
         void update(float delta_t);
         void fix_update();
+
+        void check_physis();
     };
 
     struct CameraComp
@@ -86,6 +92,14 @@ namespace as
     {
         Mesh* mesh_ = nullptr;
     };
+
+    struct RigidBodyComp
+    {
+        // in kg
+        float mass_ = 1;
+        btRigidBody* body_ = nullptr;
+    };
+
 }; // namespace as
 
 #endif // SCENE_HPP

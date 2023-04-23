@@ -9,10 +9,12 @@ as::Entity::Entity(entt::entity e, entt::registry* reg)
 {
 }
 
-as::Entity as::Scene::add_entity()
+as::Entity as::Scene::add_entity(const std::string& id)
 {
     entt::entity e = reg_.create();
-    return Entity(e, &reg_);
+    Entity tmp = Entity(e, &reg_);
+    tmp.id_ = id;
+    return tmp;
 }
 
 void as::Scene::start()
@@ -26,6 +28,10 @@ void as::Scene::update(float delta_t)
 void as::Scene::fix_update()
 {
     SCRIPT_FUNC_CALLER(fix_update, comp.class_);
+}
+void as::Scene::check_physis()
+{
+    
 }
 void as::Scene::finish()
 {
