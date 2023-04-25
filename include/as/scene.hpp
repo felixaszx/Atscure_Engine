@@ -85,7 +85,7 @@ namespace as
 
     struct MeshComp
     {
-        Mesh* mesh_ = nullptr;
+        std::unique_ptr<Mesh> mesh_{};
     };
 
     using Kg = float;

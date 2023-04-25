@@ -19,7 +19,6 @@ as::Scene* load_scene(uint32_t scene_index)
 }
 
 vk::Sampler sampler{};
-as::Mesh* mm = nullptr;
 MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::GameModuleSingleton::CreateInfo* base)
 {
     base_in = base->base_;
@@ -43,10 +42,9 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     mesh_cinfo.sampler_ = sampler;
     mesh_cinfo.scene_ = importer.ReadFile("res/model/sponza/sponza.obj", //
                                           aiProcess_Triangulate | aiProcess_GenNormals);
-    mm = new as::Mesh(mesh_cinfo);
 
     as::Entity sponza = scene[0].add_entity();
-    sponza.add<as::MeshComp>().mesh_ = mm;
+    sponza.add<as::MeshComp>().mesh_ = std::make_unique<as::Mesh>(mesh_cinfo);
     auto& sponza_trans = sponza.add<as::TransformComp>().trans_;
     sponza_trans.push_back({});
     sponza_trans[0].scale_ = {0.1, 0.1, 0.1};
@@ -60,5 +58,4 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
 MODULE_EXPORT void destroy_module_single(as::GameModuleSingleton* obj)
 {
     base_in->device_->destroySampler(sampler);
-    ffree(mm);
 }
