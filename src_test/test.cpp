@@ -10,16 +10,6 @@ dWorld* w{};
 dHashSpace* s{};
 dJointGroup* g{};
 
-template <typename G>
-struct RigidBody
-{
-    dBody body_;
-    dMass mass_;
-    dGeom geme_;
-
-    RigidBody() {}
-};
-
 int main(int argc, char** argv)
 {
     using namespace std::chrono_literals;
@@ -47,8 +37,8 @@ int main(int argc, char** argv)
         dBody& ebox = reg.emplace<dBody>(e);
         dMass& ebox_m = reg.emplace<dMass>(e);
         dBox& ebox_g = reg.emplace<dBox>(e);
-        ebox_m.setBoxTotal(1, 1, 1, 1);
         ebox.create(world);
+        ebox_m.setBoxTotal(1, 1, 1, 1);
         ebox.setMass(ebox_m);
         ebox.setPosition(0, 10, 0);
         ebox_g.create(space, 1, 1, 1);

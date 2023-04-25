@@ -12,7 +12,7 @@ namespace as
     struct Transform
     {
         glm::vec3 position_ = {0.0f, 0.0f, 0.0f};
-        glm::vec3 rotation_ = {0.0f, 0.0f, 0.0f}; // in degree
+        glm::quat rotation_ = {0.0f, 0.0f, 0.0f, 0.0f}; // in degree
         glm::vec3 scale_ = {1.0f, 1.0f, 1.0f};
         glm::vec3 front_ = {1.0f, 0.0f, 0.0f};
 

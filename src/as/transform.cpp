@@ -7,23 +7,17 @@ glm::vec3 as::Transform::right() const
 
 glm::vec3 as::Transform::up() const
 {
-    glm::vec3 tmp_up = {0.0f, 1.0f, 0.0f};
-    glm::rotateX(tmp_up, glm::radians(rotation_.x));
-    glm::rotateY(tmp_up, glm::radians(rotation_.y));
-    glm::rotateZ(tmp_up, glm::radians(rotation_.z));
-    return tmp_up;
+    glm::mat3 rotation = glm::toMat3(rotation_);
+    return rotation * Y_AXIS;
 }
 
 glm::mat4 as::Transform::matrix() const
 {
-    glm::mat4 model(1.0f);
-    model = glm::translate(model, position_);
-    model = glm::rotate(model, glm::radians(rotation_.x), X_AXIS);
-    model = glm::rotate(model, glm::radians(rotation_.y), Y_AXIS);
-    model = glm::rotate(model, glm::radians(rotation_.z), Z_AXIS);
-    model = glm::scale(model, scale_);
+    glm::mat4 scale = glm::scale(glm::mat4(1.0f), scale_);
+    glm::mat4 rotation = glm::toMat4(rotation_);
+    glm::mat4 translate = glm::translate(glm::mat4(1.0f), position_);
 
-    return model;
+    return translate * rotation * scale;
 }
 
 void as::Transform::set_relative_to(const Transform* trans)

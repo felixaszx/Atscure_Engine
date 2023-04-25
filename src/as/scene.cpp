@@ -41,3 +41,14 @@ glm::vec3 as::CameraComp::get_front()
 
     return front;
 }
+
+glm::vec3 as::RigidBodyComp::get_position(uint32_t index) {}
+glm::quat as::RigidBodyComp::get_rotation(uint32_t index) {}
+void as::RigidBodyComp::set_position(uint32_t index, const glm::vec3& vec3) {}
+void as::RigidBodyComp::set_rotation(uint32_t index, const glm::quat& quat) {}
+std::vector<glm::vec3>& as::RigidBodyComp::get_position() {}
+std::vector<glm::quat>& as::RigidBodyComp::get_rotation() {}
+void as::RigidBodyComp::set_position(const std::vector<glm::vec3>& vec3) {}
+void as::RigidBodyComp::set_rotation(const std::vector<glm::quat>& quat) {}
+
+void as::RigidBodyComp::sync_to_transform(TransformComp& trans) {}
