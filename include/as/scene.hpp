@@ -87,34 +87,7 @@ namespace as
     {
         std::unique_ptr<Mesh> mesh_{};
     };
-
-    using Kg = float;
-    using Meter = float;
-    Kg operator"" _kg(long double);
-    Meter operator"" _m(long double);
-    struct RigidBodyComp
-    {
-        inline static const int64_t ALL_INSTANCE = -1;
-        std::vector<dBody> bodies_{};
-        std::vector<dMass> masses_{};
-        std::vector<std::unique_ptr<dGeom>> geoms_{};
-
-        template <typename T>
-        void set(const TransformComp& trans, int64_t index = ALL_INSTANCE)
-        {
-        }
-
-        glm::vec3 get_position(uint32_t index);
-        glm::quat get_rotation(uint32_t index);
-        void set_position(uint32_t index, const glm::vec3& vec3);
-        void set_rotation(uint32_t index, const glm::quat& quat);
-        std::vector<glm::vec3>& get_position();
-        std::vector<glm::quat>& get_rotation();
-        void set_position(const std::vector<glm::vec3>& vec3);
-        void set_rotation(const std::vector<glm::quat>& quat);
-
-        void sync_to_transform(TransformComp& trans);
-    };
+    
 }; // namespace as
 
 #endif // SCENE_HPP
