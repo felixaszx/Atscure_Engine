@@ -4,10 +4,21 @@
 #include <chrono>
 #include "third_party/glms.hpp"
 #include <ode/ode.h>
+#include <entt/entt.hpp>
 
 dWorld* w{};
 dHashSpace* s{};
 dJointGroup* g{};
+
+template <typename G>
+struct RigidBody
+{
+    dBody body_;
+    dMass mass_;
+    dGeom geme_;
+
+    RigidBody() {}
+};
 
 int main(int argc, char** argv)
 {
@@ -31,19 +42,23 @@ int main(int argc, char** argv)
 
         world.setGravity(0, -9.8, 0);
 
-        dBody box{};
-        dMass box_m{};
-        dBox box_g;
-        box_m.setBoxTotal(1000, 1, 1, 1);
-        box.create(world);
-        box.setMass(box_m);
-        box.setPosition(0, 2, 0);
-        box_g.create(space, 1, 1, 1);
-        box_g.setBody(box);
+        entt::registry reg;
+        auto e = reg.create();
+        dBody& ebox = reg.emplace<dBody>(e);
+        dMass& ebox_m = reg.emplace<dMass>(e);
+        dBox& ebox_g = reg.emplace<dBox>(e);
+        ebox_m.setBoxTotal(1, 1, 1, 1);
+        ebox.create(world);
+        ebox.setMass(ebox_m);
+        ebox.setPosition(0, 10, 0);
+        ebox_g.create(space, 1, 1, 1);
+        ebox_g.setBody(ebox);
 
         dBox p;
         p.create(space, 100, 1, 100);
         p.setPosition(0, 0, 0);
+
+        reg.destroy(e);
 
         while (true)
         {
@@ -55,14 +70,11 @@ int main(int argc, char** argv)
                               dBodyID b2 = dGeomGetBody(o2);
                               dContact contact[10]{};
                               int numc = dCollide(o1, o2, 10, &contact[0].geom, sizeof(dContact));
-                              for (int i = 0; i < 10; i++)
-                              {
-                                  contact[i].surface.mode = dContactBounce;
-                                  contact[i].surface.mu = 0;
-                              }
 
                               for (int i = 0; i < numc; i++)
                               {
+                                  contact[i].surface.mode = dContactBounce;
+                                  contact[i].surface.bounce = 1.0f;
                                   dContactJoint c;
                                   c.create(*w, *g, contact + i);
                                   c.attach(b1, b2);
@@ -71,8 +83,10 @@ int main(int argc, char** argv)
 
             world.step(1 / (double)60);
             jgroup.empty();
-            std::cout << " " << box.getPosition()[0] << " " << box.getPosition()[1] << " " << box.getPosition()[2]
-                      << std::endl;
+            break;
+
+            // std::cout << ebox.getPosition()[0] << " " << ebox.getPosition()[1] << " " << ebox.getPosition()[2] <<
+            // std::endl;
         }
     }
 
