@@ -24,25 +24,26 @@ int main(int argc, char** argv)
 
     as::Scene* scene = game.load_scene(0);
 
-    timer.start();
     while (!glfwWindowShouldClose(base.window_->window_))
     {
+        timer.start();
+
         devicei.prev_mouse_ = devicei.curr_mouse_;
         glfwPollEvents();
         devicei.delta_mouse_ = {devicei.curr_mouse_.x_ - devicei.prev_mouse_.x_, //
                                 devicei.curr_mouse_.y_ - devicei.prev_mouse_.y_};
         devicei.frame_time_ = delta_ms;
 
+        scene->update(delta_s);
+        timer.start();
+
+        renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
+        base.swapchian_->present({renderer.submit_sem_});
+        base.device_->waitIdle();
+
         timer.finish();
         delta_s = timer.get_duration_second();
         delta_ms = timer.get_duration_ms();
-        scene->update(delta_s);
-        timer.start();
-        
-        renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
-        base.swapchian_->present({renderer.submit_sem_});
-
-        base.device_->waitIdle();
     }
     scene->finish();
 
