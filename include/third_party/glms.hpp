@@ -54,6 +54,23 @@ namespace glms
         operator float*() { return &(*(this)[0]); }
         operator float*() const { return &(*(this)[0]); }
     };
+
+    struct quat : public glm::quat
+    {
+        quat& operator=(const float* arr)
+        {
+            x = arr[0];
+            y = arr[1];
+            z = arr[2];
+            z = arr[3];
+
+            return *this;
+        }
+
+        operator float*() { return &(*(this)[0]); }
+        operator float*() const { return &(*(this)[0]); }
+    };
+
 } // namespace glms
 
 #endif // GLMS_HPP
