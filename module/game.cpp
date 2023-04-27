@@ -47,7 +47,7 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     sponza.add<as::MeshComp>().mesh_ = std::make_unique<as::Mesh>(mesh_cinfo);
     auto& sponza_trans = sponza.add<as::TransformComp>().trans_;
     sponza_trans.push_back({});
-    sponza_trans[0].scale_ = {0.1, 0.1, 0.1};
+    sponza.add<as::ScriptComp>().set<SponzaSize>(sponza);
 
     as::Entity camera = scene[0].add_entity();
     camera.add<as::CameraComp>();

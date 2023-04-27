@@ -74,3 +74,9 @@ class CameraControl : public as::ScriptBase
         }
     }
 };
+
+class SponzaSize : public as::ScriptBase
+{
+  public:
+    void start() { this->e_.get<as::TransformComp>()->trans_[0].scale_ = {0.1f, 0.1f, 0.1f}; }
+};
