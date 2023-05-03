@@ -24,52 +24,14 @@ namespace glms
         return tmp;
     }
 
-    struct vec3 : public glm::vec3
+    template <typename G>
+    void assign_value(G glm_types, float* arr)
     {
-        vec3& operator=(const float* arr)
+        for (int i = 0; i < glm_types.length(); i++)
         {
-            x = arr[0];
-            y = arr[1];
-            z = arr[2];
-
-            return *this;
+            glm_types[i] = arr[i];
         }
-
-        operator float*() { return &(*(this)[0]); }
-        operator float*() const { return &(*(this)[0]); }
-    };
-
-    struct vec4 : public glm::vec4
-    {
-        vec4& operator=(const float* arr)
-        {
-            x = arr[0];
-            y = arr[1];
-            z = arr[2];
-            z = arr[3];
-
-            return *this;
-        }
-
-        operator float*() { return &(*(this)[0]); }
-        operator float*() const { return &(*(this)[0]); }
-    };
-
-    struct quat : public glm::quat
-    {
-        quat& operator=(const float* arr)
-        {
-            x = arr[0];
-            y = arr[1];
-            z = arr[2];
-            z = arr[3];
-
-            return *this;
-        }
-
-        operator float*() { return &(*(this)[0]); }
-        operator float*() const { return &(*(this)[0]); }
-    };
+    }
 
 } // namespace glms
 
