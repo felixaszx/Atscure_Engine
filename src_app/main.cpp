@@ -26,20 +26,22 @@ int main(int argc, char** argv)
 
     while (!glfwWindowShouldClose(base.window_->window_))
     {
-        timer.start();
-
+        devicei.minimized_ = glfwGetWindowAttrib(base.window_->window_, GLFW_ICONIFIED);
         devicei.prev_mouse_ = devicei.curr_mouse_;
+        timer.start();
         glfwPollEvents();
         devicei.delta_mouse_ = {devicei.curr_mouse_.x_ - devicei.prev_mouse_.x_, //
                                 devicei.curr_mouse_.y_ - devicei.prev_mouse_.y_};
         devicei.frame_time_ = delta_ms;
 
         scene->update(delta_s);
-        timer.start();
 
-        renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
-        base.swapchian_->present({renderer.submit_sem_});
-        base.device_->waitIdle();
+        if (devicei.minimized_)
+        {
+            renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
+            base.swapchian_->present({renderer.submit_sem_});
+            base.device_->waitIdle();
+        }
 
         timer.finish();
         delta_s = timer.get_duration_second();

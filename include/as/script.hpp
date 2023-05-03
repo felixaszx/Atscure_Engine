@@ -58,6 +58,8 @@ namespace as
         using MiliSecond = uint32_t;
         MiliSecond frame_time_ = 0;
 
+        bool minimized_ = false;
+
         void close_window() const;
         void set_cursor_state(bool enable) const;
     };
