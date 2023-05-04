@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 
         scene->update(delta_s);
 
-        if (devicei.minimized_)
+        if (!devicei.minimized_)
         {
             renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
             base.swapchian_->present({renderer.submit_sem_});
