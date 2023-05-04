@@ -7,11 +7,6 @@ namespace as
     RendererModuleSingleton* renderer = nullptr;
     const BaseModuleSingleton* base = nullptr;
 
-    as::CpuSemaphore begins[3]{};
-    as::CpuSemaphore ends[3]{};
-    as::CmdPool* pools[3]{};
-    as::CmdBuffer* mt_bufs[3]{};
-
     void render_scene(Scene* scene, uint32_t image_index)
     {
         try
