@@ -50,9 +50,9 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     sponza.add<as::ScriptComp>().set<SponzaSize>(sponza);
 
     as::Entity camera = scene[0].add_entity();
-    camera.add<as::CameraComp>();
     camera.add<as::TransformComp>().trans_.push_back({});
     camera.add<as::ScriptComp>().set<CameraControl>(camera);
+    as::CameraComp& cc1 = camera.add<as::CameraComp>();
 }
 
 MODULE_EXPORT void destroy_module_single(as::GameModuleSingleton* obj)

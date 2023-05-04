@@ -12,7 +12,7 @@ namespace as
         sem_t semaphore_ = nullptr;
 
       public:
-        CpuSemaphore(int initial_value);
+        CpuSemaphore(int initial_value = 0);
         ~CpuSemaphore();
 
         void signal();

@@ -7,6 +7,11 @@ namespace as
     RendererModuleSingleton* renderer = nullptr;
     const BaseModuleSingleton* base = nullptr;
 
+    as::CpuSemaphore begins[3]{};
+    as::CpuSemaphore ends[3]{};
+    as::CmdPool* pools[3]{};
+    as::CmdBuffer* mt_bufs[3]{};
+
     void render_scene(Scene* scene, uint32_t image_index)
     {
         try
@@ -34,21 +39,17 @@ namespace as
         render_pass_info.setClearValues(clear_value);
 
         vk::Viewport viewport{};
-        viewport.width = base->swapchian_->extend_.width;
-        viewport.height = base->swapchian_->extend_.height;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         vk::Rect2D scissor{};
+        scissor.offset = vk::Offset2D(0, 0);
         scissor.extent = base->swapchian_->extend_;
 
         renderer->main_cmd_->reset();
-
         begin_cmd(renderer->main_cmd_);
         {
             renderer->main_cmd_->beginRenderPass(render_pass_info, vk::SubpassContents::eInline);
             renderer->main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, renderer->pipelines_[0]);
-            renderer->main_cmd_->setScissor(0, scissor);
-            renderer->main_cmd_->setViewport(0, viewport);
 
             auto camera_view = scene->reg_.view<CameraComp, TransformComp>();
             for (auto camera : camera_view)
@@ -56,14 +57,22 @@ namespace as
                 CameraComp& camera_data = camera_view.get<CameraComp>(camera);
                 TransformComp& camera_trans = camera_view.get<TransformComp>(camera);
 
+                viewport.width = camera_data.width_;
+                viewport.height = camera_data.height_;
+                viewport.x = camera_data.x_ * base->swapchian_->extend_.width;
+                viewport.y = camera_data.y_ * base->swapchian_->extend_.height;
+
+                renderer->main_cmd_->setViewport(0, viewport);
+                renderer->main_cmd_->setScissor(0, scissor);
+
                 camera_trans.trans_[0].front_ = camera_data.get_front();
 
                 renderer->ubo_.view_ =
                     glm::lookAt(camera_trans.trans_[0].position_,                                                 //
                                 camera_trans.trans_[0].position_ + glm::normalize(camera_trans.trans_[0].front_), //
                                 Y_AXIS);
-                renderer->ubo_.proj_ = glms::perspective(glm::radians(camera_data.fov_), //
-                                                         camera_data.aspect_,            //
+                renderer->ubo_.proj_ = glms::perspective(glm::radians(camera_data.fov_),                         //
+                                                         (float)camera_data.width_ / (float)camera_data.height_, //
                                                          camera_data.near_, camera_data.far_);
                 memcpy(renderer->uniform_buffer_->mapping(), &renderer->ubo_, sizeof(renderer->ubo_));
                 renderer->main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, //
@@ -77,25 +86,30 @@ namespace as
                     MeshComp& mesh = entity_view.get<MeshComp>(entity);
 
                     mesh.mesh_->update(trans.trans_);
-
-                    for (int m = 0; m < mesh.mesh_->mesh_size(); m++)
+                    if (mesh.mesh_->render_id_ == camera_data.render_id_)
                     {
-                        const Mesh::Material& mat = mesh.mesh_->get_material(m);
-                        vk::DescriptorImageInfo image_infos[] = {mat.albedo_->des_info_,   //
-                                                                 mat.specular_->des_info_, //
-                                                                 mat.opacity_->des_info_};
+                        for (int m = 0; m < mesh.mesh_->mesh_size(); m++)
+                        {
+                            const Mesh::Material& mat = mesh.mesh_->get_material(m);
+                            vk::DescriptorImageInfo image_infos[] = {mat.albedo_->des_info_,   //
+                                                                     mat.specular_->des_info_, //
+                                                                     mat.opacity_->des_info_};
 
-                        vk::WriteDescriptorSet texture_write{};
-                        texture_write.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-                        texture_write.setImageInfo(image_infos);
-                        texture_write.dstBinding = 1;
-                        renderer->main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, //
-                                                                  renderer->pipeline_layouts_[0],   ///
-                                                                  0, texture_write);
-                        mesh.mesh_->draw(*renderer->main_cmd_, m);
+                            vk::WriteDescriptorSet texture_write{};
+                            texture_write.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+                            texture_write.setImageInfo(image_infos);
+                            texture_write.dstBinding = 1;
+                            renderer->main_cmd_->pushDescriptorSetKHR(vk::PipelineBindPoint::eGraphics, //
+                                                                      renderer->pipeline_layouts_[0],   ///
+                                                                      0, texture_write);
+                            mesh.mesh_->draw(*renderer->main_cmd_, m);
+                        }
                     }
                 }
             }
+
+            viewport.width = base->swapchian_->extend_.width;
+            viewport.height = base->swapchian_->extend_.height;
 
             renderer->main_cmd_->nextSubpass(vk::SubpassContents::eInline);
             renderer->main_cmd_->bindPipeline(vk::PipelineBindPoint::eGraphics, renderer->pipelines_[1]);

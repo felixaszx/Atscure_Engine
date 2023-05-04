@@ -61,6 +61,7 @@ namespace as
             glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
         };
 
+        std::string render_id_ = "";
         uint32_t max_instance_ = 10;
         uint32_t instance_count_ = 1;
         std::vector<glm::mat4> models_matrics_{};

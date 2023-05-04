@@ -7,8 +7,11 @@ as::CpuSemaphore::CpuSemaphore(int initial_value)
 
 as::CpuSemaphore::~CpuSemaphore()
 {
-    sem_destroy(&semaphore_);
-    semaphore_ = nullptr;
+    if (semaphore_ != nullptr)
+    {
+        sem_destroy(&semaphore_);
+        semaphore_ = nullptr;
+    }
 }
 
 void as::CpuSemaphore::signal()

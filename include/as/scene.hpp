@@ -67,13 +67,20 @@ namespace as
 
     struct CameraComp
     {
+        std::string render_id_ = "";
+
         float yaw_ = 0.0f;
         float pitch_ = 0.0f;
         float fov_ = 45.0f;
 
         float near_ = 0.5f;
         float far_ = 1000.0f;
-        float aspect_ = 1920.0f / 1080.0f;
+
+        uint32_t width_ = 1920;
+        uint32_t height_ = 1080;
+
+        float x_ = 0.0; // normalized, 0.0f to 1.0f
+        float y_ = 0.0; // normalized, 0.0f to 1.0f
 
         glm::vec3 get_front();
     };
@@ -87,7 +94,7 @@ namespace as
     {
         std::unique_ptr<Mesh> mesh_{};
     };
-    
+
 }; // namespace as
 
 #endif // SCENE_HPP
