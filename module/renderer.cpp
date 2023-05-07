@@ -9,11 +9,6 @@ namespace as
 
     void render_scene(Scene* scene, uint32_t image_index)
     {
-        if (!renderer->start.try_acquire())
-        {
-            return;
-        }
-
         try
         {
             auto result = base->device_->waitForFences(renderer->frame_fence_, true, UINT64_MAX);
@@ -143,7 +138,6 @@ namespace as
         submit_info.commandBufferCount = 1;
         submit_info.pCommandBuffers = renderer->main_cmd_;
         base->device_->graphics_queue_.submit(submit_info, renderer->frame_fence_);
-        renderer->finish.release();
     }
 
     void wait_idle()
