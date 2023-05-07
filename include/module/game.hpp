@@ -18,6 +18,7 @@ namespace as
         };
 
         as::Scene* (*load_scene)(uint32_t);
+        void (*destroy_scene)(uint32_t);
     };
 } // namespace as
 
