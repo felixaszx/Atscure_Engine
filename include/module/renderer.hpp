@@ -23,6 +23,9 @@ namespace as
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
         std::vector<vk::Pipeline> pipelines_{};
 
+        std::binary_semaphore start{0};
+        std::binary_semaphore finish{0};
+
         GpuSemaphore image_sem_{};
         GpuSemaphore submit_sem_{};
         GpuFence frame_fence_{true};

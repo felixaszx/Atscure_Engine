@@ -38,7 +38,10 @@ int main(int argc, char** argv)
 
         if (!devicei.minimized_)
         {
+            renderer.start.release();
             renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
+            renderer.finish.try_acquire();
+
             base.swapchian_->present({renderer.submit_sem_});
             base.device_->waitIdle();
         }
