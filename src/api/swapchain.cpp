@@ -101,10 +101,7 @@ vk::Result as::Swapchain::present(const std::vector<vk::Semaphore>& wait_sems)
     present_info.pSwapchains = this;
     present_info.pImageIndices = &image_index_;
 
-    try_log();
     return device_->present_queue_.presentKHR(present_info);
-    catch_warnning();
-    return {};
 }
 
 uint32_t as::Swapchain::acquire_next_image(uint64_t timeout, vk::Semaphore semaphore, vk::Fence fence,
