@@ -34,6 +34,7 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     base_in = base->base_;
     as::devicei = base->devicei_;
     obj->load_scene = load_scene;
+    obj->destroy_scene = destroy_scene;
 
     for (int i = 0; i < scene.size(); i++)
     {

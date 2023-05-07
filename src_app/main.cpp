@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         delta_s = timer.get_duration_second();
         delta_ms = timer.get_duration_ms();
     }
-    scene->finish();
+    game.destroy_scene(0);
 
     return EXIT_SUCCESS;
 }
