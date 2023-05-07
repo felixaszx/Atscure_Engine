@@ -36,16 +36,21 @@ int main(int argc, char** argv)
 
         scene->update(delta_s);
 
+        uint32_t imag_index = 0;
         if (!devicei.minimized_)
         {
+            imag_index = base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_);
             renderer.start.release();
-            renderer.render_scene(scene, base.swapchian_->acquire_next_image(UINT64_MAX, renderer.image_sem_));
-            renderer.finish.try_acquire();
-
-            base.swapchian_->present({renderer.submit_sem_});
-            base.device_->waitIdle();
         }
 
+        renderer.render_scene(scene, imag_index);
+
+        if (renderer.finish.try_acquire())
+        {
+            base.swapchian_->present({renderer.submit_sem_});
+        }
+
+        base.device_->waitIdle();
         timer.finish();
         delta_s = timer.get_duration_second();
         delta_ms = timer.get_duration_ms();
