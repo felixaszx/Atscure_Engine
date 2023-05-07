@@ -6,21 +6,6 @@
 
 namespace as
 {
-    class CpuSemaphore : public DeviceRAII
-    {
-      private:
-        sem_t semaphore_ = nullptr;
-
-      public:
-        CpuSemaphore(int initial_value = 0);
-        ~CpuSemaphore();
-
-        void signal();
-        void wait();
-        bool try_wait();
-        int get_value();
-    };
-
     struct GpuSemaphore : public vk::Semaphore, //
                           public DeviceRAII
     {

@@ -55,7 +55,7 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     allocator_ = vma::createAllocator(vma_create_info);
 
     DeviceRAII::device_ = this;
-    Log::info(fmt::format("Can create at most {} objects that use DeviceRAII\n"
+    Log::info(std::format("Can create at most {} objects that use DeviceRAII\n"
                           "Calling as::DeviceRAII::release_res() will not produce space for extra objects",
                           nodes_.max_size()));
 }
@@ -109,7 +109,7 @@ as::Device::Device(Context& context, const std::vector<const char*>& enabled_lay
         return;
     }
     properties_ = physical_.getProperties();
-    Log::info(fmt::format("Physical Device name: {} is selected", properties_.deviceName));
+    Log::info(std::format("Physical Device name: {} is selected", properties_.deviceName.data()));
 
     create_logical(context, enabled_layers);
 }

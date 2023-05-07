@@ -104,7 +104,7 @@ VkBool32 VKAPI_CALL as::Context::debug_cb(VkDebugUtilsMessageSeverityFlagBitsEXT
         }
     };
 
-    std::cerr << fmt::format("[Vulkan Validation Layer: {}] {}\n\n", type(), callback_data->pMessage);
+    std::cerr << std::format("[Vulkan Validation Layer: {}] {}\n\n", type(), callback_data->pMessage);
     return VK_FALSE;
 }
 

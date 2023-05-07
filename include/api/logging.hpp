@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include <fmt/core.h>
 
 namespace as
 {

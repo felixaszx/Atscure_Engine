@@ -1,41 +1,5 @@
 #include "api/syncs.hpp"
 
-as::CpuSemaphore::CpuSemaphore(int initial_value)
-{
-    sem_init(&semaphore_, 0, initial_value);
-}
-
-as::CpuSemaphore::~CpuSemaphore()
-{
-    if (semaphore_ != nullptr)
-    {
-        sem_destroy(&semaphore_);
-        semaphore_ = nullptr;
-    }
-}
-
-void as::CpuSemaphore::signal()
-{
-    sem_post(&semaphore_);
-}
-
-void as::CpuSemaphore::wait()
-{
-    sem_wait(&semaphore_);
-}
-
-bool as::CpuSemaphore::try_wait()
-{
-    return !sem_trywait(&semaphore_);
-}
-
-int as::CpuSemaphore::get_value()
-{
-    int value;
-    sem_getvalue(&semaphore_, &value);
-    return value;
-}
-
 as::GpuSemaphore::GpuSemaphore()
 {
     vk::SemaphoreCreateInfo create_info{};
