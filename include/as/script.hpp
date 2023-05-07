@@ -33,10 +33,14 @@ namespace as
         Action curr_ = Action::RELEASE;
 
         bool order_check(Action first, Action second) const { return (prev_ == first) && (curr_ == second); }
+        bool holding() const { return order_check(Action::HOLD, Action::HOLD); }
+        bool hold() const { return order_check(Action::PRESS, Action::HOLD); }
+        bool short_release() const { return order_check(Action::PRESS, Action::RELEASE); }
+        bool hold_release() const { return order_check(Action::HOLD, Action::RELEASE); }
         bool operator==(const Action& action) const { return curr_ == action; }
         bool operator>=(const Action& action) const { return curr_ >= action; }
         bool operator<=(const Action& action) const { return curr_ <= action; }
-        operator bool() const { return curr_ >= Action::PRESS; }
+        operator bool() const { return curr_ >= Action::PRESS; } // pressing
     };
 
     struct DeviceI
