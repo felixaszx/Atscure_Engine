@@ -62,6 +62,15 @@ class CameraControl : public as::ScriptBase
                 trans->trans_[0].position_ -= speed * Y_AXIS;
             }
 
+            if (devicei->keys_[KEY::TAB])
+            {
+                camera->render_id_ = "a";
+            }
+            else
+            {
+                camera->render_id_ = "";
+            }
+
             if (devicei->keys_[KEY::ESCAPE].short_release())
             {
                 devicei->close_window();
