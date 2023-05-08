@@ -13,11 +13,11 @@ class CameraControl : public as::ScriptBase
         TransformComp* trans = e_.get<TransformComp>();
         CameraComp* camera = e_.get<CameraComp>();
 
-        if (devicei->keys_[KEY::LEFT_ALT].hold())
+        if (devicei->keys_[KEY::LEFT_ALT])
         {
             devicei->set_cursor_state(true);
         }
-        else if (!devicei->keys_[KEY::LEFT_ALT].holding())
+        else if (!devicei->keys_[KEY::LEFT_ALT])
         {
             devicei->set_cursor_state(false);
             float speed = 20.0f * delta_t;
