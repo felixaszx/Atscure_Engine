@@ -132,11 +132,11 @@ namespace as
 
     struct RigidShapeComp : public std::unique_ptr<dGeom>
     {
-        void create_sphere(const PhysicalWorldComp& world, float radius);
-        void create_box(const PhysicalWorldComp& world, glm::vec3 extend);
-        void create_plane(const PhysicalWorldComp& world, float a, float b, float c, float d);
-        void create_capsule(const PhysicalWorldComp& world, float radius, float height);
-        void create_cylinder(const PhysicalWorldComp& world, float radius, float height);
+        void set_sphere(const PhysicalWorldComp& world, float radius);
+        void set_box(const PhysicalWorldComp& world, glm::vec3 extend);
+        void set_plane(const PhysicalWorldComp& world, float a, float b, float c, float d);
+        void set_capsule(const PhysicalWorldComp& world, float radius, float height);
+        void set_cylinder(const PhysicalWorldComp& world, float radius, float height);
         void set_body(const DynamicBodyComp& body);
     };
 
