@@ -45,3 +45,8 @@ void as::RigidShapeComp::create_cylinder(const PhysicalWorldComp& world, float r
 {
     this->reset(new dCylinder(world.space_, radius, height));
 }
+
+void as::RigidShapeComp::set_body(const DynamicBodyComp& body)
+{
+    this->get()->setBody(*body);
+}

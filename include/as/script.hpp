@@ -137,6 +137,7 @@ namespace as
         void create_plane(const PhysicalWorldComp& world, float a, float b, float c, float d);
         void create_capsule(const PhysicalWorldComp& world, float radius, float height);
         void create_cylinder(const PhysicalWorldComp& world, float radius, float height);
+        void set_body(const DynamicBodyComp& body);
     };
 
 }; // namespace as
