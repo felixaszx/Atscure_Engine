@@ -3,95 +3,96 @@
 
 #include <memory>
 
-template <typename T>
-class UniqueObj : public std::unique_ptr<T>
+namespace as
 {
-  public:
-    template <typename... Args>
-    constexpr inline UniqueObj(Args&&... args)
-        : std::unique_ptr<T>(new T(std::forward<Args>(args)...))
+    template <typename T>
+    struct UniqueObj : public std::unique_ptr<T>
     {
-    }
+        template <typename... Args>
+        constexpr inline UniqueObj(Args&&... args)
+            : std::unique_ptr<T>(new T(std::forward<Args>(args)...))
+        {
+        }
 
-    constexpr inline UniqueObj(T* obj_ptr)
-        : std::unique_ptr<T>(obj_ptr)
+        inline UniqueObj(T* obj_ptr)
+            : std::unique_ptr<T>(obj_ptr)
+        {
+        }
+
+        inline T& operator*() { return *this->get(); }
+        inline operator T*() { return this->get(); }
+    };
+
+    template <typename T>
+    struct SharedObj : public std::shared_ptr<T>
     {
-    }
+        template <typename... Args>
+        constexpr inline SharedObj(Args&&... args)
+            : std::shared_ptr<T>(new T(std::forward<Args>(args)...))
+        {
+        }
 
-    constexpr inline operator T&() { return *this->get(); }
-    constexpr inline operator T*() { return this->get(); }
-};
+        inline SharedObj(SharedObj<T>& shared_obj)
+            : std::shared_ptr<T>(shared_obj)
+        {
+        }
 
-template <typename T>
-class SharedObj : public std::shared_ptr<T>
-{
-  public:
-    template <typename... Args>
-    constexpr inline SharedObj(Args&&... args)
-        : std::shared_ptr<T>(new T(std::forward<Args>(args)...))
+        inline SharedObj(T* obj_ptr)
+            : std::shared_ptr<T>(obj_ptr)
+        {
+        }
+
+        inline T& operator*() { return *this->get(); }
+        inline operator T*() { return this->get(); }
+    };
+
+    template <typename T>
+    class VirtualObj
     {
-    }
+      private:
+        T* ptr_ = nullptr;
 
-    constexpr inline SharedObj(SharedObj<T>& shared_obj)
-        : std::shared_ptr<T>(shared_obj)
-    {
-    }
+      public:
+        inline VirtualObj() {}
 
-    constexpr inline SharedObj(T* obj_ptr)
-        : std::shared_ptr<T>(obj_ptr)
-    {
-    }
+        inline VirtualObj(T* obj_ptr)
+            : ptr_(obj_ptr)
+        {
+        }
 
-    constexpr inline operator T&() { return *this->get(); }
-    constexpr inline operator T*() { return this->get(); }
-};
+        inline VirtualObj(UniqueObj<T>& unique_obj)
+            : ptr_(unique_obj)
+        {
+        }
 
-template <typename T>
-class VirtualObj
-{
-  private:
-    T* ptr_ = nullptr;
+        inline VirtualObj(SharedObj<T>& shared_obj)
+            : ptr_(shared_obj)
+        {
+        }
 
-  public:
-    constexpr inline VirtualObj() {}
+        inline T& operator*() { return *ptr_; }
+        inline operator T*() { return ptr_; }
 
-    constexpr inline VirtualObj(T* obj_ptr)
-        : ptr_(obj_ptr)
-    {
-    }
+        inline VirtualObj& operator=(const T*& obj_ptr)
+        {
+            ptr_ = obj_ptr;
+            return *this;
+        }
 
-    constexpr inline VirtualObj(UniqueObj<T>& unique_obj)
-        : ptr_(unique_obj)
-    {
-    }
+        inline VirtualObj& operator=(UniqueObj<T>& unique_obj)
+        {
+            ptr_ = unique_obj;
+            return *this;
+        }
 
-    constexpr inline VirtualObj(SharedObj<T>& shared_obj)
-        : ptr_(shared_obj)
-    {
-    }
+        inline VirtualObj& operator=(SharedObj<T>& shared_obj)
+        {
+            ptr_ = shared_obj;
+            return *this;
+        }
 
-    constexpr inline operator T&() { return *this->get(); }
-    constexpr inline operator T*() { return this->get(); }
-    constexpr inline T& operator*() { return *ptr_; }
-    constexpr inline T* operator->() { return ptr_; }
-
-    constexpr inline VirtualObj& operator=(const T*& obj_ptr)
-    {
-        ptr_ = obj_ptr;
-        return *this;
-    }
-
-    constexpr inline VirtualObj& operator=(UniqueObj<T>& unique_obj)
-    {
-        ptr_ = unique_obj;
-        return *this;
-    }
-
-    constexpr inline VirtualObj& operator=(SharedObj<T>& shared_obj)
-    {
-        ptr_ = shared_obj;
-        return *this;
-    }
-};
+        inline bool valide() { return this->ptr_ != nullptr; }
+    };
+}; // namespace as
 
 #endif // UTILS_HPP
