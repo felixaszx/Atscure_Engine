@@ -118,22 +118,25 @@ namespace as
         ~ScriptComp() { ffree(class_); }
     };
 
-    struct PhysicalWorld
+    struct PhysicalWorldComp
     {
         dWorld world_{};
         dHashSpace space_{};
     };
 
-    struct DynamicBodyComp
+    struct DynamicBodyComp : public std::unique_ptr<dBody>, dMass
     {
-        std::unique_ptr<dBody> body_{};
+        DynamicBodyComp(const PhysicalWorldComp& world);
+        void update_mass();
     };
 
-    struct RigidShapeComp
+    struct RigidShapeComp : public std::unique_ptr<dGeom>
     {
-        std::unique_ptr<dGeom> shape_{};
-
-        static std::unique_ptr<dGeom> create_sphere();
+        void create_sphere(const PhysicalWorldComp& world, float radius);
+        void create_box(const PhysicalWorldComp& world, glm::vec3 extend);
+        void create_plane(const PhysicalWorldComp& world, float a, float b, float c, float d);
+        void create_capsule(const PhysicalWorldComp& world, float radius, float height);
+        void create_cylinder(const PhysicalWorldComp& world, float radius, float height);
     };
 
 }; // namespace as
