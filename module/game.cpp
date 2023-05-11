@@ -51,6 +51,9 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     sampler_cinfo.minFilter = vk::Filter::eLinear;
     sampler = base_in->device_->createSampler(sampler_cinfo);
 
+    as::Entity physic_world = scene[0]->add_entity();
+    physic_world.add<as::PhysicalWorldComp>();
+
     Assimp::Importer importer;
     as::Mesh::CreateInfo mesh_cinfo;
     mesh_cinfo.cmd_pool_ = base_in->master_cmd_pool_;

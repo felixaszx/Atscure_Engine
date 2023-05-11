@@ -120,8 +120,10 @@ namespace as
 
     struct PhysicalWorldComp
     {
-        dWorld world_{};
-        dHashSpace space_{};
+        std::unique_ptr<dWorld> world_;
+        std::unique_ptr<dHashSpace> space_;
+
+        PhysicalWorldComp();
     };
 
     struct DynamicBodyComp : public std::unique_ptr<dBody>, dMass
