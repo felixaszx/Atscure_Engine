@@ -1,6 +1,4 @@
 #include "vk_api/context.hpp"
-#include "module/base.hpp"
-#include "as/script.hpp"
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
 
 as::Context::Context(bool validation)
