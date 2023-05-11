@@ -17,6 +17,9 @@ int main(int argc, char** argv)
     as::DynamicLoader game_dll("module/bin/m_game.dll");
     as::ModuleSingleton<as::GameModuleSingleton> game(game_dll, {&base, &devicei});
 
+    as::DynamicLoader ode_dll("module/bin/m_physic_ode.dll");
+    as::ModuleSingleton<as::OdePhysicalModuleSingleton> ode(ode_dll, {});
+
     as::CpuTimer timer;
 
     float delta_s = 0;

@@ -38,7 +38,7 @@ namespace as
         vk::WriteDescriptorSet ubo_write_{};
         Buffer* uniform_buffer_;
 
-        void (*render_scene)(as::Scene*, uint32_t) = nullptr;
+        void (*render_scene)(Scene*, uint32_t) = nullptr;
         void (*wait_idle)() = nullptr;
     };
 

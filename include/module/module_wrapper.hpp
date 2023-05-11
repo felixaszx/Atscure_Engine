@@ -4,5 +4,6 @@
 #include "base.hpp"
 #include "renderer.hpp"
 #include "game.hpp"
+#include "physic_ode.hpp"
 
 #endif // MODULE_WRAPPER_HPP
