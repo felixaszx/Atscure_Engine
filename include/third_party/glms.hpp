@@ -14,12 +14,10 @@
 
 namespace glms
 {
-    using namespace glm;
-
     template <typename T>
-    GLM_FUNC_QUALIFIER mat<4, 4, T, defaultp> perspective(T fovy, T aspect, T zNear, T zFar)
+    GLM_FUNC_QUALIFIER glm::mat<4, 4, T, glm::defaultp> perspective(T fovy, T aspect, T zNear, T zFar)
     {
-        mat<4, 4, T, defaultp> tmp = glm::perspective(fovy, aspect, zNear, zFar);
+        glm::mat<4, 4, T, glm::defaultp> tmp = glm::perspective(fovy, aspect, zNear, zFar);
         tmp[1][1] *= -1;
         return tmp;
     }
