@@ -54,8 +54,8 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     Assimp::Importer importer;
     as::Mesh::CreateInfo mesh_cinfo;
     mesh_cinfo.cmd_pool_ = base_in->master_cmd_pool_;
-    mesh_cinfo.path_ = "res/model/sponza";
     mesh_cinfo.sampler_ = sampler;
+    mesh_cinfo.path_ = "res/model/sponza";
     mesh_cinfo.scene_ = importer.ReadFile("res/model/sponza/sponza.obj", //
                                           aiProcess_Triangulate | aiProcess_GenNormals);
 
@@ -64,6 +64,15 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     auto& sponza_trans = sponza.add<as::TransformComp>().trans_;
     sponza_trans.push_back({});
     sponza.add<as::ScriptComp>().set<SponzaSize>(sponza);
+
+    mesh_cinfo.path_ = "res/model/cube";
+    mesh_cinfo.scene_ = importer.ReadFile("res/model/cube/cube.obj", //
+                                          aiProcess_Triangulate | aiProcess_GenNormals);
+    as::Entity cube = scene[0]->add_entity();
+    cube.add<as::MeshComp>().mesh_ = std::make_unique<as::Mesh>(mesh_cinfo);
+    auto& cube_trans = cube.add<as::TransformComp>().trans_;
+    cube_trans.push_back({});
+    cube.add<as::ScriptComp>().set<CubeTest>(cube);
 
     as::Entity camera = scene[0]->add_entity();
     camera.add<as::TransformComp>().trans_.push_back({});

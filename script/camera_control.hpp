@@ -89,3 +89,16 @@ class SponzaSize : public as::ScriptBase
   public:
     void start() { this->e_.get<as::TransformComp>()->trans_[0].scale_ = {0.1f, 0.1f, 0.1f}; }
 };
+
+class CubeTest : public as::ScriptBase
+{
+  public:
+    void start() { this->e_.get<as::TransformComp>()->trans_[0].position_ = {0, 10, 0}; }
+    void update(float delta_t)
+    {
+        if (as::devicei->keys_[as::KEY::R])
+        {
+            this->e_.get<as::TransformComp>()->trans_[0].position_ = {0, 10, 0};
+        }
+    }
+};
