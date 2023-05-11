@@ -29,6 +29,7 @@ MODULE_EXPORT void destroy_scene(uint32_t scene_index)
 }
 
 vk::Sampler sampler{};
+as::PhysicalWorldComp physic_world;
 MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::GameModuleSingleton::CreateInfo* base)
 {
     base_in = base->base_;
@@ -51,9 +52,6 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     sampler_cinfo.minFilter = vk::Filter::eLinear;
     sampler = base_in->device_->createSampler(sampler_cinfo);
 
-    as::Entity physic_world = scene[0]->add_entity();
-    physic_world.add<as::PhysicalWorldComp>();
-
     Assimp::Importer importer;
     as::Mesh::CreateInfo mesh_cinfo;
     mesh_cinfo.cmd_pool_ = base_in->master_cmd_pool_;
@@ -73,9 +71,11 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
                                           aiProcess_Triangulate | aiProcess_GenNormals);
     as::Entity cube = scene[0]->add_entity();
     cube.add<as::MeshComp>().mesh_ = std::make_unique<as::Mesh>(mesh_cinfo);
-    auto& cube_trans = cube.add<as::TransformComp>().trans_;
-    cube_trans.push_back({});
+    cube.add<as::TransformComp>().trans_.push_back({});
     cube.add<as::ScriptComp>().set<CubeTest>(cube);
+    auto& body = cube.add<as::DynamicBodyComp>(*physic_world);
+    body.setBoxTotal(1, 1, 1, 1);
+    body.update_mass();
 
     as::Entity camera = scene[0]->add_entity();
     camera.add<as::TransformComp>().trans_.push_back({});

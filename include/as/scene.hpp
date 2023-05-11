@@ -28,10 +28,10 @@ namespace as
             return nullptr;
         }
 
-        template <typename Component>
-        Component& add()
+        template <typename Component, typename... Args>
+        Component& add(const Args&... args)
         {
-            return reg_->emplace_or_replace<Component>(e_);
+            return reg_->emplace_or_replace<Component>(e_, args...);
         }
 
         template <typename Component>
@@ -54,6 +54,7 @@ namespace as
         }                                           \
     }
 
+    struct PhysicalWorldComp;
     struct Scene
     {
         entt::registry reg_{};
@@ -93,6 +94,30 @@ namespace as
     struct MeshComp
     {
         std::unique_ptr<Mesh> mesh_{};
+    };
+
+    struct PhysicalWorldComp
+    {
+        std::unique_ptr<dWorld> world_;
+        std::unique_ptr<dHashSpace> space_;
+
+        PhysicalWorldComp();
+    };
+
+    struct DynamicBodyComp : public std::unique_ptr<dBody>, dMass
+    {
+        DynamicBodyComp(const PhysicalWorldComp& world);
+        void update_mass();
+    };
+
+    struct RigidShapeComp : public std::unique_ptr<dGeom>
+    {
+        void set_sphere(const PhysicalWorldComp& world, float radius);
+        void set_box(const PhysicalWorldComp& world, glm::vec3 extend);
+        void set_plane(const PhysicalWorldComp& world, float a, float b, float c, float d);
+        void set_capsule(const PhysicalWorldComp& world, float radius, float height);
+        void set_cylinder(const PhysicalWorldComp& world, float radius, float height);
+        void set_body(const DynamicBodyComp& body);
     };
 
 }; // namespace as
