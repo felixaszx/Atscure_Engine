@@ -3,6 +3,7 @@
 
 #include "scene.hpp"
 #include "key_bits.hpp"
+#include "ode/ode.h"
 
 namespace as
 {
@@ -115,6 +116,24 @@ namespace as
         }
 
         ~ScriptComp() { ffree(class_); }
+    };
+
+    struct PhysicalWorld
+    {
+        dWorld world_{};
+        dHashSpace space_{};
+    };
+
+    struct DynamicBodyComp
+    {
+        std::unique_ptr<dBody> body_{};
+    };
+
+    struct RigidShapeComp
+    {
+        std::unique_ptr<dGeom> shape_{};
+
+        static std::unique_ptr<dGeom> create_sphere();
     };
 
 }; // namespace as

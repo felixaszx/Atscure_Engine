@@ -6,21 +6,16 @@
 #include <ode/ode.h>
 #include <entt/entt.hpp>
 
-namespace ode
-{
-    class Ode
-    {
-        Ode() { dInitODE(); }
-        ~Ode() { dCloseODE(); }
-    };
-}; // namespace ode
 
 int main(int argc, char** argv)
 {
     using namespace std::chrono_literals;
+    dInitODE();
 
-    {
-    }
+    dBody ss;
+    
+
+    dCloseODE();
 
     return 0;
 }
