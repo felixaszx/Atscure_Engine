@@ -1,8 +1,8 @@
 #ifndef ODE_HPP
 #define ODE_HPP
 
-#include <memory>
 #include "ode/ode.h"
+#include "as/utils.hpp"
 
 namespace as
 {
@@ -15,19 +15,11 @@ namespace as
             ~Context();
         };
 
-        class World : public std::unique_ptr<dWorld>
-        {
-          public:
-            World();
-            dWorld* operator->();
-        };
-
-        class HashSpace : public std::unique_ptr<dHashSpace>
-        {
-          public:
-            HashSpace();
-            dHashSpace* operator->();
-        };
+        using World = UniqueObj<dWorld>;
+        using HashSpace = UniqueObj<dHashSpace>;
+        using SimpleSpace = UniqueObj<dSimpleSpace>;
+        using QuadTreeSpace = UniqueObj<dQuadTreeSpace>;
+        using Geom = VirtualObj<dGeom>;
 
     }; // namespace ode
 };     // namespace as

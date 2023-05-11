@@ -3,5 +3,6 @@
 
 #include "mesh.hpp"
 #include "texture.hpp"
+#include "utils.hpp"
 
 #endif // AS_WRAPPER_HPP
