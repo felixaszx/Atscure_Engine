@@ -1,4 +1,4 @@
-#include "api/buffer.hpp"
+#include "vk_api/buffer.hpp"
 
 as::Buffer::Buffer(const vk::BufferCreateInfo& buffer_info, const vma::AllocationCreateInfo& alloc_info)
     : size_(buffer_info.size)

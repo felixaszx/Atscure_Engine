@@ -1,7 +1,7 @@
 #ifndef BASE_HPP
 #define BASE_HPP
 
-#include "../api/api_wrapper.hpp"
+#include "../vk_api/wrapper.hpp"
 #include "../platform/platform_wrapper.hpp"
 #include "../as/script.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef PHYSIC_ODE_HPP
 #define PHYSIC_ODE_HPP
 
-#include "../api/api_wrapper.hpp"
+#include "../vk_api/wrapper.hpp"
 #include "../platform/platform_wrapper.hpp"
 #include "../as/as_wrapper.hpp"
 

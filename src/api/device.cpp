@@ -1,4 +1,4 @@
-#include "api/device.hpp"
+#include "vk_api/device.hpp"
 
 void as::Device::create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers)
 {

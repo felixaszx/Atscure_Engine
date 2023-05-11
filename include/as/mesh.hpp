@@ -1,7 +1,7 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include "../api/api_wrapper.hpp"
+#include "../vk_api/wrapper.hpp"
 #include "../third_party/ass.hpp"
 #include "../third_party/glms.hpp"
 #include "texture.hpp"

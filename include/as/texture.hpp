@@ -2,7 +2,7 @@
 #define TEXTURE_HPP
 
 #include <stb/stb_image.h>
-#include "api/api_wrapper.hpp"
+#include "vk_api/wrapper.hpp"
 
 namespace as
 {

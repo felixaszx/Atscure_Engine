@@ -73,9 +73,6 @@ MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::
     cube.add<as::MeshComp>().mesh_ = std::make_unique<as::Mesh>(mesh_cinfo);
     cube.add<as::TransformComp>().trans_.push_back({});
     cube.add<as::ScriptComp>().set<CubeTest>(cube);
-    auto& body = cube.add<as::DynamicBodyComp>(*physic_world);
-    body.setBoxTotal(1, 1, 1, 1);
-    body.update_mass();
 
     as::Entity camera = scene[0]->add_entity();
     camera.add<as::TransformComp>().trans_.push_back({});
