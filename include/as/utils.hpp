@@ -18,6 +18,12 @@ namespace as
             : std::unique_ptr<T>(null)
         {
         }
+
+        template <typename... Args>
+        constexpr inline void operator()(Args&&... args)
+        {
+            *this = std::move(UniqueObj(std::forward<Args>(args)...));
+        }
     };
 
     template <typename T>

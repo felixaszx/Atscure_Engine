@@ -25,6 +25,9 @@ namespace as
         RenderModule();
         ~RenderModule();
 
+        bool running();
+        void poll_events();
+
         VirtualObj<Renderer> get_renderer(uint32_t index);
         void add_renderer(UniqueObj<Renderer>& renderer);
     };

@@ -10,7 +10,10 @@ int main(int argc, char** argv)
     as::GameModule game;
     as::PhysicModule physic;
 
-    as::ModuleManager module(render, game, physic);
+    while (render.running())
+    {
+        render.poll_events();
+    }
 
     return EXIT_SUCCESS;
 }
