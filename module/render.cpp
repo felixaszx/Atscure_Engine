@@ -56,8 +56,6 @@ namespace as
 
         impl_->device_(*impl_->context_, impl_->context_->VALIDATION_LAYERS);
         impl_->swapchain_(*impl_->window_, *impl_->context_, *impl_->device_);
-
-        window_state_();
     }
 
     RenderModule::~RenderModule() {}
@@ -70,7 +68,7 @@ namespace as
     void RenderModule::poll_events()
     {
         glfwPollEvents();
-        window_state_->minimized_ = glfwGetWindowAttrib(impl_->window_->window_, GLFW_ICONIFIED);
+        window_state_.minimized_ = glfwGetWindowAttrib(impl_->window_->window_, GLFW_ICONIFIED);
     }
 
     VirtualObj<Renderer> RenderModule::get_renderer(uint32_t index)

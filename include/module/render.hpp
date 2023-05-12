@@ -39,7 +39,7 @@ namespace as
         {
             std::atomic_bool minimized_;
         };
-        UniqueObj<WindowState> window_state_{nullptr};
+        WindowState window_state_{};
 
         RenderModule();
         ~RenderModule();
