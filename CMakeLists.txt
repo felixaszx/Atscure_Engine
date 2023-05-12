@@ -48,11 +48,6 @@ target_include_directories(atscure_testing PUBLIC include_app)
 # libraries-cpp
 target_link_libraries(atscure_testing atscure_engine)
 
-# script
-# script
-# script
-add_subdirectory(module)
-
 file(GLOB_RECURSE SRC_TEST src_test/*.cpp)
 add_executable(test2 ${SRC_TEST})
 target_include_directories(test2 PUBLIC include)

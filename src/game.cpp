@@ -1,8 +1,5 @@
-#include "module.hpp"
+#include "game.hpp"
 
 namespace as
 {
-    struct ModuleManager::GameModuleImpl
-    {
-    };
 }; // namespace as
