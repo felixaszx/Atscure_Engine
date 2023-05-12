@@ -100,7 +100,7 @@ as::Mesh::Mesh(const CreateInfo& create_info)
         material_index_.push_back(create_info.scene_->mMeshes[i]->mMaterialIndex);
     }
 
-    auto texture_loading = [&](aiTextureType type, int index, ReferedObj<Texture>& target, bool disable_mip = false)
+    auto texture_loading = [&](aiTextureType type, int index, VirtualObj<Texture>& target, bool disable_mip = false)
     {
         aiString file;
         Texture::CreateInfo tex_info{};

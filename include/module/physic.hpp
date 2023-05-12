@@ -39,7 +39,7 @@ namespace as
         using AMotorJoint = UniqueObj<dAMotorJoint>;
         using LMotorJoint = UniqueObj<dLMotorJoint>;
 
-        using Geom = ReferedObj<dGeom>;
+        using Geom = VirtualObj<dGeom>;
         using SphereShape = UniqueObj<dSphere>;
         using BoxShape = UniqueObj<dBox>;
         using PlaneShape = UniqueObj<dPlane>;
@@ -47,33 +47,33 @@ namespace as
         using CylinderShape = UniqueObj<dCylinder>;
         using RayShape = UniqueObj<dRay>;
 
-        using rWorld = ReferedObj<dWorld>;
-        using rHashSpace = ReferedObj<dHashSpace>;
-        using rSimpleSpace = ReferedObj<dSimpleSpace>;
-        using rQuadTreeSpace = ReferedObj<dQuadTreeSpace>;
-        using rBody = ReferedObj<dBody>;
-        using rJointGroup = ReferedObj<dJointGroup>;
-        using rJoint = ReferedObj<dJoint>;
-        using rBallJoint = ReferedObj<dBallJoint>;
-        using rHingeJoint = ReferedObj<dHingeJoint>;
-        using rSliderJoint = ReferedObj<dSliderJoint>;
-        using rUniversalJoint = ReferedObj<dUniversalJoint>;
-        using rPRJoint = ReferedObj<dPRJoint>;
-        using rPUJoint = ReferedObj<dPUJoint>;
-        using rPistonJoint = ReferedObj<dPistonJoint>;
-        using rFixedJoint = ReferedObj<dFixedJoint>;
-        using rContactJoint = ReferedObj<dContactJoint>;
-        using rNullJoint = ReferedObj<dNullJoint>;
-        using rAMotorJoint = ReferedObj<dAMotorJoint>;
-        using rLMotorJoint = ReferedObj<dLMotorJoint>;
+        using rWorld = VirtualObj<dWorld>;
+        using rHashSpace = VirtualObj<dHashSpace>;
+        using rSimpleSpace = VirtualObj<dSimpleSpace>;
+        using rQuadTreeSpace = VirtualObj<dQuadTreeSpace>;
+        using rBody = VirtualObj<dBody>;
+        using rJointGroup = VirtualObj<dJointGroup>;
+        using rJoint = VirtualObj<dJoint>;
+        using rBallJoint = VirtualObj<dBallJoint>;
+        using rHingeJoint = VirtualObj<dHingeJoint>;
+        using rSliderJoint = VirtualObj<dSliderJoint>;
+        using rUniversalJoint = VirtualObj<dUniversalJoint>;
+        using rPRJoint = VirtualObj<dPRJoint>;
+        using rPUJoint = VirtualObj<dPUJoint>;
+        using rPistonJoint = VirtualObj<dPistonJoint>;
+        using rFixedJoint = VirtualObj<dFixedJoint>;
+        using rContactJoint = VirtualObj<dContactJoint>;
+        using rNullJoint = VirtualObj<dNullJoint>;
+        using rAMotorJoint = VirtualObj<dAMotorJoint>;
+        using rLMotorJoint = VirtualObj<dLMotorJoint>;
 
-        using rGeom = ReferedObj<dGeom>;
-        using rSphereShape = ReferedObj<dSphere>;
-        using rBoxShape = ReferedObj<dBox>;
-        using rPlaneShape = ReferedObj<dPlane>;
-        using rCapsuleShape = ReferedObj<dCapsule>;
-        using rCylinderShape = ReferedObj<dCylinder>;
-        using rRayShape = ReferedObj<dRay>;
+        using rGeom = VirtualObj<dGeom>;
+        using rSphereShape = VirtualObj<dSphere>;
+        using rBoxShape = VirtualObj<dBox>;
+        using rPlaneShape = VirtualObj<dPlane>;
+        using rCapsuleShape = VirtualObj<dCapsule>;
+        using rCylinderShape = VirtualObj<dCylinder>;
+        using rRayShape = VirtualObj<dRay>;
 
     }; // namespace phy
 };     // namespace as

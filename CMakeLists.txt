@@ -46,7 +46,9 @@ target_include_directories(atscure_testing PUBLIC include)
 target_include_directories(atscure_testing PUBLIC include_app)
 
 # libraries-cpp
+add_subdirectory(module)
 target_link_libraries(atscure_testing atscure_engine)
+target_link_libraries(atscure_testing module render physic game)
 
 file(GLOB_RECURSE SRC_TEST src_test/*.cpp)
 add_executable(test2 ${SRC_TEST})
@@ -54,7 +56,6 @@ target_include_directories(test2 PUBLIC include)
 target_include_directories(test2 PUBLIC include_app)
 target_link_libraries(test2 atscure_engine)
 
-add_subdirectory(module)
 
 
 

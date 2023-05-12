@@ -41,33 +41,33 @@ namespace as
     };
 
     template <typename T>
-    class ReferedObj
+    class VirtualObj
     {
       private:
         T* ptr_ = nullptr;
 
       public:
-        inline ReferedObj(T* obj_ptr = nullptr) { ptr_ = obj_ptr; }
-        inline ReferedObj(T& obj) { ptr_ = &obj; };
-        inline ReferedObj(UniqueObj<T>& unique_obj) { ptr_ = unique_obj.get(); }
-        inline ReferedObj(SharedObj<T>& shared_obj) { ptr_ = shared_obj.get(); }
+        inline VirtualObj(T* obj_ptr = nullptr) { ptr_ = obj_ptr; }
+        inline VirtualObj(T& obj) { ptr_ = &obj; };
+        inline VirtualObj(UniqueObj<T>& unique_obj) { ptr_ = unique_obj.get(); }
+        inline VirtualObj(SharedObj<T>& shared_obj) { ptr_ = shared_obj.get(); }
 
         inline T* operator->() { return ptr_; }
         inline T& operator*() { return *ptr_; }
 
-        inline ReferedObj& operator=(const T*& obj_ptr)
+        inline VirtualObj& operator=(const T*& obj_ptr)
         {
             ptr_ = obj_ptr;
             return *this;
         }
 
-        inline ReferedObj& operator=(UniqueObj<T>& unique_obj)
+        inline VirtualObj& operator=(UniqueObj<T>& unique_obj)
         {
             ptr_ = unique_obj.get();
             return *this;
         }
 
-        inline ReferedObj& operator=(SharedObj<T>& shared_obj)
+        inline VirtualObj& operator=(SharedObj<T>& shared_obj)
         {
             ptr_ = shared_obj.get();
             return *this;
@@ -77,7 +77,7 @@ namespace as
     };
 
 #define PIMPL_STRUCT(type_name, field_name) \
-    struct type_name;                \
+    struct type_name;                       \
     std::unique_ptr<type_name> field_name;
 }; // namespace as
 

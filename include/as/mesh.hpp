@@ -53,12 +53,12 @@ namespace as
 
         struct Material
         {
-            ReferedObj<Texture> albedo_;
-            ReferedObj<Texture> specular_;
-            ReferedObj<Texture> opacity_;
-            ReferedObj<Texture> ambient_;
-            ReferedObj<Texture> normal_;
-            ReferedObj<Texture> emissive_;
+            VirtualObj<Texture> albedo_;
+            VirtualObj<Texture> specular_;
+            VirtualObj<Texture> opacity_;
+            VirtualObj<Texture> ambient_;
+            VirtualObj<Texture> normal_;
+            VirtualObj<Texture> emissive_;
             glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
         };
 
