@@ -6,12 +6,16 @@
 #include "platform/wrapper.hpp"
 #include "third_party/glms.hpp"
 
+#include "physic.hpp"
+#include "game.hpp"
+#include "render.hpp"
+
 namespace as
 {
     class ModuleManager
     {
       private:
-        PIMPL(Impl, impl_);
+        PIMPL_STRUCT(Impl, impl_);
 
       public:
         ModuleManager();

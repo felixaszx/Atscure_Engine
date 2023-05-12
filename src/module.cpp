@@ -4,16 +4,12 @@ namespace as
 {
     struct ModuleManager::Impl
     {
-        UniqueObj<DynamicLoader> render_dll_{nullptr};
-        UniqueObj<DynamicLoader> physic_dll_{nullptr};
-        UniqueObj<DynamicLoader> game_dll_{nullptr};
+        RenderModule render_;
+        PhysicModule physic_;
+        GameModule game_;
     };
 
-    ModuleManager::ModuleManager()
-        : impl_()
-    {
-    }
-
+    ModuleManager::ModuleManager() {}
     ModuleManager::~ModuleManager() {}
 
 }; // namespace as

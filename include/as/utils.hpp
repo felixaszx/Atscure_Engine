@@ -76,7 +76,7 @@ namespace as
         inline bool valide() { return ptr_ != nullptr; }
     };
 
-#define PIMPL(type_name, field_name) \
+#define PIMPL_STRUCT(type_name, field_name) \
     struct type_name;                \
     std::unique_ptr<type_name> field_name;
 }; // namespace as

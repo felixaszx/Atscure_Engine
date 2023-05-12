@@ -1,12 +1,16 @@
-#ifndef ODE_HPP
-#define ODE_HPP
+#ifndef PHYSIC_HPP
+#define PHYSIC_HPP
 
 #include "ode/ode.h"
 #include "as/utils.hpp"
 
 namespace as
 {
-    namespace ode
+    class PhysicModule
+    {
+    };
+
+    namespace phy
     {
         class Context
         {
@@ -71,7 +75,7 @@ namespace as
         using rCylinderShape = ReferedObj<dCylinder>;
         using rRayShape = ReferedObj<dRay>;
 
-    }; // namespace ode
+    }; // namespace phy
 };     // namespace as
 
-#endif // ODE_HPP
+#endif // PHYSIC_HPP
