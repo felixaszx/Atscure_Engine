@@ -4,6 +4,7 @@
 #include "../vk_api/wrapper.hpp"
 #include "../third_party/ass.hpp"
 #include "../third_party/glms.hpp"
+#include "utils.hpp"
 #include "texture.hpp"
 #include "transform.hpp"
 
@@ -23,9 +24,9 @@ namespace as
             glm::vec3 color_{1.0f, 1.0f, 1.0f};
         };
 
-        Buffer* vertex_buffer_ = nullptr;
-        Buffer* index_buffer_ = nullptr;
-        Buffer* model_buffer_ = nullptr;
+        UniqueObj<Buffer> vertex_buffer_{nullptr};
+        UniqueObj<Buffer> index_buffer_{nullptr};
+        UniqueObj<Buffer> model_buffer_{nullptr};
 
         std::vector<Vertex> vertices_{};
         std::vector<uint32_t> indices_{};
@@ -34,7 +35,7 @@ namespace as
         std::vector<size_t> index_buffer_offsets_{};
         std::vector<uint32_t> mesh_indices_count_{};
 
-        std::unordered_map<std::string, Texture*> loaded_textures_{};
+        std::unordered_map<std::string, UniqueObj<Texture>> loaded_textures_{};
         std::vector<uint32_t> material_index_{};
         std::vector<Material> materials_{};
 
@@ -52,12 +53,12 @@ namespace as
 
         struct Material
         {
-            Texture* albedo_{};
-            Texture* specular_{};
-            Texture* opacity_{};
-            Texture* ambient_{};
-            Texture* normal_{};
-            Texture* emissive_{};
+            VirtualObj<Texture> albedo_;
+            VirtualObj<Texture> specular_;
+            VirtualObj<Texture> opacity_;
+            VirtualObj<Texture> ambient_;
+            VirtualObj<Texture> normal_;
+            VirtualObj<Texture> emissive_;
             glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
         };
 

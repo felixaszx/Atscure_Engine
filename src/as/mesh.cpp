@@ -14,7 +14,7 @@ as::Mesh::Mesh(const CreateInfo& create_info)
 
         for (size_t v = 0; v < mesh_in->mNumVertices; v++)
         {
-            as::Mesh::Vertex vertex{};
+            Mesh::Vertex vertex{};
             vertex.positon_ = glm::vec3(mesh_in->mVertices[v].x, mesh_in->mVertices[v].y, mesh_in->mVertices[v].z);
             vertex.normal_ = glm::vec3(mesh_in->mNormals[v].x, mesh_in->mNormals[v].y, mesh_in->mNormals[v].z);
 
@@ -62,26 +62,26 @@ as::Mesh::Mesh(const CreateInfo& create_info)
     buffer_info.size = vertices_.size() * sizeof(vertices_[0]);
     vma::AllocationCreateInfo alloc_info{};
     alloc_info.usage = vma::MemoryUsage::eAutoPreferDevice;
-    vertex_buffer_ = new as::Buffer(buffer_info, alloc_info);
+    vertex_buffer_.reset(new Buffer(buffer_info, alloc_info));
 
     buffer_info.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
     buffer_info.size = indices_.size() * sizeof(indices_[0]);
-    index_buffer_ = new as::Buffer(buffer_info, alloc_info);
+    index_buffer_.reset(new Buffer(buffer_info, alloc_info));
 
     buffer_info.usage = vk::BufferUsageFlagBits::eVertexBuffer;
     buffer_info.size = max_instance_ * sizeof(models_matrics_[0]);
     alloc_info.usage = vma::MemoryUsage::eAutoPreferHost;
     alloc_info.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
     alloc_info.preferredFlags = vk::MemoryPropertyFlagBits::eHostCoherent;
-    model_buffer_ = new as::Buffer(buffer_info, alloc_info);
+    model_buffer_.reset(new Buffer(buffer_info, alloc_info));
     model_buffer_->map_memory();
 
     void* staging_ptr = nullptr;
     buffer_info.usage = vk::BufferUsageFlagBits::eTransferSrc;
-    buffer_info.size = as::max_of_all<size_t>({vertex_buffer_->size_, //
-                                               index_buffer_->size_,  //
-                                               model_buffer_->size_});
-    as::Buffer* staging_buffer = new as::Buffer(buffer_info, alloc_info);
+    buffer_info.size = max_of_all<size_t>({vertex_buffer_->size_, //
+                                           index_buffer_->size_,  //
+                                           model_buffer_->size_});
+    Buffer* staging_buffer = new Buffer(buffer_info, alloc_info);
     staging_ptr = staging_buffer->map_memory();
 
     memcpy(staging_ptr, vertices_.data(), vertex_buffer_->size_);
@@ -100,10 +100,10 @@ as::Mesh::Mesh(const CreateInfo& create_info)
         material_index_.push_back(create_info.scene_->mMeshes[i]->mMaterialIndex);
     }
 
-    auto texture_loading = [&](aiTextureType type, int index, as::Texture*& target, bool disable_mip = false)
+    auto texture_loading = [&](aiTextureType type, int index, VirtualObj<Texture>& target, bool disable_mip = false)
     {
         aiString file;
-        as::Texture::CreateInfo tex_info{};
+        Texture::CreateInfo tex_info{};
         tex_info.cmd_pool_ = create_info.cmd_pool_;
         tex_info.sampler_ = create_info.sampler_;
         tex_info.disable_mip_ = disable_mip;
@@ -120,8 +120,8 @@ as::Mesh::Mesh(const CreateInfo& create_info)
         auto find_result = loaded_textures_.find(tex_info.file_name_);
         if (find_result == loaded_textures_.end())
         {
-            target = new Texture(tex_info);
-            loaded_textures_.insert({tex_info.file_name_, target});
+            const auto& tmp_pair = loaded_textures_.insert({tex_info.file_name_, UniqueObj<Texture>(tex_info)});
+            target = tmp_pair.first->second;
         }
         else
         {
@@ -142,12 +142,8 @@ as::Mesh::~Mesh()
 {
     while (!loaded_textures_.empty())
     {
-        ffree(loaded_textures_.begin()->second);
         loaded_textures_.erase(loaded_textures_.begin());
     }
-    ffree(vertex_buffer_);
-    ffree(index_buffer_);
-    ffree(model_buffer_);
 }
 
 void as::Mesh::update(const std::vector<Transform>& trans)
@@ -190,7 +186,7 @@ std::vector<vk::VertexInputBindingDescription> as::Mesh::mesh_bindings()
     std::vector<vk::VertexInputBindingDescription> binding(2);
 
     binding[0].binding = 0;
-    binding[0].stride = sizeof(as::Mesh::Vertex);
+    binding[0].stride = sizeof(Mesh::Vertex);
     binding[0].inputRate = vk::VertexInputRate::eVertex;
 
     binding[1].binding = 1;
@@ -210,10 +206,10 @@ std::vector<vk::VertexInputAttributeDescription> as::Mesh::mesh_attributes()
         attributes[i].format = vk::Format::eR32G32B32Sfloat;
     }
 
-    attributes[0].offset = offsetof(as::Mesh::Vertex, positon_);
-    attributes[1].offset = offsetof(as::Mesh::Vertex, normal_);
-    attributes[2].offset = offsetof(as::Mesh::Vertex, uv_);
-    attributes[3].offset = offsetof(as::Mesh::Vertex, color_);
+    attributes[0].offset = offsetof(Mesh::Vertex, positon_);
+    attributes[1].offset = offsetof(Mesh::Vertex, normal_);
+    attributes[2].offset = offsetof(Mesh::Vertex, uv_);
+    attributes[3].offset = offsetof(Mesh::Vertex, color_);
 
     for (uint32_t i = 4; i < 8; i++)
     {

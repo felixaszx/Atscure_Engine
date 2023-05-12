@@ -14,13 +14,10 @@ namespace as
         {
         }
 
-        inline UniqueObj(T* obj_ptr)
-            : std::unique_ptr<T>(obj_ptr)
+        inline UniqueObj(std::nullptr_t null)
+            : std::unique_ptr<T>(null)
         {
         }
-
-        inline T& operator*() { return *this->get(); }
-        inline operator T*() { return this->get(); }
     };
 
     template <typename T>
@@ -37,13 +34,10 @@ namespace as
         {
         }
 
-        inline SharedObj(T* obj_ptr)
-            : std::shared_ptr<T>(obj_ptr)
+        inline SharedObj(std::nullptr_t null)
+            : std::shared_ptr<T>(null)
         {
         }
-
-        inline T& operator*() { return *this->get(); }
-        inline operator T*() { return this->get(); }
     };
 
     template <typename T>
@@ -53,25 +47,23 @@ namespace as
         T* ptr_ = nullptr;
 
       public:
-        inline VirtualObj() {}
-
-        inline VirtualObj(T* obj_ptr)
+        inline VirtualObj(T* obj_ptr = nullptr)
             : ptr_(obj_ptr)
         {
         }
 
         inline VirtualObj(UniqueObj<T>& unique_obj)
-            : ptr_(unique_obj)
+            : ptr_(unique_obj.get())
         {
         }
 
         inline VirtualObj(SharedObj<T>& shared_obj)
-            : ptr_(shared_obj)
+            : ptr_(shared_obj.get())
         {
         }
 
+        inline T* operator->() { return ptr_; }
         inline T& operator*() { return *ptr_; }
-        inline operator T*() { return ptr_; }
 
         inline VirtualObj& operator=(const T*& obj_ptr)
         {
@@ -81,17 +73,17 @@ namespace as
 
         inline VirtualObj& operator=(UniqueObj<T>& unique_obj)
         {
-            ptr_ = unique_obj;
+            ptr_ = unique_obj.get();
             return *this;
         }
 
         inline VirtualObj& operator=(SharedObj<T>& shared_obj)
         {
-            ptr_ = shared_obj;
+            ptr_ = shared_obj.get();
             return *this;
         }
 
-        inline bool valide() { return this->ptr_ != nullptr; }
+        inline bool valide() { return ptr_ != nullptr; }
     };
 }; // namespace as
 

@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     using namespace std::chrono_literals;
     dInitODE();
 
-    dBody ss;
+    
     
 
     dCloseODE();
