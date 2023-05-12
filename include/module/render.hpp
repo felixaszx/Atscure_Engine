@@ -12,8 +12,21 @@ namespace as
         PIMPL_STRUCT(Impl, impl_);
 
       public:
-        Renderer();
+        struct ResultInfo
+        {
+            vk::ImageView image_;
+            vk::Format format_;
+            vk::ImageLayout initial_layout_;
+            vk::ImageLayout final_layout_;
+
+            static ResultInfo swapchain_info(VirtualObj<Swapchain> swapchain, uint32_t index);
+        };
+
         ~Renderer();
+
+        void render_scene(const ResultInfo& result,                    //
+                          const std::vector<vk::Semaphore>& wait_sems, //
+                          const std::vector<vk::Semaphore>& signal_sems);
     };
 
     class RenderModule
@@ -22,6 +35,12 @@ namespace as
         PIMPL_STRUCT(Impl, impl_);
 
       public:
+        struct WindowState
+        {
+            std::atomic_bool minimized_;
+        };
+        UniqueObj<WindowState> window_state_{nullptr};
+
         RenderModule();
         ~RenderModule();
 

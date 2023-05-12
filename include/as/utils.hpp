@@ -44,6 +44,12 @@ namespace as
             : std::shared_ptr<T>(null)
         {
         }
+
+        template <typename... Args>
+        constexpr inline void operator()(Args&&... args)
+        {
+            *this = std::move(SharedObj(std::forward<Args>(args)...));
+        }
     };
 
     template <typename T>
