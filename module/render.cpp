@@ -2,30 +2,27 @@
 
 namespace as
 {
-    struct Renderer::Impl
+    struct RenderModule::Impl
     {
-        std::function<void(const ResultInfo& result,                    //
-                           const std::vector<vk::Semaphore>& wait_sems, //
-                           const std::vector<vk::Semaphore>& signal_sems)>
-            render_func_;
+        UniqueObj<Window> window_{nullptr};
+        UniqueObj<Context> context_{nullptr};
 
-        std::vector<UniqueObj<ImageAttachment>> attachments_;
-        std::vector<UniqueObj<DescriptorLayout>> des_layouts_;
-        UniqueObj<DescriptorPool> des_pool_{nullptr};
+        UniqueObj<Device> device_{nullptr};
+        UniqueObj<Swapchain> swapchain_{nullptr};
 
-        std::vector<vk::PipelineLayout> pipeline_layouts_{};
-        std::vector<vk::Pipeline> pipelines_{};
-
-        std::vector<vk::Framebuffer> fbos_;
+        std::vector<VirtualObj<Renderer>> renderers_;
     };
-
-    Renderer::~Renderer() {}
 
     void Renderer::render_scene(const ResultInfo& result,                    //
                                 const std::vector<vk::Semaphore>& wait_sems, //
                                 const std::vector<vk::Semaphore>& signal_sems)
     {
-        impl_->render_func_(result, wait_sems, signal_sems);
+        render_func_(result, wait_sems, signal_sems);
+    }
+
+    Renderer::Renderer(RenderModule& render)
+        : device_(render.impl_->device_)
+    {
     }
 
     Renderer::ResultInfo Renderer::ResultInfo::swapchain_info(VirtualObj<Swapchain> swapchain, uint32_t index)
@@ -35,17 +32,6 @@ namespace as
         info.format_ = swapchain->format_;
         return info;
     }
-
-    struct RenderModule::Impl
-    {
-        UniqueObj<Window> window_{nullptr};
-        UniqueObj<Context> context_{nullptr};
-
-        UniqueObj<Device> device_{nullptr};
-        UniqueObj<Swapchain> swapchain_{nullptr};
-
-        std::vector<UniqueObj<Renderer>> renderers_;
-    };
 
     RenderModule::RenderModule()
         : impl_(new Impl)
@@ -76,9 +62,9 @@ namespace as
         return impl_->renderers_[index];
     }
 
-    void RenderModule::add_renderer(UniqueObj<Renderer>& renderer)
+    void RenderModule::add_renderer(Renderer* renderer)
     {
-        impl_->renderers_.push_back(std::move(renderer));
+        impl_->renderers_.push_back(renderer);
     }
 
 }; // namespace as

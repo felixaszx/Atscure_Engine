@@ -6,10 +6,18 @@
 
 namespace as
 {
+    class RenderModule;
     class Renderer
     {
-      private:
-        PIMPL_STRUCT(Impl, impl_);
+      public:
+        struct ResultInfo;
+
+      protected:
+        std::function<void(const ResultInfo& result,                    //
+                           const std::vector<vk::Semaphore>& wait_sems, //
+                           const std::vector<vk::Semaphore>& signal_sems)>
+            render_func_;
+        VirtualObj<Device> device_;
 
       public:
         struct ResultInfo
@@ -22,15 +30,17 @@ namespace as
             static ResultInfo swapchain_info(VirtualObj<Swapchain> swapchain, uint32_t index);
         };
 
-        ~Renderer();
-
         void render_scene(const ResultInfo& result,                    //
                           const std::vector<vk::Semaphore>& wait_sems, //
                           const std::vector<vk::Semaphore>& signal_sems);
+
+        Renderer(RenderModule& render);
     };
 
     class RenderModule
     {
+        friend Renderer;
+
       private:
         PIMPL_STRUCT(Impl, impl_);
 
@@ -48,7 +58,7 @@ namespace as
         void poll_events();
 
         VirtualObj<Renderer> get_renderer(uint32_t index);
-        void add_renderer(UniqueObj<Renderer>& renderer);
+        void add_renderer(Renderer* renderer);
     };
 }; // namespace as
 
