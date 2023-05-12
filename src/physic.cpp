@@ -2,7 +2,6 @@
 
 namespace as
 {
-
     namespace phy
     {
         Context::Context()
