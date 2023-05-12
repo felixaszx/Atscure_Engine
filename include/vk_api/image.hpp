@@ -2,6 +2,7 @@
 #define IMAGE_HPP
 
 #include "device.hpp"
+#include "../as/utils.hpp"
 
 namespace as
 {
@@ -36,11 +37,12 @@ namespace as
         ~SwapchainImage() override;
     };
 
-    std::vector<ImageAttachment*> create_image_attachments(std::vector<vk::Format> formats,              //
-                                                           std::vector<vk::Extent2D> extends,            //
-                                                           std::vector<vk::SampleCountFlagBits> samples, //
-                                                           std::vector<vk::ImageUsageFlags> usages,      //
-                                                           std::vector<vk::ImageAspectFlags> aspects);
+    void create_image_attachments(std::vector<UniqueObj<ImageAttachment>>& attachments,
+                                  std::vector<vk::Format> formats,              //
+                                  std::vector<vk::Extent2D> extends,            //
+                                  std::vector<vk::SampleCountFlagBits> samples, //
+                                  std::vector<vk::ImageUsageFlags> usages,      //
+                                  std::vector<vk::ImageAspectFlags> aspects);
 
 }; // namespace as
 

@@ -57,14 +57,14 @@ as::SwapchainImage::~SwapchainImage()
     device_->destroyImageView(*this);
 }
 
-std::vector<as::ImageAttachment*> as::create_image_attachments(std::vector<vk::Format> formats,              //
-                                                               std::vector<vk::Extent2D> extends,            //
-                                                               std::vector<vk::SampleCountFlagBits> samples, //
-                                                               std::vector<vk::ImageUsageFlags> usages,      //
-                                                               std::vector<vk::ImageAspectFlags> aspects)
+void as::create_image_attachments(std::vector<as::UniqueObj<as::ImageAttachment>>& attachments,
+                                  std::vector<vk::Format> formats,              //
+                                  std::vector<vk::Extent2D> extends,            //
+                                  std::vector<vk::SampleCountFlagBits> samples, //
+                                  std::vector<vk::ImageUsageFlags> usages,      //
+                                  std::vector<vk::ImageAspectFlags> aspects)
 {
-    std::vector<ImageAttachment*> attachments(formats.size());
-    for (int i = 0; i < attachments.size(); i++)
+    for (int i = 0; i < formats.size(); i++)
     {
         vk::ImageCreateInfo create_info{};
         create_info.imageType = vk::ImageType::e2D;
@@ -91,14 +91,12 @@ std::vector<as::ImageAttachment*> as::create_image_attachments(std::vector<vk::F
         view_info.subresourceRange.levelCount = 1;
         view_info.subresourceRange.baseArrayLayer = 0;
         view_info.subresourceRange.layerCount = 1;
-        attachments[i] = new ImageAttachment(create_info, alloc_info, view_info);
+        attachments.push_back(std::move(UniqueObj<ImageAttachment>(create_info, alloc_info, view_info)));
 
         attachments[i]->format = create_info.format;
         attachments[i]->samples = create_info.samples;
         attachments[i]->initialLayout = create_info.initialLayout;
     }
-
-    return attachments;
 }
 as::ImageAttachment::ImageAttachment(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info)
     : Image(image_info, alloc_info)
