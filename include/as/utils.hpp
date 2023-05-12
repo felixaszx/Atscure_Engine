@@ -41,43 +41,33 @@ namespace as
     };
 
     template <typename T>
-    class VirtualObj
+    class ReferedObj
     {
       private:
         T* ptr_ = nullptr;
 
       public:
-        inline VirtualObj(T* obj_ptr = nullptr)
-            : ptr_(obj_ptr)
-        {
-        }
-
-        inline VirtualObj(UniqueObj<T>& unique_obj)
-            : ptr_(unique_obj.get())
-        {
-        }
-
-        inline VirtualObj(SharedObj<T>& shared_obj)
-            : ptr_(shared_obj.get())
-        {
-        }
+        inline ReferedObj(T* obj_ptr = nullptr) { ptr_ = obj_ptr; }
+        inline ReferedObj(T& obj) { ptr_ = &obj; };
+        inline ReferedObj(UniqueObj<T>& unique_obj) { ptr_ = unique_obj.get(); }
+        inline ReferedObj(SharedObj<T>& shared_obj) { ptr_ = shared_obj.get(); }
 
         inline T* operator->() { return ptr_; }
         inline T& operator*() { return *ptr_; }
 
-        inline VirtualObj& operator=(const T*& obj_ptr)
+        inline ReferedObj& operator=(const T*& obj_ptr)
         {
             ptr_ = obj_ptr;
             return *this;
         }
 
-        inline VirtualObj& operator=(UniqueObj<T>& unique_obj)
+        inline ReferedObj& operator=(UniqueObj<T>& unique_obj)
         {
             ptr_ = unique_obj.get();
             return *this;
         }
 
-        inline VirtualObj& operator=(SharedObj<T>& shared_obj)
+        inline ReferedObj& operator=(SharedObj<T>& shared_obj)
         {
             ptr_ = shared_obj.get();
             return *this;

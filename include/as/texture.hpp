@@ -3,6 +3,7 @@
 
 #include <stb/stb_image.h>
 #include "vk_api/wrapper.hpp"
+#include "utils.hpp"
 
 namespace as
 {
@@ -11,7 +12,7 @@ namespace as
       private:
         uint32_t mip_levels_ = 1;
         vk::Extent3D format_{};
-        as::Image* image_{};
+        UniqueObj<as::Image> image_{nullptr};
 
       public:
         struct CreateInfo
@@ -25,7 +26,6 @@ namespace as
         vk::DescriptorImageInfo des_info_{};
 
         Texture(const CreateInfo& create_info);
-        ~Texture();
     };
 }; // namespace as
 

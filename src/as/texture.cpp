@@ -41,7 +41,7 @@ as::Texture::Texture(const CreateInfo& create_info)
     alloc_info.usage = vma::MemoryUsage::eAutoPreferDevice;
     alloc_info.preferredFlags = {};
     alloc_info.flags = {};
-    image_ = new as::Image(image_info, alloc_info);
+    image_.reset(new as::Image(image_info, alloc_info));
 
     vk::ImageMemoryBarrier barrier{};
     barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
@@ -136,9 +136,4 @@ as::Texture::Texture(const CreateInfo& create_info)
     des_info_.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
     des_info_.imageView = *image_;
     des_info_.sampler = create_info.sampler_;
-}
-
-as::Texture::~Texture()
-{
-    ffree(image_);
 }

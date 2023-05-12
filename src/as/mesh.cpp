@@ -100,7 +100,7 @@ as::Mesh::Mesh(const CreateInfo& create_info)
         material_index_.push_back(create_info.scene_->mMeshes[i]->mMaterialIndex);
     }
 
-    auto texture_loading = [&](aiTextureType type, int index, VirtualObj<Texture>& target, bool disable_mip = false)
+    auto texture_loading = [&](aiTextureType type, int index, ReferedObj<Texture>& target, bool disable_mip = false)
     {
         aiString file;
         Texture::CreateInfo tex_info{};
@@ -135,14 +135,6 @@ as::Mesh::Mesh(const CreateInfo& create_info)
         texture_loading(aiTextureType_DIFFUSE, i, materials_[i].albedo_);
         texture_loading(aiTextureType_SPECULAR, i, materials_[i].specular_);
         texture_loading(aiTextureType_OPACITY, i, materials_[i].opacity_, true);
-    }
-}
-
-as::Mesh::~Mesh()
-{
-    while (!loaded_textures_.empty())
-    {
-        loaded_textures_.erase(loaded_textures_.begin());
     }
 }
 

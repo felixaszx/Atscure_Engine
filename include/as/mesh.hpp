@@ -53,12 +53,12 @@ namespace as
 
         struct Material
         {
-            VirtualObj<Texture> albedo_;
-            VirtualObj<Texture> specular_;
-            VirtualObj<Texture> opacity_;
-            VirtualObj<Texture> ambient_;
-            VirtualObj<Texture> normal_;
-            VirtualObj<Texture> emissive_;
+            ReferedObj<Texture> albedo_;
+            ReferedObj<Texture> specular_;
+            ReferedObj<Texture> opacity_;
+            ReferedObj<Texture> ambient_;
+            ReferedObj<Texture> normal_;
+            ReferedObj<Texture> emissive_;
             glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
         };
 
@@ -68,7 +68,6 @@ namespace as
         std::vector<glm::mat4> models_matrics_{};
 
         Mesh(const CreateInfo& create_info);
-        ~Mesh();
 
         void update(const std::vector<Transform>& trans);
         void draw(vk::CommandBuffer cmd, uint32_t index);
