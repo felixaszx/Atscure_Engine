@@ -18,16 +18,16 @@ namespace as
                            const std::vector<vk::Semaphore>& signal_sems)>
             render_func_;
         VirtualObj<Device> device_;
+        VirtualObj<Swapchain> swapchain_;
 
       public:
         struct ResultInfo
         {
-            vk::ImageView image_;
+            uint32_t fbo_index_;
+            vk::ImageView view_;
             vk::Format format_;
             vk::ImageLayout initial_layout_;
             vk::ImageLayout final_layout_;
-
-            static ResultInfo swapchain_info(VirtualObj<Swapchain> swapchain, uint32_t index);
         };
 
         void render_scene(const ResultInfo& result,                    //

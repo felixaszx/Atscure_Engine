@@ -21,16 +21,9 @@ namespace as
     }
 
     Renderer::Renderer(RenderModule& render)
-        : device_(render.impl_->device_)
+        : device_(render.impl_->device_),
+          swapchain_(render.impl_->swapchain_)
     {
-    }
-
-    Renderer::ResultInfo Renderer::ResultInfo::swapchain_info(VirtualObj<Swapchain> swapchain, uint32_t index)
-    {
-        ResultInfo info{};
-        info.image_ = *swapchain->images_[index];
-        info.format_ = swapchain->format_;
-        return info;
     }
 
     RenderModule::RenderModule()
