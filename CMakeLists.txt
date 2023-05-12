@@ -54,6 +54,8 @@ target_include_directories(test2 PUBLIC include)
 target_include_directories(test2 PUBLIC include_app)
 target_link_libraries(test2 atscure_engine)
 
+add_subdirectory(module)
+
 
 
 

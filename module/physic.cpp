@@ -1,4 +1,4 @@
-#include "physic.hpp"
+#include "module/physic.hpp"
 
 namespace as
 {
@@ -7,7 +7,6 @@ namespace as
         Context::Context()
         {
             dInitODE();
-            dGeom* sss;
         }
 
         Context::~Context()

@@ -6,9 +6,9 @@
 #include "platform/wrapper.hpp"
 #include "third_party/glms.hpp"
 
-#include "physic.hpp"
-#include "game.hpp"
-#include "render.hpp"
+#include "module/physic.hpp"
+#include "module/game.hpp"
+#include "module/render.hpp"
 
 namespace as
 {
