@@ -1,6 +1,6 @@
 #include "as/mesh.hpp"
 
-as::Mesh::Mesh(const CreateInfo& create_info)
+as::Model::Model(const CreateInfo& create_info)
 {
     max_instance_ = create_info.max_instance_;
     models_matrics_.resize(create_info.max_instance_);
@@ -14,7 +14,7 @@ as::Mesh::Mesh(const CreateInfo& create_info)
 
         for (size_t v = 0; v < mesh_in->mNumVertices; v++)
         {
-            Mesh::Vertex vertex{};
+            Model::Vertex vertex{};
             vertex.positon_ = glm::vec3(mesh_in->mVertices[v].x, mesh_in->mVertices[v].y, mesh_in->mVertices[v].z);
             vertex.normal_ = glm::vec3(mesh_in->mNormals[v].x, mesh_in->mNormals[v].y, mesh_in->mNormals[v].z);
 
@@ -138,7 +138,7 @@ as::Mesh::Mesh(const CreateInfo& create_info)
     }
 }
 
-void as::Mesh::update(const std::vector<Transform>& trans)
+void as::Model::update(const std::vector<Transform>& trans)
 {
     update_size_ = std::clamp(casts(uint32_t, trans.size()), 0u, max_instance_);
     instance_count_ = update_size_;
@@ -151,7 +151,7 @@ void as::Mesh::update(const std::vector<Transform>& trans)
     memcpy(model_buffer_->mapping(), models_matrics_.data(), update_size_ * sizeof(models_matrics_[0]));
 }
 
-void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t index)
+void as::Model::draw(vk::CommandBuffer cmd, uint32_t index)
 {
     if (update_size_ > 0)
     {
@@ -163,22 +163,22 @@ void as::Mesh::draw(vk::CommandBuffer cmd, uint32_t index)
     }
 }
 
-const as::Mesh::Material& as::Mesh::get_material(uint32_t mesh_index)
+const as::Model::Material& as::Model::get_material(uint32_t mesh_index)
 {
     return materials_[material_index_[mesh_index]];
 }
 
-uint32_t as::Mesh::mesh_size()
+uint32_t as::Model::mesh_size()
 {
     return vert_buffer_offsets_.size();
 }
 
-std::vector<vk::VertexInputBindingDescription> as::Mesh::mesh_bindings()
+std::vector<vk::VertexInputBindingDescription> as::Model::mesh_bindings()
 {
     std::vector<vk::VertexInputBindingDescription> binding(2);
 
     binding[0].binding = 0;
-    binding[0].stride = sizeof(Mesh::Vertex);
+    binding[0].stride = sizeof(Model::Vertex);
     binding[0].inputRate = vk::VertexInputRate::eVertex;
 
     binding[1].binding = 1;
@@ -188,7 +188,7 @@ std::vector<vk::VertexInputBindingDescription> as::Mesh::mesh_bindings()
     return binding;
 }
 
-std::vector<vk::VertexInputAttributeDescription> as::Mesh::mesh_attributes()
+std::vector<vk::VertexInputAttributeDescription> as::Model::mesh_attributes()
 {
     std::vector<vk::VertexInputAttributeDescription> attributes(8);
     for (uint32_t i = 0; i < 4; i++)
@@ -198,10 +198,10 @@ std::vector<vk::VertexInputAttributeDescription> as::Mesh::mesh_attributes()
         attributes[i].format = vk::Format::eR32G32B32Sfloat;
     }
 
-    attributes[0].offset = offsetof(Mesh::Vertex, positon_);
-    attributes[1].offset = offsetof(Mesh::Vertex, normal_);
-    attributes[2].offset = offsetof(Mesh::Vertex, uv_);
-    attributes[3].offset = offsetof(Mesh::Vertex, color_);
+    attributes[0].offset = offsetof(Model::Vertex, positon_);
+    attributes[1].offset = offsetof(Model::Vertex, normal_);
+    attributes[2].offset = offsetof(Model::Vertex, uv_);
+    attributes[3].offset = offsetof(Model::Vertex, color_);
 
     for (uint32_t i = 4; i < 8; i++)
     {

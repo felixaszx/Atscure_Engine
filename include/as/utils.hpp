@@ -24,6 +24,8 @@ namespace as
         {
             *this = std::move(UniqueObj(std::forward<Args>(args)...));
         }
+
+        inline operator T&() { return *this->get(); };
     };
 
     template <typename T>
@@ -50,6 +52,8 @@ namespace as
         {
             *this = std::move(SharedObj(std::forward<Args>(args)...));
         }
+
+        inline operator T&() { return *this->get(); };
     };
 
     template <typename T>
@@ -66,6 +70,7 @@ namespace as
 
         inline T* operator->() { return ptr_; }
         inline T& operator*() { return *ptr_; }
+        inline operator T&() { return *ptr_; };
 
         inline VirtualObj& operator=(const T*& obj_ptr)
         {

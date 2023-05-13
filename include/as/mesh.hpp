@@ -10,7 +10,7 @@
 
 namespace as
 {
-    class Mesh
+    class Model
     {
       public:
         struct Material;
@@ -67,7 +67,7 @@ namespace as
         uint32_t instance_count_ = 1;
         std::vector<glm::mat4> models_matrics_{};
 
-        Mesh(const CreateInfo& create_info);
+        Model(const CreateInfo& create_info);
 
         void update(const std::vector<Transform>& trans);
         void draw(vk::CommandBuffer cmd, uint32_t index);
