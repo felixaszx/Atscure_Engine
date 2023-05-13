@@ -17,8 +17,6 @@ namespace as
                            const std::vector<vk::Semaphore>& wait_sems, //
                            const std::vector<vk::Semaphore>& signal_sems)>
             render_func_;
-        VirtualObj<Device> device_;
-        VirtualObj<Swapchain> swapchain_;
 
       public:
         struct ResultInfo
@@ -29,6 +27,9 @@ namespace as
             vk::ImageLayout initial_layout_;
             vk::ImageLayout final_layout_;
         };
+
+        VirtualObj<Device> device_;
+        VirtualObj<Swapchain> swapchain_;
 
         void render_scene(const ResultInfo& result,                    //
                           const std::vector<vk::Semaphore>& wait_sems, //
