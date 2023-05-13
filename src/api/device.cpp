@@ -116,10 +116,6 @@ as::Device::Device(Context& context, const std::vector<const char*>& enabled_lay
 
 as::Device::~Device()
 {
-    while (!nodes_.empty())
-    {
-        nodes_.pop_back();
-    }
     allocator_.destroy();
     this->destroy();
 }
@@ -130,16 +126,12 @@ void as::Device::link(DeviceRAII* device_node)
     device_node->this_in_list = &nodes_.back();
 }
 
-std::mutex list_lock;
 as::DeviceRAII::DeviceRAII()
 {
-    std::lock_guard guard(list_lock);
-    device_->link(this);
 };
 
 as::DeviceRAII::~DeviceRAII()
 {
-    release();
 }
 
 as::DeviceRAII* as::DeviceRAII::release()

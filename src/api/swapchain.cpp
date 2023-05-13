@@ -91,6 +91,11 @@ as::Swapchain::~Swapchain()
 {
     device_->waitIdle();
     device_->destroySwapchainKHR(*this);
+
+    for (int i = 0; i < images_.size(); i++)
+    {
+        ffree(images_[i]);
+    }
 }
 
 vk::Result as::Swapchain::present(const std::vector<vk::Semaphore>& wait_sems)
