@@ -20,20 +20,26 @@ namespace as
     class VertexBuffer
     {
       private:
+        VirtualObj<Buffer> buffer_;
         std::vector<Vertex> vertices_{};
 
       public:
-        VertexBuffer(aiMesh* mesh);
+        size_t offset_ = 0;
+
+        VertexBuffer(VirtualObj<Buffer> buffer, aiMesh* mesh);
         ~VertexBuffer();
     };
 
     class IndexBuffer
     {
       private:
+        VirtualObj<Buffer> buffer_;
         std::vector<uint32_t> indices_{};
 
       public:
-        IndexBuffer(aiMesh* mesh);
+        size_t offset_ = 0;
+
+        IndexBuffer(VirtualObj<Buffer> buffer, aiMesh* mesh);
         ~IndexBuffer();
     };
 
