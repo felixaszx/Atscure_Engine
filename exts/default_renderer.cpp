@@ -16,6 +16,11 @@ namespace as
         UniqueObj<CmdPool> cmd_pool_{nullptr};
         VirtualObj<CmdBuffer> main_cmd_;
 
+        UniformBuffer ubo_;
+        vk::DescriptorBufferInfo ubo_info_{};
+        vk::WriteDescriptorSet ubo_write_{};
+        UniqueObj<Buffer> uniform_buffer_{nullptr};
+
         void render_func(const ResultInfo& result,                    //
                          const std::vector<vk::Semaphore>& wait_sems, //
                          const std::vector<vk::Semaphore>& signal_sems){};
@@ -352,6 +357,44 @@ namespace as
             fcreate_info.layers = 1;
             impl_->fbos_[i] = device_->createFramebuffer(fcreate_info);
         }
+
+        vk::DescriptorImageInfo descriptor_image_infos[5]{};
+        for (int i = 0; i < 5; i++)
+        {
+            descriptor_image_infos[i].imageView = *impl_->attachments_[i];
+            descriptor_image_infos[i].imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+        }
+
+        vk::WriteDescriptorSet image_write0{};
+        image_write0.dstBinding = 0;
+        image_write0.descriptorType = vk::DescriptorType::eInputAttachment;
+        image_write0.descriptorCount = 4;
+        image_write0.pImageInfo = descriptor_image_infos;
+
+        vk::WriteDescriptorSet image_write1{};
+        image_write1.dstBinding = 0;
+        image_write1.descriptorType = vk::DescriptorType::eInputAttachment;
+        image_write1.descriptorCount = 1;
+        image_write1.pImageInfo = descriptor_image_infos + 4;
+
+        impl_->des_pool_->update_sets(image_write0, 0);
+        impl_->des_pool_->update_sets(image_write1, 1);
+
+        vk::BufferCreateInfo buffer_info{};
+        vma::AllocationCreateInfo alloc_info{};
+        buffer_info.usage = vk::BufferUsageFlagBits::eUniformBuffer;
+        buffer_info.size = sizeof(impl_->ubo_);
+        alloc_info.usage = vma::MemoryUsage::eAutoPreferHost;
+        alloc_info.preferredFlags = vk::MemoryPropertyFlagBits::eHostCoherent;
+        alloc_info.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+        impl_->uniform_buffer_(buffer_info, alloc_info);
+        impl_->uniform_buffer_->map_memory();
+        impl_->ubo_info_.buffer = *impl_->uniform_buffer_;
+        impl_->ubo_info_.range = VK_WHOLE_SIZE;
+        impl_->ubo_write_.dstBinding = 0;
+        impl_->ubo_write_.descriptorType = vk::DescriptorType::eUniformBuffer;
+        impl_->ubo_write_.descriptorCount = 1;
+        impl_->ubo_write_.pBufferInfo = &impl_->ubo_info_;
     }
 
     DefaultRenderer::~DefaultRenderer()
@@ -366,5 +409,10 @@ namespace as
             device_->destroyPipelineLayout(impl_->pipeline_layouts_[i]);
         }
         device_->destroyRenderPass(impl_->render_pass_);
+    }
+
+    void DefaultRenderer::set_ubo(const UniformBuffer& ubo)
+    {
+        memcpy(impl_->uniform_buffer_->mapping(), &ubo, sizeof(impl_->ubo_));
     }
 }; // namespace as
