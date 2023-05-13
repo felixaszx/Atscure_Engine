@@ -28,7 +28,7 @@ namespace as
 
         DescriptorLayout(const std::vector<Binding>& bindings, //
                          vk::DescriptorSetLayoutCreateFlagBits flags = {});
-        ~DescriptorLayout() override;
+        ~DescriptorLayout() ;
     };
 
     class DescriptorPool : public vk::DescriptorPool, //
@@ -42,7 +42,7 @@ namespace as
         using std::unordered_map<vk::DescriptorType, uint32_t>::end;
 
         DescriptorPool(const std::vector<DescriptorLayout*>& layouts);
-        ~DescriptorPool() override;
+        ~DescriptorPool() ;
 
         vk::DescriptorSet get_set(uint32_t index);
         std::vector<vk::DescriptorSet> get_sets();

@@ -25,7 +25,6 @@ namespace as
 
       private:
         void create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers);
-        void link(DeviceRAII* device_node);
 
       public:
         const std::vector<const char*> REQUIRED_DEVICE_EXTS = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
@@ -48,12 +47,6 @@ namespace as
       protected:
         inline static Device* device_ = nullptr;
         std::unique_ptr<DeviceRAII>* this_in_list{};
-
-      public:
-        DeviceRAII();
-        virtual ~DeviceRAII();
-
-        DeviceRAII* release();
     };
 
 }; // namespace as

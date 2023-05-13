@@ -13,7 +13,7 @@ namespace as
 
       public:
         CmdBuffer(const vk::CommandBuffer& buffer, const vk::CommandPool* pool);
-        ~CmdBuffer() override;
+        ~CmdBuffer();
     };
 
     struct CmdBuffers : std::vector<vk::CommandBuffer>, //
@@ -27,7 +27,7 @@ namespace as
         using std::vector<vk::CommandBuffer>::operator[];
 
         CmdBuffers(const std::vector<vk::CommandBuffer>& buffers, const vk::CommandPool* pool);
-        ~CmdBuffers() override;
+        ~CmdBuffers();
     };
 
     void begin_cmd(vk::CommandBuffer* cmd,                 //
@@ -38,7 +38,7 @@ namespace as
                      public DeviceRAII
     {
         CmdPool(vk::CommandPoolCreateFlagBits flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
-        ~CmdPool() override;
+        ~CmdPool();
 
         CmdBuffer* alloc_buffer(vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
         CmdBuffers* alloc_buffers(uint32_t count, vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);

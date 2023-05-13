@@ -4,7 +4,6 @@ as::CmdBuffer::CmdBuffer(const vk::CommandBuffer& buffer, const vk::CommandPool*
     : pool_(pool)
 {
     sset(*this, buffer);
-    release();
 }
 
 as::CmdBuffer::~CmdBuffer()
@@ -20,7 +19,6 @@ as::CmdBuffers::CmdBuffers(const std::vector<vk::CommandBuffer>& buffers, const 
     {
         this->at(i) = buffers[i];
     }
-    release();
 }
 
 as::CmdBuffers::~CmdBuffers()

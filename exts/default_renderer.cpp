@@ -13,6 +13,8 @@ namespace as
         std::vector<vk::Pipeline> pipelines_{};
 
         std::vector<vk::Framebuffer> fbos_;
+        UniqueObj<CmdPool> cmd_pool_{nullptr};
+        VirtualObj<CmdBuffer> main_cmd_;
 
         void render_func(const ResultInfo& result,                    //
                          const std::vector<vk::Semaphore>& wait_sems, //
@@ -330,10 +332,34 @@ namespace as
             pipeline_info.subpass = 2;
             impl_->pipelines_.push_back(device_->createGraphicsPipeline({}, pipeline_info).value);
         }
+
+        impl_->cmd_pool_();
+        impl_->main_cmd_ = impl_->cmd_pool_->alloc_buffer();
+
+        impl_->fbos_.resize(swapchain_->images_.size());
+        for (int i = 0; i < swapchain_->images_.size(); i++)
+        {
+            VkImageView fattachments[] = {*impl_->attachments_[0], *impl_->attachments_[1], *impl_->attachments_[2],
+                                          *impl_->attachments_[3], *impl_->attachments_[4], *impl_->attachments_[5], //
+                                          *swapchain_->images_[i]};
+            VkFramebufferCreateInfo fcreate_info{};
+            fcreate_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            fcreate_info.renderPass = impl_->render_pass_;
+            fcreate_info.attachmentCount = 7;
+            fcreate_info.pAttachments = fattachments;
+            fcreate_info.width = swapchain_->extend_.width;
+            fcreate_info.height = swapchain_->extend_.height;
+            fcreate_info.layers = 1;
+            impl_->fbos_[i] = device_->createFramebuffer(fcreate_info);
+        }
     }
 
     DefaultRenderer::~DefaultRenderer()
     {
+        for (auto fbo : impl_->fbos_)
+        {
+            device_->destroyFramebuffer(fbo);
+        }
         for (int i = 0; i < impl_->pipeline_layouts_.size(); i++)
         {
             device_->destroyPipeline(impl_->pipelines_[i]);

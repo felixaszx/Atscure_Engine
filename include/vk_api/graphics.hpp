@@ -16,7 +16,7 @@ namespace as
       public:
         ShaderModule(const std::string& entry, const std::string& file_name, //
                      vk::ShaderStageFlagBits stage);
-        ~ShaderModule() override;
+        ~ShaderModule() ;
     };
 
 }; // namespace as

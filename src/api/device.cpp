@@ -119,23 +119,3 @@ as::Device::~Device()
     allocator_.destroy();
     this->destroy();
 }
-
-void as::Device::link(DeviceRAII* device_node)
-{
-    nodes_.push_back(std::unique_ptr<DeviceRAII>(device_node));
-    device_node->this_in_list = &nodes_.back();
-}
-
-as::DeviceRAII::DeviceRAII()
-{
-};
-
-as::DeviceRAII::~DeviceRAII()
-{
-}
-
-as::DeviceRAII* as::DeviceRAII::release()
-{
-    DeviceRAII* tmp = this_in_list->release();
-    return tmp;
-}

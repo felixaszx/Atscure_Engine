@@ -15,7 +15,7 @@ namespace as
         Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info);
         Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info,
               vk::ImageViewCreateInfo view_info);
-        ~Image() override;
+        ~Image() ;
 
         void create_image_view(vk::ImageViewCreateInfo view_info);
         void destroy_image_view();
@@ -34,7 +34,7 @@ namespace as
                             public DeviceRAII
     {
         SwapchainImage(vk::Image& vk_image, vk::Format format);
-        ~SwapchainImage() override;
+        ~SwapchainImage() ;
     };
 
     void create_image_attachments(std::vector<UniqueObj<ImageAttachment>>& attachments,
