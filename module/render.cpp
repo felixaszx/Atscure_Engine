@@ -35,6 +35,8 @@ namespace as
 
         impl_->device_(*impl_->context_, impl_->context_->VALIDATION_LAYERS);
         impl_->swapchain_(*impl_->window_, *impl_->context_, *impl_->device_);
+
+        utils_pool_();
     }
 
     RenderModule::~RenderModule() {}

@@ -50,6 +50,7 @@ namespace as
             std::atomic_bool minimized_;
         };
         WindowState window_state_{};
+        UniqueObj<CmdPool> utils_pool_{nullptr};
 
         RenderModule();
         ~RenderModule();
