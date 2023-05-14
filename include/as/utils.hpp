@@ -91,6 +91,7 @@ namespace as
         }
 
         inline bool valide() { return ptr_ != nullptr; }
+        inline T* ptr() { return ptr_; }
     };
 
 #define PIMPL_STRUCT(type_name, field_name) \

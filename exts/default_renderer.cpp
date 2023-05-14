@@ -2,28 +2,113 @@
 
 namespace as
 {
+    struct RenderInfo
+    {
+        vk::CommandBufferInheritanceInfo iifo_{};
+        VirtualObj<vk::CommandBuffer> cmd_{};
+        VirtualObj<std::atomic_bool> terminated_{};
+        VirtualObj<std::binary_semaphore> begin_{};
+        VirtualObj<std::binary_semaphore> end_{};
+    };
+
+    void d_renderer_render(VirtualObj<RenderInfo> info)
+    {
+        while (true)
+        {
+            info->begin_->acquire();
+            if (info->terminated_->load())
+            {
+                return;
+            }
+
+            info->end_->release();
+        }
+    }
+
     struct DefaultRenderer::Impl
     {
-        vk::RenderPass render_pass_;
-        std::vector<UniqueObj<ImageAttachment>> attachments_;
-        std::vector<UniqueObj<DescriptorLayout>> des_layouts_;
+        vk::RenderPass render_pass_{};
+        std::vector<UniqueObj<ImageAttachment>> attachments_{};
+        std::vector<UniqueObj<DescriptorLayout>> des_layouts_{};
         UniqueObj<DescriptorPool> des_pool_{nullptr};
 
         std::vector<vk::PipelineLayout> pipeline_layouts_{};
         std::vector<vk::Pipeline> pipelines_{};
 
-        std::vector<vk::Framebuffer> fbos_;
-        UniqueObj<CmdPool> cmd_pool_{nullptr};
-        VirtualObj<CmdBuffer> main_cmd_;
-
-        UniformBuffer ubo_;
+        UniformBuffer ubo_{};
         vk::DescriptorBufferInfo ubo_info_{};
         vk::WriteDescriptorSet ubo_write_{};
         UniqueObj<Buffer> uniform_buffer_{nullptr};
 
+        UniqueObj<CmdPool> main_cmd_pool_{nullptr};
+        VirtualObj<CmdBuffer> main_cmd_{};
+
+        const uint32_t MAX_THREADS_;
+        std::vector<vk::Framebuffer> fbos_{};
+        std::vector<UniqueObj<std::thread>> cmd_threads_{};
+        std::vector<UniqueObj<std::atomic_bool>> th_terminated_{};
+        std::vector<UniqueObj<std::binary_semaphore>> th_begins_{};
+        std::vector<UniqueObj<std::binary_semaphore>> th_ends_{};
+        std::vector<UniqueObj<CmdPool>> cmd_pools_{};
+        std::vector<VirtualObj<CmdBuffer>> cmds_{};
+        std::vector<RenderInfo> render_infos_;
+
+        Impl()
+            : MAX_THREADS_((std::thread::hardware_concurrency() - 4) >= 1 ? (std::thread::hardware_concurrency() - 4)
+                                                                          : 1)
+        {
+            main_cmd_pool_();
+            main_cmd_ = main_cmd_pool_->alloc_buffer();
+            render_infos_.resize(MAX_THREADS_);
+
+            for (int i = 0; i < MAX_THREADS_; i++)
+            {
+                cmd_pools_.push_back(std::move(UniqueObj<CmdPool>()));
+                cmds_.push_back(cmd_pools_[i]->alloc_buffer(vk::CommandBufferLevel::eSecondary));
+                th_terminated_.push_back(std::move(UniqueObj<std::atomic_bool>(false)));
+                th_begins_.push_back(std::move(UniqueObj<std::binary_semaphore>(0)));
+                th_ends_.push_back(std::move(UniqueObj<std::binary_semaphore>(0)));
+
+                render_infos_[i].cmd_ = cmds_[i].ptr();
+                render_infos_[i].terminated_ = th_terminated_[i];
+                render_infos_[i].begin_ = th_begins_[i];
+                render_infos_[i].end_ = th_ends_[i];
+
+                cmd_threads_.push_back(UniqueObj<std::thread>(d_renderer_render, //
+                                                              VirtualObj<RenderInfo>(render_infos_[i])));
+            }
+        }
+
+        ~Impl()
+        {
+            cmds_.clear();
+            cmd_pools_.clear();
+            for (int i = 0; i < MAX_THREADS_; i++)
+            {
+                th_begins_[i]->release();
+                th_terminated_[i]->store(true);
+                cmd_threads_[i]->join();
+            }
+            th_terminated_.clear();
+            cmd_threads_.clear();
+            th_begins_.clear();
+            th_ends_.clear();
+        }
+
         void render_func(const ResultInfo& result,                    //
                          const std::vector<vk::Semaphore>& wait_sems, //
-                         const std::vector<vk::Semaphore>& signal_sems){};
+                         const std::vector<vk::Semaphore>& signal_sems)
+        {
+            for (auto& begin : th_begins_)
+            {
+                begin->release();
+            }
+
+            for (auto& end : th_ends_)
+            {
+                end->acquire();
+            }
+        };
     };
 
     DefaultRenderer::DefaultRenderer(RenderModule& render)
@@ -337,9 +422,6 @@ namespace as
             pipeline_info.subpass = 2;
             impl_->pipelines_.push_back(device_->createGraphicsPipeline({}, pipeline_info).value);
         }
-
-        impl_->cmd_pool_();
-        impl_->main_cmd_ = impl_->cmd_pool_->alloc_buffer();
 
         impl_->fbos_.resize(swapchain_->images_.size());
         for (int i = 0; i < swapchain_->images_.size(); i++)

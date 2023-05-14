@@ -16,7 +16,9 @@ int main(int argc, char** argv)
 
     while (render.running())
     {
+        as::DefaultRenderer::ResultInfo ss;
         render.poll_events();
+        render.get_renderer(0)->render_scene(ss, {}, {});
     }
 
     return EXIT_SUCCESS;
