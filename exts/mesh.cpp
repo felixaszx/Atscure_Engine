@@ -25,7 +25,7 @@ namespace as
         memcpy(buffer_->mapping(), data, buffer_->size_);
     }
 
-    void StagingBuffer::transfer_to(VirtualObj<Buffer> as_buffer, CmdPool& pool)
+    void StagingBuffer::transfer_to(VirtualObj<Buffer> as_buffer, VirtualObj<CmdPool> pool)
     {
         as_buffer->copy_from(buffer_, pool);
     }

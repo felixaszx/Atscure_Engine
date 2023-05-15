@@ -15,7 +15,7 @@ namespace as
 
         StagingBuffer(size_t size);
         void transfer_from(void* data);
-        void transfer_to(VirtualObj<Buffer> as_buffer, CmdPool& pool);
+        void transfer_to(VirtualObj<Buffer> as_buffer, VirtualObj<CmdPool> pool);
     };
 
     class MeshGroup
