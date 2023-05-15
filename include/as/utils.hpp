@@ -94,6 +94,51 @@ namespace as
         inline T* ptr() { return ptr_; }
     };
 
+    template <typename T>
+    struct FreeObj : public std::unique_ptr<T>
+    {
+        template <typename... Args>
+        constexpr inline FreeObj(Args&&... args)
+            : std::unique_ptr<T>(new T(std::forward<Args>(args)...))
+        {
+        }
+
+        inline FreeObj(std::nullptr_t null)
+            : std::unique_ptr<T>(null)
+        {
+        }
+
+        inline FreeObj(FreeObj& free_obj)
+        {
+            T* data = this->release();
+            if (data)
+            {
+                delete data;
+            }
+            this->reset(free_obj.release());
+        }
+
+        template <typename... Args>
+        constexpr inline void operator()(Args&&... args)
+        {
+            *this = std::move(FreeObj(std::forward<Args>(args)...));
+        }
+
+        inline operator T&() { return *this->get(); };
+
+        inline FreeObj& operator=(FreeObj& free_obj)
+        {
+            T* data = this->release();
+            if (data)
+            {
+                delete data;
+            }
+            this->reset(free_obj.release());
+
+            return *this;
+        }
+    };
+
 #define PIMPL_STRUCT(type_name, field_name) \
     struct type_name;                       \
     std::unique_ptr<type_name> field_name;
