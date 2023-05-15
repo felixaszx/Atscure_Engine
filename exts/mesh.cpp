@@ -60,7 +60,8 @@ namespace as
     };
 
     as::MeshGroup::MeshGroup(uint32_t max_instance)
-        : MAX_INSTANCE_(max_instance)
+        : MAX_INSTANCE_(max_instance),
+          impl_(new Impl)
     {
         vk::BufferCreateInfo buffer_info{};
         buffer_info.usage = vk::BufferUsageFlagBits::eVertexBuffer;

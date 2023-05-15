@@ -14,6 +14,9 @@ int main(int argc, char** argv)
     as::UniqueObj<as::DefaultRenderer> d_renderer(render);
     render.add_renderer(d_renderer.get());
 
+    as::MeshGroup mg;
+    mg.add_mesh(0,0,0);
+
     while (render.running())
     {
         as::DefaultRenderer::ResultInfo ss;

@@ -71,7 +71,51 @@ namespace as
 
         void update_matrices(const std::vector<glm::mat4> matrics);
         void bind_matrics(VirtualObj<CmdBuffer> cmd);
+
+        constexpr inline static std::vector<vk::VertexInputBindingDescription> mesh_bindings();
+        constexpr inline static std::vector<vk::VertexInputAttributeDescription> mesh_attributes();
     };
+
+    constexpr inline std::vector<vk::VertexInputBindingDescription> MeshGroup::mesh_bindings()
+    {
+        std::vector<vk::VertexInputBindingDescription> binding(2);
+
+        binding[0].binding = 0;
+        binding[0].stride = sizeof(Vertex);
+        binding[0].inputRate = vk::VertexInputRate::eVertex;
+
+        binding[1].binding = 1;
+        binding[1].stride = sizeof(glm::mat4);
+        binding[1].inputRate = vk::VertexInputRate::eInstance;
+
+        return binding;
+    }
+
+    constexpr inline std::vector<vk::VertexInputAttributeDescription> MeshGroup::mesh_attributes()
+    {
+        std::vector<vk::VertexInputAttributeDescription> attributes(8);
+        for (uint32_t i = 0; i < 4; i++)
+        {
+            attributes[i].binding = 0;
+            attributes[i].location = i;
+            attributes[i].format = vk::Format::eR32G32B32Sfloat;
+        }
+
+        attributes[0].offset = offsetof(Vertex, positon_);
+        attributes[1].offset = offsetof(Vertex, normal_);
+        attributes[2].offset = offsetof(Vertex, uv_);
+        attributes[3].offset = offsetof(Vertex, color_);
+
+        for (uint32_t i = 4; i < 8; i++)
+        {
+            attributes[i].binding = 1;
+            attributes[i].location = i;
+            attributes[i].format = vk::Format::eR32G32B32A32Sfloat;
+            attributes[i].offset = (i - 4) * sizeof(glm::vec4);
+        }
+
+        return attributes;
+    }
 
 }; // namespace as
 

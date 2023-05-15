@@ -1,4 +1,4 @@
-#include "exts/default_renderer.hpp"
+#include "exts/exts.hpp"
 
 namespace as
 {
@@ -254,8 +254,8 @@ namespace as
             impl_->pipeline_layouts_.push_back(device_->createPipelineLayout(create_info));
         }
 
-        auto binding_description = Model::mesh_bindings();
-        auto attribute_description = Model::mesh_attributes();
+        auto binding_description = MeshGroup::mesh_bindings();
+        auto attribute_description = MeshGroup::mesh_attributes();
         std::vector<UniqueObj<ShaderModule>> verts;
         std::vector<UniqueObj<ShaderModule>> frags;
         for (int i = 0; i < 3; i++)
