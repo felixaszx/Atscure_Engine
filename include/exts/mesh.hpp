@@ -39,7 +39,7 @@ namespace as
                  uint32_t idnex_offset, uint32_t index_count);
             ~Mesh();
 
-            void draw(VirtualObj<CmdBuffer> cmd);
+            void draw(VirtualObj<CmdBuffer> cmd, uint32_t instance_count);
         };
 
       private:
@@ -55,6 +55,7 @@ namespace as
         uint32_t mesh_count();
         VirtualObj<Mesh> get_mesh(uint32_t index);
         void update_matrices(const std::vector<glm::mat4> matrics);
+        void bind_matrics(VirtualObj<CmdBuffer> cmd);
     };
 
 }; // namespace as

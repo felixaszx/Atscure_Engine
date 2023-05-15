@@ -34,6 +34,7 @@ namespace as
     {
         VirtualObj<Buffer> vert_buffer_{};
         VirtualObj<Buffer> index_buffer_{};
+        VirtualObj<Buffer> matric_buffer{};
 
         uint32_t vert_offset_ = 0;
         uint32_t index_offset_ = 0;
@@ -61,7 +62,12 @@ namespace as
     }
     MeshGroup::Mesh::~Mesh() {}
 
-    void MeshGroup::Mesh::draw(VirtualObj<CmdBuffer> cmd) {}
+    void MeshGroup::Mesh::draw(VirtualObj<CmdBuffer> cmd, uint32_t instance_count)
+    {
+        cmd->bindVertexBuffers(0, *impl_->vert_buffer_, impl_->vert_offset_ * sizeof(Vertex));
+        cmd->bindIndexBuffer(impl_->index_buffer_, impl_->index_offset_ * sizeof(uint32_t), vk::IndexType::eUint32);
+        cmd->drawIndexed(impl_->index_count_, instance_count, 0, 0, 0);
+    }
 
     struct MeshGroup::Impl
     {
@@ -70,11 +76,23 @@ namespace as
         UniqueObj<Buffer> vert_buffer{nullptr};
         UniqueObj<Buffer> index_buffer{nullptr};
         UniqueObj<Buffer> matric_buffer{nullptr};
+
+        uint32_t instance_count_ = 1;
     };
 
     as::MeshGroup::MeshGroup(uint32_t max_instance)
         : MAX_INSTANCE_(max_instance)
     {
+        vk::BufferCreateInfo buffer_info{};
+        buffer_info.usage = vk::BufferUsageFlagBits::eVertexBuffer;
+        buffer_info.size = MAX_INSTANCE_ * sizeof(glm::mat4);
+        vma::AllocationCreateInfo alloc_info{};
+        alloc_info.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+        alloc_info.preferredFlags = vk::MemoryPropertyFlagBits::eHostCoherent;
+        impl_->matric_buffer(buffer_info, alloc_info);
+        impl_->matric_buffer->map_memory();
+
+        update_matrices({glm::mat4(1.0f)});
     }
 
     as::MeshGroup::~MeshGroup() {}
@@ -89,6 +107,15 @@ namespace as
         return impl_->meshes_[index];
     }
 
-    void MeshGroup::update_matrices(const std::vector<glm::mat4> matrics) {}
+    void MeshGroup::update_matrices(const std::vector<glm::mat4> matrics)
+    {
+        impl_->instance_count_ = matrics.size() > MAX_INSTANCE_ ? MAX_INSTANCE_ : matrics.size();
+        memcpy(impl_->matric_buffer->mapping(), matrics.data(), impl_->instance_count_ * sizeof(glm::mat4));
+    }
+
+    void MeshGroup::bind_matrics(VirtualObj<CmdBuffer> cmd)
+    {
+        cmd->bindVertexBuffers(1, *impl_->matric_buffer, {0});
+    }
 
 }; // namespace as

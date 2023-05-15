@@ -214,4 +214,3 @@ std::vector<vk::VertexInputAttributeDescription> as::Model::mesh_attributes()
     return attributes;
 }
 
-
