@@ -18,7 +18,7 @@ namespace as
         void transfer_to(VirtualObj<Buffer> as_buffer, CmdPool& pool);
     };
 
-    class Model
+    class MeshGroup
     {
       public:
         struct Vertex
@@ -29,6 +29,19 @@ namespace as
             glm::vec3 color_{1.0f, 1.0f, 1.0f};
         };
 
+        class Mesh
+        {
+          private:
+            PIMPL_STRUCT(Impl, impl_);
+
+          public:
+            Mesh(VirtualObj<Buffer> vert_buffer, VirtualObj<Buffer> index_buffer, uint32_t vert_offset,
+                 uint32_t idnex_offset, uint32_t index_count);
+            ~Mesh();
+
+            void draw(VirtualObj<CmdBuffer> cmd);
+        };
+
       private:
         PIMPL_STRUCT(Impl, impl_);
 
@@ -36,15 +49,12 @@ namespace as
         const uint32_t MAX_INSTANCE_ = 1;
         uint32_t render_id_ = 0;
 
-        Model(const aiScene* scene, uint32_t max_instance = 1);
-        ~Model();
+        MeshGroup(uint32_t max_instance = 1);
+        ~MeshGroup();
 
-        static std::vector<vk::VertexInputBindingDescription> vert_bindings();
-        static std::vector<vk::VertexInputAttributeDescription> vert_attributes();
-
-        void render_mesh(VirtualObj<CmdBuffer> cmd, uint32_t index);
-        void render(VirtualObj<CmdBuffer> cmd);
-        void update_instances(uint32_t draw_count);
+        uint32_t mesh_count();
+        VirtualObj<Mesh> get_mesh(uint32_t index);
+        void update_matrices(const std::vector<glm::mat4> matrics);
     };
 
 }; // namespace as

@@ -30,77 +30,65 @@ namespace as
         as_buffer->copy_from(buffer_, pool);
     }
 
-    struct Model::Impl
+    struct MeshGroup::Mesh::Impl
     {
-        UniqueObj<Buffer> vertex_buffer_{nullptr};
-        UniqueObj<Buffer> index_buffer_{nullptr};
-        UniqueObj<Buffer> model_buffer_{nullptr};
+        VirtualObj<Buffer> vert_buffer_{};
+        VirtualObj<Buffer> index_buffer_{};
 
-        std::vector<Vertex> vertices_{};
-        std::vector<uint32_t> indices_{};
+        uint32_t vert_offset_ = 0;
+        uint32_t index_offset_ = 0;
+        uint32_t index_count_ = 0;
 
-        std::vector<size_t> vert_buffer_offsets_{};
-        std::vector<size_t> index_buffer_offsets_{};
-        std::vector<uint32_t> mesh_indices_count_{};
-
-        std::vector<glm::mat4> matrics_{};
+        VirtualObj<Texture> albedo_{};
+        VirtualObj<Texture> specular_{};
+        VirtualObj<Texture> opacity_{};
+        VirtualObj<Texture> ambient_{};
+        VirtualObj<Texture> normal_{};
+        VirtualObj<Texture> emissive_{};
+        glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
     };
 
-    Model::Model(const aiScene* scene, uint32_t max_instance)
-        : MAX_INSTANCE_(max_instance >= 1 ? max_instance : 1)
+    MeshGroup::Mesh::Mesh(VirtualObj<Buffer> vert_buffer, VirtualObj<Buffer> index_buffer, //
+                          uint32_t vert_offset, uint32_t index_offset,                     //
+                          uint32_t index_count)
+        : impl_(new Impl)
     {
-        impl_->matrics_.resize(MAX_INSTANCE_);
+        impl_->vert_buffer_ = vert_buffer;
+        impl_->index_buffer_ = index_buffer;
+        impl_->vert_offset_ = vert_offset;
+        impl_->index_offset_ = index_offset;
+        impl_->index_count_ = index_count;
+    }
+    MeshGroup::Mesh::~Mesh() {}
 
-        update_instances(1);
+    void MeshGroup::Mesh::draw(VirtualObj<CmdBuffer> cmd) {}
+
+    struct MeshGroup::Impl
+    {
+        std::vector<Mesh> meshes_{};
+
+        UniqueObj<Buffer> vert_buffer{nullptr};
+        UniqueObj<Buffer> index_buffer{nullptr};
+        UniqueObj<Buffer> matric_buffer{nullptr};
+    };
+
+    as::MeshGroup::MeshGroup(uint32_t max_instance)
+        : MAX_INSTANCE_(max_instance)
+    {
     }
 
-    Model::~Model() {}
+    as::MeshGroup::~MeshGroup() {}
 
-    void Model::render_mesh(VirtualObj<CmdBuffer> cmd, uint32_t index) {}
-
-    void Model::render(VirtualObj<CmdBuffer> cmd) {}
-
-    void Model::update_instances(uint32_t draw_count) {}
-
-    std::vector<vk::VertexInputBindingDescription> Model::vert_bindings()
+    uint32_t MeshGroup::mesh_count()
     {
-        std::vector<vk::VertexInputBindingDescription> binding(2);
-
-        binding[0].binding = 0;
-        binding[0].stride = sizeof(Model::Vertex);
-        binding[0].inputRate = vk::VertexInputRate::eVertex;
-
-        binding[1].binding = 1;
-        binding[1].stride = sizeof(glm::mat4);
-        binding[1].inputRate = vk::VertexInputRate::eInstance;
-
-        return binding;
+        return impl_->meshes_.size();
     }
 
-    std::vector<vk::VertexInputAttributeDescription> Model::vert_attributes()
+    VirtualObj<MeshGroup::Mesh> MeshGroup::get_mesh(uint32_t index)
     {
-        std::vector<vk::VertexInputAttributeDescription> attributes(8);
-        for (uint32_t i = 0; i < 4; i++)
-        {
-            attributes[i].binding = 0;
-            attributes[i].location = i;
-            attributes[i].format = vk::Format::eR32G32B32Sfloat;
-        }
-
-        attributes[0].offset = offsetof(Model::Vertex, positon_);
-        attributes[1].offset = offsetof(Model::Vertex, normal_);
-        attributes[2].offset = offsetof(Model::Vertex, uv_);
-        attributes[3].offset = offsetof(Model::Vertex, color_);
-
-        for (uint32_t i = 4; i < 8; i++)
-        {
-            attributes[i].binding = 1;
-            attributes[i].location = i;
-            attributes[i].format = vk::Format::eR32G32B32A32Sfloat;
-            attributes[i].offset = (i - 4) * sizeof(glm::vec4);
-        }
-
-        return attributes;
+        return impl_->meshes_[index];
     }
+
+    void MeshGroup::update_matrices(const std::vector<glm::mat4> matrics) {}
 
 }; // namespace as
