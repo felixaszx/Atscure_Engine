@@ -32,11 +32,24 @@ namespace as
         class Mesh
         {
           private:
-            PIMPL_STRUCT(Impl, impl_);
+            VirtualObj<Buffer> vert_buffer_{};
+            VirtualObj<Buffer> index_buffer_{};
+
+            uint32_t vert_offset_ = 0;
+            uint32_t index_offset_ = 0;
+            uint32_t index_count_ = 0;
 
           public:
+            VirtualObj<Texture> albedo_{};
+            VirtualObj<Texture> specular_{};
+            VirtualObj<Texture> opacity_{};
+            VirtualObj<Texture> ambient_{};
+            VirtualObj<Texture> normal_{};
+            VirtualObj<Texture> emissive_{};
+            glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
+
             Mesh(VirtualObj<Buffer> vert_buffer, VirtualObj<Buffer> index_buffer, uint32_t vert_offset,
-                 uint32_t idnex_offset, uint32_t index_count);
+                 uint32_t index_offset, uint32_t index_count);
             ~Mesh();
 
             void draw(VirtualObj<CmdBuffer> cmd, uint32_t instance_count);
@@ -52,8 +65,10 @@ namespace as
         MeshGroup(uint32_t max_instance = 1);
         ~MeshGroup();
 
+        void add_mesh(uint32_t vert_offset, uint32_t index_offset, uint32_t index_count);
         uint32_t mesh_count();
         VirtualObj<Mesh> get_mesh(uint32_t index);
+
         void update_matrices(const std::vector<glm::mat4> matrics);
         void bind_matrics(VirtualObj<CmdBuffer> cmd);
     };

@@ -30,43 +30,22 @@ namespace as
         as_buffer->copy_from(buffer_, pool);
     }
 
-    struct MeshGroup::Mesh::Impl
-    {
-        VirtualObj<Buffer> vert_buffer_{};
-        VirtualObj<Buffer> index_buffer_{};
-        VirtualObj<Buffer> matric_buffer{};
-
-        uint32_t vert_offset_ = 0;
-        uint32_t index_offset_ = 0;
-        uint32_t index_count_ = 0;
-
-        VirtualObj<Texture> albedo_{};
-        VirtualObj<Texture> specular_{};
-        VirtualObj<Texture> opacity_{};
-        VirtualObj<Texture> ambient_{};
-        VirtualObj<Texture> normal_{};
-        VirtualObj<Texture> emissive_{};
-        glm::vec3 color_ = {1.0f, 1.0f, 1.0f};
-    };
-
     MeshGroup::Mesh::Mesh(VirtualObj<Buffer> vert_buffer, VirtualObj<Buffer> index_buffer, //
-                          uint32_t vert_offset, uint32_t index_offset,                     //
-                          uint32_t index_count)
-        : impl_(new Impl)
+                          uint32_t vert_offset, uint32_t index_offset, uint32_t index_count)
+        : vert_buffer_(vert_buffer),
+          index_buffer_(index_buffer),
+          vert_offset_(vert_offset),
+          index_offset_(index_offset),
+          index_count_(index_count)
     {
-        impl_->vert_buffer_ = vert_buffer;
-        impl_->index_buffer_ = index_buffer;
-        impl_->vert_offset_ = vert_offset;
-        impl_->index_offset_ = index_offset;
-        impl_->index_count_ = index_count;
     }
     MeshGroup::Mesh::~Mesh() {}
 
     void MeshGroup::Mesh::draw(VirtualObj<CmdBuffer> cmd, uint32_t instance_count)
     {
-        cmd->bindVertexBuffers(0, *impl_->vert_buffer_, impl_->vert_offset_ * sizeof(Vertex));
-        cmd->bindIndexBuffer(impl_->index_buffer_, impl_->index_offset_ * sizeof(uint32_t), vk::IndexType::eUint32);
-        cmd->drawIndexed(impl_->index_count_, instance_count, 0, 0, 0);
+        cmd->bindVertexBuffers(0, *vert_buffer_, vert_offset_ * sizeof(Vertex));
+        cmd->bindIndexBuffer(index_buffer_, index_offset_ * sizeof(uint32_t), vk::IndexType::eUint32);
+        cmd->drawIndexed(index_count_, instance_count, 0, 0, 0);
     }
 
     struct MeshGroup::Impl
@@ -94,8 +73,13 @@ namespace as
 
         update_matrices({glm::mat4(1.0f)});
     }
-
     as::MeshGroup::~MeshGroup() {}
+
+    void MeshGroup::add_mesh(uint32_t vert_offset, uint32_t index_offset, uint32_t index_count)
+    {
+        impl_->meshes_.push_back(Mesh(impl_->vert_buffer, impl_->index_buffer, //
+                                      vert_offset, index_offset, index_count));
+    }
 
     uint32_t MeshGroup::mesh_count()
     {
