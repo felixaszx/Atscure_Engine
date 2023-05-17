@@ -44,9 +44,7 @@ namespace as
     {
         friend Device;
 
-      protected:
         inline static Device* device_ = nullptr;
-        std::unique_ptr<DeviceRAII>* this_in_list{};
     };
 
 }; // namespace as

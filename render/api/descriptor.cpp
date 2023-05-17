@@ -1,4 +1,4 @@
-#include "vk_api/descriptor.hpp"
+#include "descriptor.hpp"
 
 as::DescriptorLayout::DescriptorLayout(const std::vector<Binding>& bindings, //
                                        vk::DescriptorSetLayoutCreateFlagBits flags)

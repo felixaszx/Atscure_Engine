@@ -2,7 +2,7 @@
 #define IMAGE_HPP
 
 #include "device.hpp"
-#include "../as/utils.hpp"
+#include "as/utils.hpp"
 
 namespace as
 {

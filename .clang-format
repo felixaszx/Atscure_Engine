@@ -11,6 +11,7 @@ ColumnLimit: '120'
 IndentCaseLabels: 'true'
 AlwaysBreakTemplateDeclarations: 'Yes'
 PackConstructorInitializers: Never
+BreakAfterAttributes: Always
 BraceWrapping: 
   AfterCaseLabel: true
   AfterClass: true

@@ -9,7 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.hpp>
 #include "logging.hpp"
-#include "third_party/vma_hpp/vk_mem_alloc.hpp"
+#include "vma_hpp/vk_mem_alloc.hpp"
 
 #define class_has_(func_name)                          \
     template <typename T>                              \

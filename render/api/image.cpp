@@ -1,4 +1,4 @@
-#include "vk_api/image.hpp"
+#include "image.hpp"
 
 as::Image::Image(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info)
 {

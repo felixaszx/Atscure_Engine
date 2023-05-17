@@ -1,4 +1,4 @@
-#include "vk_api/syncs.hpp"
+#include "syncs.hpp"
 
 as::GpuSemaphore::GpuSemaphore()
 {

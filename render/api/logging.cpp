@@ -1,4 +1,4 @@
-#include "vk_api/logging.hpp"
+#include "logging.hpp"
 
 void as::Log::info(const std::string& info)
 {

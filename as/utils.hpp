@@ -1,10 +1,14 @@
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#ifndef AS_TOOLS_HPP
+#define AS_TOOLS_HPP
 
 #include <memory>
+#include <cassert>
 
 namespace as
 {
+    template <typename T>
+    class BridgeObj;
+
     template <typename T>
     struct UniqueObj : public std::unique_ptr<T>
     {
@@ -19,6 +23,16 @@ namespace as
         {
         }
 
+        inline UniqueObj(T* ptr)
+            : std::unique_ptr<T>(ptr)
+        {
+        }
+
+        inline UniqueObj(BridgeObj<T>& bridge_obj)
+            : std::unique_ptr<T>(bridge_obj.release())
+        {
+        }
+
         template <typename... Args>
         constexpr inline void operator()(Args&&... args)
         {
@@ -27,7 +41,7 @@ namespace as
 
         inline operator T&() { return *this->get(); };
 
-        void destroy()
+        inline void destroy()
         {
             if (this->get())
             {
@@ -55,6 +69,11 @@ namespace as
         {
         }
 
+        inline SharedObj(T* ptr)
+            : std::shared_ptr<T>(ptr)
+        {
+        }
+
         template <typename... Args>
         constexpr inline void operator()(Args&&... args)
         {
@@ -73,8 +92,24 @@ namespace as
       public:
         inline VirtualObj(T* obj_ptr = nullptr) { ptr_ = obj_ptr; }
         inline VirtualObj(T& obj) { ptr_ = &obj; };
-        inline VirtualObj(UniqueObj<T>& unique_obj) { ptr_ = unique_obj.get(); }
-        inline VirtualObj(SharedObj<T>& shared_obj) { ptr_ = shared_obj.get(); }
+
+        template <typename P>
+        constexpr inline VirtualObj(const VirtualObj<P>& virtual_obj)
+        {
+            this->ptr_ = virtual_obj.ptr();
+        }
+
+        template <typename P>
+        constexpr inline VirtualObj(UniqueObj<P>& virtual_obj)
+        {
+            this->ptr_ = virtual_obj.get();
+        }
+
+        template <typename P>
+        constexpr inline VirtualObj(SharedObj<P>& virtual_obj)
+        {
+            this->ptr_ = virtual_obj.get();
+        }
 
         inline T* operator->() { return ptr_; }
         inline T& operator*() { return *ptr_; }
@@ -99,7 +134,7 @@ namespace as
         }
 
         inline bool valide() { return ptr_ != nullptr; }
-        inline T* ptr() { return ptr_; }
+        inline T* ptr() const { return ptr_; }
     };
 
     template <typename T>
@@ -113,6 +148,11 @@ namespace as
 
         inline FreeObj(std::nullptr_t null)
             : std::unique_ptr<T>(null)
+        {
+        }
+
+        inline FreeObj(BridgeObj<T>& bridge_obj)
+            : std::unique_ptr<T>(bridge_obj.release())
         {
         }
 
@@ -146,7 +186,7 @@ namespace as
             return *this;
         }
 
-        void destroy()
+        inline void destroy()
         {
             if (this->get())
             {
@@ -155,9 +195,47 @@ namespace as
         }
     };
 
-#define PIMPL_STRUCT(type_name, field_name) \
-    struct type_name;                       \
-    std::unique_ptr<type_name> field_name;
+    template <typename T>
+    class BridgeObj
+    {
+      private:
+        T* ptr_ = nullptr;
+
+      public:
+        inline BridgeObj(T* ptr = nullptr) { ptr_ = ptr; }
+
+        inline BridgeObj(UniqueObj<T>& unique_obj)
+        {
+            ptr_ = unique_obj.release();
+            unique_obj.reset();
+        }
+
+        inline BridgeObj(FreeObj<T>& free_obj)
+        {
+            ptr_ = free_obj.release();
+            free_obj.reset();
+        }
+
+        inline ~BridgeObj()
+        {
+            assert(!ptr_ && "This bridge still hold the ownership of pointer");
+            if (ptr_)
+            {
+                delete ptr_;
+            }
+        }
+
+        inline operator T*() { return release(); }
+        inline bool empty() { return ptr_ == nullptr; }
+
+        inline T* release()
+        {
+            T* tmp = ptr_;
+            ptr_ = nullptr;
+            return tmp;
+        };
+    };
+
 }; // namespace as
 
-#endif // UTILS_HPP
+#endif // AS_TOOLS_HPP
