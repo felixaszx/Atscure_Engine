@@ -118,6 +118,11 @@ namespace as
         return impl_->meshes_[index];
     }
 
+    std::vector<MeshGroup::Mesh>& MeshGroup::meshes()
+    {
+        return impl_->meshes_;
+    }
+
     void MeshGroup::update_matrices(const std::vector<glm::mat4> matrics)
     {
         impl_->instance_count_ = matrics.size() > MAX_INSTANCE_ ? MAX_INSTANCE_ : matrics.size();

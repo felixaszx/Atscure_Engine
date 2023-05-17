@@ -26,6 +26,14 @@ namespace as
         }
 
         inline operator T&() { return *this->get(); };
+
+        void destroy()
+        {
+            if (this->get())
+            {
+                delete this->release();
+            }
+        }
     };
 
     template <typename T>
@@ -136,6 +144,14 @@ namespace as
             this->reset(free_obj.release());
 
             return *this;
+        }
+
+        void destroy()
+        {
+            if (this->get())
+            {
+                delete this->release();
+            }
         }
     };
 

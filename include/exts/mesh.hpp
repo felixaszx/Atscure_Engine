@@ -69,6 +69,7 @@ namespace as
         void add_mesh(uint32_t vert_offset, uint32_t index_offset, uint32_t index_count);
         uint32_t mesh_count();
         VirtualObj<Mesh> get_mesh(uint32_t index);
+        std::vector<Mesh>& meshes();
 
         void update_matrices(const std::vector<glm::mat4> matrics);
         void bind_matrics(VirtualObj<CmdBuffer> cmd);

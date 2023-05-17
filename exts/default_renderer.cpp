@@ -8,7 +8,7 @@ namespace as
         VirtualObj<vk::CommandBuffer> cmd_{};
         VirtualObj<std::atomic_bool> terminated_{};
         VirtualObj<std::binary_semaphore> begin_{};
-        VirtualObj<std::binary_semaphore> end_{};
+        VirtualObj<std::counting_semaphore<>> end_{};
     };
 
     void d_renderer_render(VirtualObj<RenderInfo> info)
@@ -20,6 +20,7 @@ namespace as
             {
                 return;
             }
+            std::cout << 1 << std::endl;
 
             info->end_->release();
         }
@@ -48,7 +49,7 @@ namespace as
         std::vector<UniqueObj<std::thread>> cmd_threads_{};
         std::vector<UniqueObj<std::atomic_bool>> th_terminated_{};
         std::vector<UniqueObj<std::binary_semaphore>> th_begins_{};
-        std::vector<UniqueObj<std::binary_semaphore>> th_ends_{};
+        UniqueObj<std::counting_semaphore<>> th_ends_{nullptr};
         std::vector<UniqueObj<CmdPool>> cmd_pools_{};
         std::vector<VirtualObj<CmdBuffer>> cmds_{};
         std::vector<RenderInfo> render_infos_;
@@ -61,18 +62,18 @@ namespace as
             main_cmd_ = main_cmd_pool_->alloc_buffer();
             render_infos_.resize(MAX_THREADS_);
 
+            th_ends_(MAX_THREADS_);
             for (int i = 0; i < MAX_THREADS_; i++)
             {
                 cmd_pools_.push_back(std::move(UniqueObj<CmdPool>()));
                 cmds_.push_back(cmd_pools_[i]->alloc_buffer(vk::CommandBufferLevel::eSecondary));
                 th_terminated_.push_back(std::move(UniqueObj<std::atomic_bool>(false)));
                 th_begins_.push_back(std::move(UniqueObj<std::binary_semaphore>(0)));
-                th_ends_.push_back(std::move(UniqueObj<std::binary_semaphore>(0)));
 
                 render_infos_[i].cmd_ = cmds_[i].ptr();
                 render_infos_[i].terminated_ = th_terminated_[i];
                 render_infos_[i].begin_ = th_begins_[i];
-                render_infos_[i].end_ = th_ends_[i];
+                render_infos_[i].end_ = th_ends_;
 
                 cmd_threads_.push_back(UniqueObj<std::thread>(d_renderer_render, //
                                                               VirtualObj<RenderInfo>(render_infos_[i])));
@@ -92,7 +93,6 @@ namespace as
             th_terminated_.clear();
             cmd_threads_.clear();
             th_begins_.clear();
-            th_ends_.clear();
         }
 
         void render_func(const ResultInfo& result,                    //
@@ -104,10 +104,8 @@ namespace as
                 begin->release();
             }
 
-            for (auto& end : th_ends_)
-            {
-                end->acquire();
-            }
+            th_ends_->acquire();
+            std::cout << 2 << std::endl;
         };
     };
 
