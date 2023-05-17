@@ -16,6 +16,7 @@ file(GLOB_RECURSE SRC *.cpp)
 add_library(atscure_engine_render SHARED ${SRC})
 
 # includes-cpp
+target_include_directories(atscure_engine_render PUBLIC ${CMAKE_SOURCE_DIR})
 target_include_directories(atscure_engine_render PUBLIC ${VULKAN_INCLUDE_DIRS})
 target_include_directories(atscure_engine_render PUBLIC ${ASSIMP_INCLUDE_DIRS})
 target_include_directories(atscure_engine_render PUBLIC ${GLFW3_INCLUDE_DIRS})

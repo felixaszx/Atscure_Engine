@@ -1,1 +1,1 @@
-ldd "E:\work_space\as\atscure_engine.exe" | grep ucrt64 | awk '{print $3}' | xargs -i cp {} "E:\work_space\as" 
+ldd "E:\work_space\Atscure_Engine\atscure_engine.exe" | grep ucrt64 | awk '{print $3}' | xargs -i cp {} "E:\work_space\Atscure_Engine" 

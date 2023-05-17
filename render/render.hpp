@@ -1,6 +1,6 @@
 #ifndef RENDER_HPP
 #define RENDER_HPP
 
-int out(int a);
+#include "api/wrapper.hpp"
 
 #endif // RENDER_HPP
