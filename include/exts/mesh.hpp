@@ -77,6 +77,20 @@ namespace as
         constexpr inline static std::vector<vk::VertexInputAttributeDescription> mesh_attributes();
     };
 
+    struct MeshLoader
+    {
+        std::vector<MeshGroup::Vertex> vertices_{};
+        std::vector<size_t> vert_buffer_offsets_{};
+
+        std::vector<uint32_t> indices_{};
+        std::vector<uint32_t> mesh_indices_count_{};
+        std::vector<size_t> index_buffer_offsets_{};
+
+        uint32_t mesh_count_;
+
+        MeshLoader(const std::string& path);
+    };
+
     constexpr inline std::vector<vk::VertexInputBindingDescription> MeshGroup::mesh_bindings()
     {
         std::vector<vk::VertexInputBindingDescription> binding(2);

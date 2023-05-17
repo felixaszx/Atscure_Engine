@@ -48,8 +48,8 @@ namespace as
 
     void MeshGroup::Mesh::draw(VirtualObj<CmdBuffer> cmd, uint32_t instance_count)
     {
-        cmd->bindVertexBuffers(0, *vert_buffer_, vert_offset_ * sizeof(Vertex));
-        cmd->bindIndexBuffer(index_buffer_, index_offset_ * sizeof(uint32_t), vk::IndexType::eUint32);
+        cmd->bindVertexBuffers(0, *vert_buffer_, vert_offset_);
+        cmd->bindIndexBuffer(index_buffer_, index_offset_, vk::IndexType::eUint32);
         cmd->drawIndexed(index_count_, instance_count, 0, 0, 0);
     }
 
@@ -103,8 +103,9 @@ namespace as
 
     void MeshGroup::add_mesh(uint32_t vert_offset, uint32_t index_offset, uint32_t index_count)
     {
-        impl_->meshes_.push_back(Mesh(impl_->vert_buffer, impl_->index_buffer, //
-                                      vert_offset, index_offset, index_count));
+        impl_->meshes_.push_back(Mesh(impl_->vert_buffer, impl_->index_buffer,                       //
+                                      vert_offset * sizeof(Vertex), index_offset * sizeof(uint32_t), //
+                                      index_count));
     }
 
     uint32_t MeshGroup::mesh_count()
@@ -126,6 +127,65 @@ namespace as
     void MeshGroup::bind_matrics(VirtualObj<CmdBuffer> cmd)
     {
         cmd->bindVertexBuffers(1, *impl_->matric_buffer, {0});
+    }
+
+    MeshLoader::MeshLoader(const std::string& path)
+    {
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(path.c_str(), aiProcess_GenNormals | aiProcess_Triangulate);
+
+        size_t vertex_offset = 0;
+        size_t index_offset = 0;
+
+        for (uint32_t i = 0; i < scene->mNumMeshes; i++)
+        {
+            aiMesh* mesh_in = scene->mMeshes[i];
+
+            for (size_t v = 0; v < mesh_in->mNumVertices; v++)
+            {
+                MeshGroup::Vertex vertex{};
+                vertex.positon_ = glm::vec3(mesh_in->mVertices[v].x, mesh_in->mVertices[v].y, mesh_in->mVertices[v].z);
+                vertex.normal_ = glm::vec3(mesh_in->mNormals[v].x, mesh_in->mNormals[v].y, mesh_in->mNormals[v].z);
+
+                vertices_.push_back(vertex);
+            }
+
+            if (mesh_in->mTextureCoords[0] != nullptr)
+            {
+                for (size_t v = vertex_offset; v < vertex_offset + mesh_in->mNumVertices; v++)
+                {
+                    vertices_[v].uv_ = glm::vec3(mesh_in->mTextureCoords[0][v - vertex_offset].x, //
+                                                 mesh_in->mTextureCoords[0][v - vertex_offset].y, //
+                                                 mesh_in->mTextureCoords[0][v - vertex_offset].z);
+                }
+            }
+
+            if (mesh_in->mColors[0] != nullptr)
+            {
+                for (size_t v = vertex_offset; v < vertex_offset + mesh_in->mNumVertices; v++)
+                {
+                    vertices_[v].color_ = glm::vec3(mesh_in->mColors[0][v - vertex_offset].r, //
+                                                    mesh_in->mColors[0][v - vertex_offset].g, //
+                                                    mesh_in->mColors[0][v - vertex_offset].b);
+                }
+            }
+
+            vert_buffer_offsets_.push_back(vertex_offset);
+            vertex_offset += mesh_in->mNumVertices;
+
+            for (size_t i = 0; i < mesh_in->mNumFaces; i++)
+            {
+                indices_.push_back(mesh_in->mFaces[i].mIndices[0]);
+                indices_.push_back(mesh_in->mFaces[i].mIndices[1]);
+                indices_.push_back(mesh_in->mFaces[i].mIndices[2]);
+            }
+
+            index_buffer_offsets_.push_back(index_offset);
+            mesh_indices_count_.push_back(3 * mesh_in->mNumFaces);
+            index_offset += 3 * mesh_in->mNumFaces;
+        }
+
+        mesh_count_ = mesh_indices_count_.size();
     }
 
 }; // namespace as

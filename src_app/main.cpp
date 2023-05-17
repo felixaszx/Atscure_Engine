@@ -14,8 +14,14 @@ int main(int argc, char** argv)
     as::UniqueObj<as::DefaultRenderer> d_renderer(render);
     render.add_renderer(d_renderer.get());
 
-    as::MeshGroup mg({{}, {}, {}, {}}, {1, 2, 3, 4}, render.utils_pool_);
-    mg.add_mesh(0, 0, 0);
+    as::MeshLoader loader("res/model/sponza/sponza.obj");
+    as::MeshGroup mg(loader.vertices_, loader.indices_, render.utils_pool_);
+    for (uint32_t i = 0; i < loader.mesh_count_; i++)
+    {
+        mg.add_mesh(loader.vert_buffer_offsets_[i],  //
+                    loader.index_buffer_offsets_[i], //
+                    loader.mesh_indices_count_[i]);
+    }
 
     while (render.running())
     {
