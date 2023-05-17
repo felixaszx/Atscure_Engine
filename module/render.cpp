@@ -57,7 +57,7 @@ namespace as
         return impl_->renderers_[index];
     }
 
-    void RenderModule::add_renderer(Renderer* renderer)
+    void RenderModule::add_renderer(VirtualObj<Renderer> renderer)
     {
         impl_->renderers_.push_back(renderer);
     }

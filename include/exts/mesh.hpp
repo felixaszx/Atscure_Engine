@@ -14,7 +14,7 @@ namespace as
         UniqueObj<Buffer> buffer_{nullptr};
 
         StagingBuffer(size_t size);
-        void transfer_from(void* data);
+        void transfer_from(void* data, uint32_t size = 0);
         void transfer_to(VirtualObj<Buffer> as_buffer, VirtualObj<CmdPool> pool);
     };
 
@@ -62,7 +62,8 @@ namespace as
         const uint32_t MAX_INSTANCE_ = 1;
         uint32_t render_id_ = 0;
 
-        MeshGroup(uint32_t max_instance = 1);
+        MeshGroup(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, //
+                  VirtualObj<CmdPool> pool, uint32_t max_instance = 1);
         ~MeshGroup();
 
         void add_mesh(uint32_t vert_offset, uint32_t index_offset, uint32_t index_count);

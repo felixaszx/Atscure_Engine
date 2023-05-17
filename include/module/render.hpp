@@ -60,7 +60,7 @@ namespace as
         void poll_events();
 
         VirtualObj<Renderer> get_renderer(uint32_t index);
-        void add_renderer(Renderer* renderer);
+        void add_renderer(VirtualObj<Renderer> renderer);
     };
 }; // namespace as
 
