@@ -65,4 +65,45 @@ namespace as
         cmd.bindIndexBuffer(group_->index_buffer, index_offset_ * sizeof(uint32_t), vk::IndexType::eUint32);
         cmd.drawIndexed(index_count_, instance_count, 0, 0, 0);
     }
+
+    std::vector<vk::VertexInputBindingDescription> mesh_bindings()
+    {
+        std::vector<vk::VertexInputBindingDescription> binding(2);
+
+        binding[0].binding = 0;
+        binding[0].stride = sizeof(Vertex);
+        binding[0].inputRate = vk::VertexInputRate::eVertex;
+
+        binding[1].binding = 1;
+        binding[1].stride = sizeof(glm::mat4);
+        binding[1].inputRate = vk::VertexInputRate::eInstance;
+
+        return binding;
+    }
+
+    std::vector<vk::VertexInputAttributeDescription> mesh_attributes()
+    {
+        std::vector<vk::VertexInputAttributeDescription> attributes(8);
+        for (uint32_t i = 0; i < 4; i++)
+        {
+            attributes[i].binding = 0;
+            attributes[i].location = i;
+            attributes[i].format = vk::Format::eR32G32B32Sfloat;
+        }
+
+        attributes[0].offset = offsetof(Vertex, pos_);
+        attributes[1].offset = offsetof(Vertex, norm_);
+        attributes[2].offset = offsetof(Vertex, uv_);
+        attributes[3].offset = offsetof(Vertex, color_);
+
+        for (uint32_t i = 4; i < 8; i++)
+        {
+            attributes[i].binding = 1;
+            attributes[i].location = i;
+            attributes[i].format = vk::Format::eR32G32B32A32Sfloat;
+            attributes[i].offset = (i - 4) * sizeof(glm::vec4);
+        }
+
+        return attributes;
+    }
 }; // namespace as

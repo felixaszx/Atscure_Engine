@@ -39,6 +39,9 @@ namespace as
         void draw(vk::CommandBuffer cmd, uint32_t instance_count = 1);
     };
 
+    std::vector<vk::VertexInputBindingDescription> mesh_bindings();
+    std::vector<vk::VertexInputAttributeDescription> mesh_attributes();
+
 }; // namespace as
 
 #endif // MESH_HPP
