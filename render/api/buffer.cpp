@@ -15,15 +15,8 @@ as::Buffer::~Buffer()
     device_->allocator_.destroyBuffer(*this, *this);
 }
 
-void as::Buffer::copy_from(const Buffer& buffer, CmdPool& pool, size_t size)
+void as::Buffer::copy_from(const Buffer& buffer, CmdPool& pool, vk::BufferCopy region)
 {
-    vk::BufferCopy region{};
-    region.size = size;
-    if (size == 0)
-    {
-        region.size = std::min(this->size_, buffer.size_);
-    }
-
     CmdBuffer* cmd = pool.alloc_buffer();
     as::begin_cmd(cmd, vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
     cmd->copyBuffer(buffer, *this, region);

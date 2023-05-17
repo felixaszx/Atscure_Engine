@@ -8,43 +8,6 @@
 
 namespace as
 {
-    class RenderContext;
-
-    class RenderPipeline
-    {
-      private:
-      public:
-    };
-
-    class Renderer
-    {
-      private:
-        vk::RenderPass render_pass_{};
-
-        std::vector<VirtualObj<ImageAttachment*>> attachments_{};
-        std::vector<vk::Framebuffer> framebufs_{};
-
-        const uint32_t MAX_THREAD_;
-        std::vector<UniqueObj<std::thread>> ths_{};
-        std::vector<UniqueObj<std::binary_semaphore>> begins_{};
-        std::counting_semaphore<> ends_{0};
-
-        std::vector<UniqueObj<CmdPool>> pools_{};
-        std::vector<UniqueObj<CmdBuffer>> cmds_{};
-
-        GpuFence frame_fence_{true};
-        UniqueObj<Buffer> uniform_buffer{nullptr};
-
-      public:
-        GpuSemaphore image_sem_{};
-        GpuSemaphore submit_sem_{};
-
-        Renderer();
-        ~Renderer();
-
-        void render_meshes(std::vector<VirtualObj<Mesh>> meshes_);
-    };
-
     class RenderContext
     {
       private:
@@ -56,11 +19,35 @@ namespace as
         UniqueObj<CmdPool> utils_pool_{nullptr};
 
       public:
-        RenderContext(uint32_t height, uint32_t width);
+        RenderContext(uint32_t width, uint32_t height);
         ~RenderContext();
 
         VirtualObj<CmdPool> utils_pool();
+        bool running();
+        void update_window();
     };
+
+    struct RenderProgram
+    {
+        vk::RenderPass render_pass_{};
+        std::vector<vk::AttachmentDescription> images_des_{};
+        GpuSemaphore image_sem_{};
+        GpuSemaphore submit_sem_{};
+        GpuFence frame_fence_{true};
+
+        UniqueObj<DescriptorPool> des_pool_{nullptr};
+        std::vector<UniqueObj<DescriptorLayout>> des_layouts_{};
+        std::vector<vk::PipelineLayout> pipeline_layouts_{};
+        std::vector<vk::Pipeline> pipelines_{};
+
+        std::vector<UniqueObj<CmdPool>> cmd_pools_{};
+        std::vector<VirtualObj<CmdBuffer>> cmds_{};
+
+        UniqueObj<Buffer> uniform_buffer{nullptr};
+
+        void (*render)(vk::Framebuffer framebuffer, std::vector<VirtualObj<Mesh>> meshes) = nullptr;
+    };
+
 }; // namespace as
 
 #endif // RENDER_HPP
