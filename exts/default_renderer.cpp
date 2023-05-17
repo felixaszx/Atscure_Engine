@@ -20,7 +20,6 @@ namespace as
             {
                 return;
             }
-            std::cout << 1 << std::endl;
 
             info->end_->release();
         }
@@ -62,7 +61,7 @@ namespace as
             main_cmd_ = main_cmd_pool_->alloc_buffer();
             render_infos_.resize(MAX_THREADS_);
 
-            th_ends_(MAX_THREADS_);
+            th_ends_(0);
             for (int i = 0; i < MAX_THREADS_; i++)
             {
                 cmd_pools_.push_back(std::move(UniqueObj<CmdPool>()));
@@ -104,8 +103,10 @@ namespace as
                 begin->release();
             }
 
-            th_ends_->acquire();
-            std::cout << 2 << std::endl;
+            for (int i = 0; i < MAX_THREADS_; i++)
+            {
+                th_ends_->acquire();
+            }
         };
     };
 

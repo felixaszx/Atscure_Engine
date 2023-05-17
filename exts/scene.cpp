@@ -12,6 +12,5 @@ namespace as
         : e_(e),
           reg_(reg)
     {
-        
     }
 }; // namespace as
