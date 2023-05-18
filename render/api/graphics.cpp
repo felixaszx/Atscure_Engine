@@ -30,3 +30,27 @@ as::ShaderModule::~ShaderModule()
 {
     device_->destroyShaderModule(*this);
 }
+
+vk::GraphicsPipelineCreateInfo as::GraphicPipeline::create_info(bool use_geom)
+{
+    vk::PipelineShaderStageCreateInfo stages[3] = {vert_shader_, frag_shader_};
+    if (use_geom)
+    {
+        stages[2] = geom_shader_;
+    }
+
+    vk::GraphicsPipelineCreateInfo create_info{};
+    create_info.stageCount = use_geom ? 3 : 2;
+    create_info.pStages = stages;
+    create_info.pVertexInputState = &input_state_;
+    create_info.pInputAssemblyState = &input_assembly_;
+    create_info.pViewportState = &viewport_state_;
+    create_info.pRasterizationState = &rasterizer_state_;
+    create_info.pMultisampleState = &multisample_state_;
+    create_info.pColorBlendState = &blend_state_;
+    create_info.pDynamicState = &dynamic_state_;
+    create_info.pDepthStencilState = &depth_state_;
+    create_info.layout = layout_;
+
+    return create_info;
+}
