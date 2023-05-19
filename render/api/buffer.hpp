@@ -20,7 +20,7 @@ namespace as
         Buffer(const vk::BufferCreateInfo& buffer_info, const vma::AllocationCreateInfo& alloc_info);
         ~Buffer();
 
-        void copy_from(VirtualObj<Buffer> buffer, VirtualObj<CmdPool> pool, const vk::BufferCopy& region);
+        void copy_from(VirtualObj<Buffer> buffer, const vk::BufferCopy& region);
 
         void* mapping() const;
         void* map_memory();

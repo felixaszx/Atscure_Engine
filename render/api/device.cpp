@@ -1,4 +1,5 @@
 #include "device.hpp"
+#include "cmd.hpp"
 
 void as::Device::create_logical(vk::Instance& instance, const std::vector<const char*>& enabled_layers)
 {
@@ -55,6 +56,7 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     allocator_ = vma::createAllocator(vma_create_info);
 
     DeviceRAII::device_ = this;
+    DeviceRAII::utils_pool_ = new CmdPool;
 }
 
 as::Device::Device(Context& context, const std::vector<const char*>& enabled_layers)

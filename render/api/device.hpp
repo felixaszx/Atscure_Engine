@@ -40,13 +40,14 @@ namespace as
         ~Device();
     };
 
+    struct CmdPool;
     struct DeviceRAII
     {
         friend Device;
 
-        inline static Device* device_ = nullptr;
+        inline static VirtualObj<Device> device_ = nullptr;
+        inline static VirtualObj<CmdPool> utils_pool_ = nullptr;
     };
-
 }; // namespace as
 
 #endif // DEVICE_HPP

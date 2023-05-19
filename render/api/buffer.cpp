@@ -15,9 +15,9 @@ as::Buffer::~Buffer()
     device_->allocator_.destroyBuffer(*this, *this);
 }
 
-void as::Buffer::copy_from(VirtualObj<Buffer> buffer, VirtualObj<CmdPool> pool, const vk::BufferCopy& region)
+void as::Buffer::copy_from(VirtualObj<Buffer> buffer, const vk::BufferCopy& region)
 {
-    UniqueObj<CmdBuffer> cmd = pool->alloc_buffer();
+    UniqueObj<CmdBuffer> cmd = utils_pool_->alloc_buffer();
     as::begin_cmd(cmd, vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
     cmd->copyBuffer(buffer, *this, region);
     cmd->end();
