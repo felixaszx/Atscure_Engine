@@ -41,7 +41,7 @@ namespace as
         using std::unordered_map<vk::DescriptorType, uint32_t>::begin;
         using std::unordered_map<vk::DescriptorType, uint32_t>::end;
 
-        DescriptorPool(const std::vector<DescriptorLayout*>& layouts);
+        DescriptorPool(const std::vector<VirtualObj<DescriptorLayout>>& layouts);
         ~DescriptorPool() ;
 
         vk::DescriptorSet get_set(uint32_t index);

@@ -30,9 +30,9 @@ namespace as
         ~CmdBuffers();
     };
 
-    void begin_cmd(vk::CommandBuffer* cmd,                 //
+    void begin_cmd(VirtualObj<vk::CommandBuffer> cmd,      //
                    vk::CommandBufferUsageFlags flags = {}, //
-                   vk::CommandBufferInheritanceInfo* inheritance = {});
+                   vk::CommandBufferInheritanceInfo inheritance = {});
 
     struct CmdPool : public vk::CommandPool, //
                      public DeviceRAII
@@ -40,8 +40,9 @@ namespace as
         CmdPool(vk::CommandPoolCreateFlagBits flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
         ~CmdPool();
 
-        CmdBuffer* alloc_buffer(vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
-        CmdBuffers* alloc_buffers(uint32_t count, vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
+        BridgeObj<CmdBuffer> alloc_buffer(vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
+        BridgeObj<CmdBuffers> alloc_buffers(uint32_t count,
+                                            vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary);
 
         void submit_onetime(CmdBuffer* buffer);
         void submit_onetime(CmdBuffers* buffer);

@@ -39,7 +39,7 @@ as::CmdPool::~CmdPool()
     device_->destroyCommandPool(*this);
 }
 
-as::CmdBuffer* as::CmdPool::alloc_buffer(vk::CommandBufferLevel level)
+as::BridgeObj<as::CmdBuffer> as::CmdPool::alloc_buffer(vk::CommandBufferLevel level)
 {
     vk::CommandBufferAllocateInfo alloc_info{};
     alloc_info.commandBufferCount = 1;
@@ -49,7 +49,7 @@ as::CmdBuffer* as::CmdPool::alloc_buffer(vk::CommandBufferLevel level)
     return new CmdBuffer(device_->allocateCommandBuffers(alloc_info).front(), this);
 }
 
-as::CmdBuffers* as::CmdPool::alloc_buffers(uint32_t count, vk::CommandBufferLevel level)
+as::BridgeObj<as::CmdBuffers> as::CmdPool::alloc_buffers(uint32_t count, vk::CommandBufferLevel level)
 {
     vk::CommandBufferAllocateInfo alloc_info{};
     alloc_info.commandBufferCount = count;
@@ -78,12 +78,12 @@ void as::CmdPool::submit_onetime(CmdBuffers* buffer)
     device_->graphics_queue_.waitIdle();
 }
 
-void as::begin_cmd(vk::CommandBuffer* cmd,            //
+void as::begin_cmd(VirtualObj<vk::CommandBuffer> cmd,            //
                    vk::CommandBufferUsageFlags flags, //
-                   vk::CommandBufferInheritanceInfo* inheritance)
+                   vk::CommandBufferInheritanceInfo inheritance)
 {
     vk::CommandBufferBeginInfo begin_info{};
-    begin_info.pInheritanceInfo = inheritance;
+    begin_info.pInheritanceInfo = &inheritance;
     begin_info.flags = flags;
     cmd->begin(begin_info);
 }

@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include "logging.hpp"
 #include "vma_hpp/vk_mem_alloc.hpp"
+#include "utils.hpp"
 
 #define class_has_(func_name)                          \
     template <typename T>                              \

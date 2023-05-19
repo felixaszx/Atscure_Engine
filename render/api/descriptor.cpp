@@ -36,11 +36,11 @@ as::DescriptorLayout::~DescriptorLayout()
     device_->destroyDescriptorSetLayout(*this);
 }
 
-as::DescriptorPool::DescriptorPool(const std::vector<DescriptorLayout*>& layouts)
+as::DescriptorPool::DescriptorPool(const std::vector<VirtualObj<DescriptorLayout>>& layouts)
 {
-    for (const auto& layout : layouts)
+    for (auto& layout : layouts)
     {
-        const std::unordered_map<vk::DescriptorType, uint32_t>& types = *layout;
+        std::unordered_map<vk::DescriptorType, uint32_t>& types = *layout.ptr();
         for (const auto& type : types)
         {
             auto tmp_type = std::unordered_map<vk::DescriptorType, uint32_t>::find(type.first);

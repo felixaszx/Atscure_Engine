@@ -15,21 +15,19 @@ as::Buffer::~Buffer()
     device_->allocator_.destroyBuffer(*this, *this);
 }
 
-void as::Buffer::copy_from(const Buffer& buffer, CmdPool& pool, vk::BufferCopy region)
+void as::Buffer::copy_from(VirtualObj<Buffer> buffer, VirtualObj<CmdPool> pool, const vk::BufferCopy& region)
 {
-    CmdBuffer* cmd = pool.alloc_buffer();
+    UniqueObj<CmdBuffer> cmd = pool->alloc_buffer();
     as::begin_cmd(cmd, vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
     cmd->copyBuffer(buffer, *this, region);
     cmd->end();
 
     vk::SubmitInfo submit_info{};
     submit_info.commandBufferCount = 1;
-    submit_info.pCommandBuffers = cmd;
+    submit_info.pCommandBuffers = cmd.get();
 
     device_->graphics_queue_.submit(submit_info);
     device_->graphics_queue_.waitIdle();
-
-    ffree(cmd);
 }
 
 void* as::Buffer::mapping() const
