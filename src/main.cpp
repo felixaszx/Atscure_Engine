@@ -11,7 +11,6 @@ int main(int argc, char** argv)
     {
         rc.poll_events();
 
-        dp.run();
     }
     return EXIT_SUCCESS;
 }

@@ -6,12 +6,20 @@
 #include <semaphore>
 #include "api/wrapper.hpp"
 #include "glms.hpp"
+#include "mesh.hpp"
 
 namespace as
 {
     class DefferedProgram : DeviceRAII
     {
+        friend void gbuffer_func(VirtualObj<CmdBuffer>* target_cmd,       //
+                                 VirtualObj<std::binary_semaphore> begin, //
+                                 DefferedProgram* program);
+
       private:
+        uint32_t width_ = 0;
+        uint32_t height_ = 0;
+
         std::vector<UniqueObj<ImageAttachment>> attachments_{};
         vk::RenderPass render_pass_{};
         vk::Framebuffer framebuffer_{};
@@ -53,7 +61,12 @@ namespace as
         DefferedProgram(uint32_t frame_width, uint32_t frame_height);
         ~DefferedProgram();
 
-        void run();
+        void launch();
+        void finish();
+
+        void update_uniform(glm::mat4 view, glm::mat4 proj);
+        void record_gbuffer(std::vector<VirtualObj<Mesh>> group);
+        void deffered_lighting();
         VirtualObj<Image> result();
     };
 }; // namespace as
