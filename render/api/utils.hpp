@@ -157,6 +157,11 @@ namespace as
         {
         }
 
+        inline FreeObj(BridgeObj<T>&& bridge_obj)
+            : std::unique_ptr<T>(bridge_obj.release())
+        {
+        }
+
         inline FreeObj(FreeObj& free_obj)
         {
             T* data = this->release();

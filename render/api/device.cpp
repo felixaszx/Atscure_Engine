@@ -115,6 +115,7 @@ as::Device::Device(Context& context, const std::vector<const char*>& enabled_lay
 
 as::Device::~Device()
 {
+    delete DeviceRAII::utils_pool_;
     allocator_.destroy();
     this->destroy();
 }
