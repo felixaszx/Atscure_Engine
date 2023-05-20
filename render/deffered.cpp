@@ -21,6 +21,10 @@ namespace as
         }
     }
 
+    void DefferedProgram::pipeline0() {}
+    void DefferedProgram::pipeline1() {}
+    void DefferedProgram::pipeline2() {}
+
     DefferedProgram::DefferedProgram(uint32_t frame_width, uint32_t frame_height)
         : MAX_THREAD_(max_of_all<uint32_t>({std::thread::hardware_concurrency() - 4, 1}))
     {
@@ -142,6 +146,35 @@ namespace as
         render_pass_info.setAttachments(attachment_descriptions);
         render_pass_info.setDependencies(dependencies);
         render_pass_ = device_->createRenderPass(render_pass_info);
+
+        std::vector<DescriptorLayout::Binding> bindings[3]{};
+        bindings[0].push_back({0, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex});
+        for (uint32_t i = 1; i < 7; i++)
+        {
+            bindings[0].push_back(
+                {i, 1, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment});
+        }
+        for (uint32_t i = 0; i < 4; i++)
+        {
+            bindings[1].push_back({i, 1, vk::DescriptorType::eInputAttachment, vk::ShaderStageFlagBits::eFragment});
+        }
+        bindings[2].push_back({0, 1, vk::DescriptorType::eInputAttachment, vk::ShaderStageFlagBits::eFragment});
+
+        descriptor_layouts_.push_back(
+            new DescriptorLayout(bindings[0], vk::DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR));
+        descriptor_layouts_.push_back(new DescriptorLayout(bindings[1]));
+        descriptor_layouts_.push_back(new DescriptorLayout(bindings[2]));
+
+        descriptor_pool_ = new DescriptorPool({descriptor_layouts_.begin() + 1, //
+                                               descriptor_layouts_.end()});
+
+        for (int i = 0; i < 3; i++)
+        {
+            vk::PipelineLayoutCreateInfo create_info{};
+            create_info.pSetLayouts = descriptor_layouts_[i].get();
+            create_info.setLayoutCount = 1;
+            pipeline_layouts_.push_back(device_->createPipelineLayout(create_info));
+        }
     }
 
     DefferedProgram::~DefferedProgram()

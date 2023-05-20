@@ -45,6 +45,10 @@ namespace as
         vk::WriteDescriptorSet ubo_write_{};
         UniqueObj<Buffer> uniform_buffer_{nullptr};
 
+        void pipeline0();
+        void pipeline1();
+        void pipeline2();
+
       public:
         DefferedProgram(uint32_t frame_width, uint32_t frame_height);
         ~DefferedProgram();
