@@ -12,7 +12,7 @@ namespace as
     class DefferedProgram : DeviceRAII
     {
       private:
-        std::vector<UniqueObj<ImageAttachment>> attachments{};
+        std::vector<UniqueObj<ImageAttachment>> attachments_{};
         vk::RenderPass render_pass_{};
         vk::Framebuffer framebuffer_{};
 

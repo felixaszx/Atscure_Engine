@@ -63,7 +63,7 @@ namespace as
                                                      vk::ImageAspectFlagBits::eDepth |
                                                          vk::ImageAspectFlagBits::eStencil,
                                                      vk::ImageAspectFlagBits::eColor};
-        create_image_attachments(attachments, formats, extends, samples, usages, aspects);
+        create_image_attachments(attachments_, formats, extends, samples, usages, aspects);
 
         vk::AttachmentDescription attachment_descriptions[7]{};
         for (uint32_t i = 0; i < 7; i++)
@@ -175,10 +175,29 @@ namespace as
             create_info.setLayoutCount = 1;
             pipeline_layouts_.push_back(device_->createPipelineLayout(create_info));
         }
+
+        vk::ImageView fattachments[] = {attachments_[0], attachments_[1], attachments_[2],
+                                        attachments_[3], attachments_[4], attachments_[5], //
+                                        attachments_[6]};
+        vk::FramebufferCreateInfo fcreate_info{};
+        fcreate_info.renderPass = render_pass_;
+        fcreate_info.attachmentCount = attachments_.size();
+        fcreate_info.pAttachments = fattachments;
+        fcreate_info.width = frame_width;
+        fcreate_info.height = frame_height;
+        fcreate_info.layers = 1;
+        framebuffer_ = device_->createFramebuffer(fcreate_info);
     }
 
     DefferedProgram::~DefferedProgram()
     {
+        device_->destroyFramebuffer(framebuffer_);
+        for (int i = 0; i < pipeline_layouts_.size(); i++)
+        {
+            device_->destroyPipelineLayout(pipeline_layouts_[i]);
+        }
+        device_->destroyRenderPass(render_pass_);
+
         th_running_ = false;
         for (int i = 0; i < MAX_THREAD_; i++)
         {
