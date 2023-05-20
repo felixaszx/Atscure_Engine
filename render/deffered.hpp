@@ -9,10 +9,12 @@
 
 namespace as
 {
-    class DefferedProgram
+    class DefferedProgram : DeviceRAII
     {
       private:
+        std::vector<UniqueObj<ImageAttachment>> attachments{};
         vk::RenderPass render_pass_{};
+        vk::Framebuffer framebuffer_{};
 
         std::vector<UniqueObj<DescriptorLayout>> descriptor_layouts_{};
         UniqueObj<DescriptorPool> descriptor_pool_{nullptr};
@@ -44,10 +46,11 @@ namespace as
         UniqueObj<Buffer> uniform_buffer_{nullptr};
 
       public:
-        DefferedProgram();
+        DefferedProgram(uint32_t frame_width, uint32_t frame_height);
         ~DefferedProgram();
 
         void run();
+        VirtualObj<Image> result();
     };
 }; // namespace as
 

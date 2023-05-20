@@ -5,7 +5,7 @@ int main(int argc, char** argv)
 {
     as::RenderContext rc(1920, 1080);
 
-    as::DefferedProgram dp;
+    as::DefferedProgram dp(1920, 1080);
 
     while (rc.running())
     {

@@ -19,6 +19,7 @@ namespace as
 
         bool running();
         void poll_events();
+
     };
 }; // namespace as
 
