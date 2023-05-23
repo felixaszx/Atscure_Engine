@@ -7,6 +7,25 @@
 namespace as
 {
     template <typename T>
+    class NonClassBase
+    {
+      private:
+        T data_{};
+
+      public:
+        inline operator T&() { return data_; }
+        inline T* operator&() { return &data_; }
+        T& operator=(const T& data) { return assign(data); }
+
+        T& assign(const T& data)
+        {
+            data_ = data;
+            return data_;
+        }
+    };
+#define NonClassBase_OPERATOR(type) using NonClassBase<type>::operator=
+
+    template <typename T>
     class BridgeObj;
 
     template <typename T>
@@ -114,7 +133,6 @@ namespace as
         inline T* operator->() { return ptr_; }
         inline T& operator*() { return *ptr_; }
         inline operator T&() { return *ptr_; };
-        inline operator T*() { return ptr_; };
 
         inline VirtualObj& operator=(const T*& obj_ptr)
         {
@@ -153,11 +171,6 @@ namespace as
         }
 
         inline FreeObj(BridgeObj<T>& bridge_obj)
-            : std::unique_ptr<T>(bridge_obj.release())
-        {
-        }
-
-        inline FreeObj(BridgeObj<T>&& bridge_obj)
             : std::unique_ptr<T>(bridge_obj.release())
         {
         }
