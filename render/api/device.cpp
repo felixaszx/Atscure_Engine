@@ -22,8 +22,7 @@ void as::Device::create_logical(vk::Instance& instance, const std::vector<const 
     device_features.geometryShader = VK_TRUE;
 
     std::vector<const char*> final_device_exts(REQUIRED_DEVICE_EXTS.begin(), REQUIRED_DEVICE_EXTS.end());
-    final_device_exts.push_back(VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME);
-
+    
     vk::DeviceCreateInfo device_create_info{};
     device_create_info.pEnabledFeatures = &device_features;
     device_create_info.setQueueCreateInfos(queue_create_infos);
@@ -115,7 +114,7 @@ as::Device::Device(Context& context, const std::vector<const char*>& enabled_lay
 
 as::Device::~Device()
 {
-    delete DeviceRAII::utils_pool_;
+    delete DeviceRAII::utils_pool_.ptr();
     allocator_.destroy();
     this->destroy();
 }

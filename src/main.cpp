@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     while (rc.running())
     {
         rc.poll_events();
-
     }
+
     return EXIT_SUCCESS;
 }
