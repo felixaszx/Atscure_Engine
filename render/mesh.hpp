@@ -8,7 +8,6 @@
 
 namespace as
 {
-
     class Mesh;
     class MeshData;
     struct MeshDataLoader

@@ -5,24 +5,29 @@
 
 namespace as
 {
-    class Material
-    {
-        struct MaterialUniform
-        {
-        };
-
-        vk::DescriptorSet des_set_ = VK_NULL_HANDLE;
-        vk::PipelineLayout layout_ = VK_NULL_HANDLE;
-        vk::Pipeline pipeline_ = VK_NULL_HANDLE;
-    };
-
     class MaterialData;
+    class Material;
     struct MaterialDataLoader
     {
     };
 
     class MaterialData
     {
+        UniqueObj<DescriptorPool> des_pools_{nullptr};
+    };
+
+    class Material
+    {
+      private:
+        struct
+        {
+        } params_;
+
+        vk::DescriptorSet des_set_ = VK_NULL_HANDLE;
+        vk::PipelineLayout layout_ = VK_NULL_HANDLE;
+        vk::Pipeline pipeline_ = VK_NULL_HANDLE;
+
+      public:
     };
 }; // namespace as
 
