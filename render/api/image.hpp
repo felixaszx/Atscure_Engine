@@ -21,8 +21,7 @@ namespace as
         void destroy_image_view();
     };
 
-    struct ImageAttachment : public Image, //
-                             public vk::AttachmentDescription
+    struct ImageAttachment : public Image
     {
         ImageAttachment(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info);
         ImageAttachment(const vk::ImageCreateInfo& image_info, const vma::AllocationCreateInfo& alloc_info,
@@ -36,13 +35,6 @@ namespace as
         SwapchainImage(vk::Image& vk_image, vk::Format format);
         ~SwapchainImage() ;
     };
-
-    void create_image_attachments(std::vector<UniqueObj<ImageAttachment>>& attachments,
-                                  std::vector<vk::Format> formats,              //
-                                  std::vector<vk::Extent2D> extends,            //
-                                  std::vector<vk::SampleCountFlagBits> samples, //
-                                  std::vector<vk::ImageUsageFlags> usages,      //
-                                  std::vector<vk::ImageAspectFlags> aspects);
 
 }; // namespace as
 

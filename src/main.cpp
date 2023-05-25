@@ -1,5 +1,6 @@
 #include <iostream>
 #include "render/mesh.hpp"
+#include "render/program.hpp"
 
 int main(int argc, char** argv)
 {
@@ -9,10 +10,6 @@ int main(int argc, char** argv)
 
     as::Device d(c, c.VALIDATION_LAYERS);
     as::Swapchain s(w, c, d);
-
-    as::MeshData md(10);
-    std::vector<as::Mesh> m;
-    as::MeshDataLoader mdl("res/model/sponza/sponza.obj", md, m);
 
     while (!glfwWindowShouldClose(w.window_))
     {
