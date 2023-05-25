@@ -1,6 +1,6 @@
 #include <iostream>
 #include "render/mesh.hpp"
-#include "render/program.hpp"
+#include "render/pipeline.hpp"
 
 int main(int argc, char** argv)
 {
