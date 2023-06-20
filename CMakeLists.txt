@@ -10,6 +10,8 @@ find_package(PkgConfig REQUIRED)
 file(GLOB_RECURSE SRC src/*.cpp)
 add_executable(ae ${SRC})
 add_subdirectory(vk_api)
+add_subdirectory(utils)
 
 target_include_directories(ae PUBLIC ${CMAKE_SOURCE_DIR})
 target_link_libraries(ae vk_api)
+target_link_libraries(ae utils)
