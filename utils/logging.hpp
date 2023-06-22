@@ -13,6 +13,7 @@ namespace ae
     class Log
     {
       private:
+        inline static uint32_t total_logs_ = 0;
         template <typename T, typename... Args>
         void line_out(T first, Args... rest)
         {
@@ -51,7 +52,8 @@ namespace ae
         {
             std::time_t now;
             std::time(&now);
-            std::cout << "\nv " << std::ctime(&now);
+            total_logs_++;
+            std::cout << "\nv " << std::format("[{}] ", total_logs_) << std::ctime(&now);
             line_out(msg_rest...);
         }
     };
