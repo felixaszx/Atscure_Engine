@@ -1,6 +1,6 @@
 #include "tools.hpp"
 #include "logging.hpp"
 
-namespace ae
+namespace as
 {
 };

@@ -8,7 +8,7 @@
 #include <string>
 #include <ctime>
 
-namespace ae
+namespace as
 {
     class Log
     {
@@ -37,7 +37,7 @@ namespace ae
 
     /**
      * @brief IMPL
-     */
+     **/
 
     template <typename T, typename... Args>
     inline void Log::line_out(T first, Args... rest)
@@ -72,5 +72,5 @@ namespace ae
         line_out(msg_rest...);
     }
 
-};     // namespace ae
+};     // namespace as
 #endif // LOGGING_HPP

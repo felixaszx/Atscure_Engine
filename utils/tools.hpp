@@ -1,7 +1,7 @@
 #ifndef TOOLS_HPP
 #define TOOLS_HPP
 
-namespace ae
+namespace as
 {
     template <typename T, typename F, typename... Args>
     inline void sset(T target, F first, Args... rest)
@@ -15,6 +15,6 @@ namespace ae
     {
         static_cast<F>(target) = first;
     }
-}; // namespace ae
+}; // namespace as
 
 #endif // TOOLS_HPP
