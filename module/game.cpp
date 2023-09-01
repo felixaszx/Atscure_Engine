@@ -29,7 +29,6 @@ MODULE_EXPORT void destroy_scene(uint32_t scene_index)
 }
 
 vk::Sampler sampler{};
-as::PhysicalWorldComp physic_world;
 MODULE_EXPORT void create_module_single(as::GameModuleSingleton* obj, const as::GameModuleSingleton::CreateInfo* base)
 {
     base_in = base->base_;

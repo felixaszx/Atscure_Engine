@@ -14,9 +14,6 @@ int main(int argc, char** argv)
     as::DynamicLoader renderer_dll("module/bin/m_renderer.dll");
     as::ModuleSingleton<as::RendererModuleSingleton> renderer(renderer_dll, base);
 
-    as::DynamicLoader ode_dll("module/bin/m_physic_ode.dll");
-    as::ModuleSingleton<as::OdePhysicalModuleSingleton> ode(ode_dll, {});
-
     as::DynamicLoader game_dll("module/bin/m_game.dll");
     as::ModuleSingleton<as::GameModuleSingleton> game(game_dll, {&base, &devicei});
 

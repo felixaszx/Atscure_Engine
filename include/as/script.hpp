@@ -3,7 +3,6 @@
 
 #include "scene.hpp"
 #include "key_bits.hpp"
-#include "ode/ode.h"
 
 namespace as
 {
