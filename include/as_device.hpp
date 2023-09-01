@@ -54,3 +54,4 @@ namespace as
 }; // namespace as
 
 #endif // AT_DEVICE_HPP
+
